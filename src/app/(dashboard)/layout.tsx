@@ -9,7 +9,7 @@ export default async function Dashboardlayout({
 }) {
   
   return (
-    <div className="w-full   min-h-[100dvh]">
+    <div className="w-full   min-h-[100vh] bg-gray-200">
       <Navbar/>  
       {children}
  
