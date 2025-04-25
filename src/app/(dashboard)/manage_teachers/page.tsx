@@ -4,12 +4,12 @@ import { FaArrowUp } from "react-icons/fa"
 export default function page () {
     return(
       <section className="md:ml-[25%]  lg:ml-[20%] md:w-[75%] lg:w-[80%] w-[100%] px-[16px] pb-[24px] mt-6 min-h-screen">
-         <DashHook name={"Manage Studnts"}/>
+         <DashHook name={"Manage Teachers"}/>
          <section className="grid md:grid-cols-1 lg:grid-cols-3 gap-[24px] mt-10">
             <div className="flex flex-col md:flex-row lg:flex-col  gap-[8px]">
                   <div className='bg-[#FFFFFF] p-[16px] gap-[10px] w-full rounded-[8px] flex items-start justify-between'>
                     <div className='flex flex-col gap-[16px]'>
-                      <p>Registered Students</p>
+                      <p>Registered Teachers</p>
                       <div className='flex items-center gap-[8px]'>
                           <p className='text-[#0F0F0F] text-[24px] font-[700]'>100</p> 
                           <div className='flex text-[#0DAF64] text-[12px] '>
@@ -47,7 +47,7 @@ export default function page () {
                   </div>
           </div>
           <div className='bg-[#FFFFFF] p-[16px] gap-[10px] rounded-[8px] flex items-start justify-between'>
-            <p>Active Vs Inactive Students</p>
+            <p>Active Vs Inactive Teachers</p>
           </div>
           <div className="flex flex-col md:flex-row lg:flex-col gap-[8px]">
                   <div className='bg-[#FFFFFF] p-[16px] gap-[10px] w-full rounded-[8px] flex items-start justify-between'>

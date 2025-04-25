@@ -21,8 +21,9 @@ export default function SidebarLayo() {
   };
  const {state, dispatch} = useUser()
   const menuItems = [
+    { name: "Dashboard", href: "/dashboards", icon: <MdDashboard /> },
     { name: "Manage Students", href: "/manage_students", icon: <GiTeacher /> },
-    { name: "Manage Teachers", href: "/student", icon: <FaUserGraduate /> },
+    { name: "Manage Teachers", href: "/manage_teachers", icon: <FaUserGraduate /> },
     { name: "Manage Content", href: "/attendance", icon: <AiOutlineSchedule /> },
     { name: "Approval", href: "/coursemgt", icon: <FaClipboardList /> },
     { name: "Addmission Info", href: "/coursemgt", icon: <FaClipboardList /> },
@@ -103,22 +104,12 @@ console.log(state)
       {/* Desktop Sidebar */}
       <div className='absolute lg:w-[20%] md:top-20 left-0 z-10 md:w-[25%] py-[19px] 
       hidden md:flex flex-col shadow h-[110%] bg-white'>
-        <span className="flex flex-col gap-3">   
-          <p className="text-[#FF5900] text-[14px] px-[16px] py-[10px] bg-[#FFEEE6] flex gap-[8px]">
-            <span>
-            <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1.66663 4.16667C1.66663 3.39011 1.66663 3.00182 1.79346 2.69553C1.96263 2.28716 2.28713 1.9627 2.69546 1.79354C3.00179 1.66667 3.39004 1.66667 4.16663 1.66667H5.83329C6.60988 1.66667 6.99813 1.66667 7.30446 1.79354C7.71279 1.9627 8.03729 2.28716 8.20646 2.69553C8.33329 3.00182 8.33329 3.39011 8.33329 4.16667C8.33329 4.94324 8.33329 5.33152 8.20646 5.63781C8.03729 6.04619 7.71279 6.37065 7.30446 6.53981C6.99813 6.66667 6.60988 6.66667 5.83329 6.66667H4.16663C3.39004 6.66667 3.00179 6.66667 2.69546 6.53981C2.28713 6.37065 1.96263 6.04619 1.79346 5.63781C1.66663 5.33152 1.66663 4.94324 1.66663 4.16667Z" stroke="#FF5900" stroke-width="1.5"/>
-            </svg>
-            </span>
-            Dashboard
-            </p>
-        </span>
         <ul className='md:text-[16px]  pt-4  flex flex-col gap-[15px] px-2'>
-          {menuItems.map(({ name, href, icon }) => (
+          {menuItems.map(({ name, href, icon }, index) => (
             <li key={name}>
               <Button
                 variant="ghost"
-                className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] text-white' : ''}`}
+                className={`w-[90%] px-5 ${pathname === href  ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
               >
                 <Link href={href} className='flex gap-2 items-center font-[400] text-[16px] text-[#1D2939]'>
                   {icon} {name}
@@ -137,7 +128,7 @@ console.log(state)
               <li key={name}>
                 <Button
                   variant="ghost"
-                  className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] hover:bg-[#FFEEE6]' : ''}`}
+                  className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
                 >
                   <Link href={href} className='flex gap-2 items-center text-[16px] text-[#130F26]'>
                     {icon} {name}
