@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { FaUserGraduate, FaClipboardList, FaCogs } from "react-icons/fa";
-import { MdDashboard, MdOutlineMessage, MdAssignment } from "react-icons/md";
+import { MdDashboard, MdOutlineMessage, MdAssignment, MdLogout, MdSettings } from "react-icons/md";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { useUser } from '../context/reducer';
 import Logo from "@/app/assets/Logo.svg"
@@ -21,7 +21,7 @@ export default function SidebarLayo() {
   };
  const {state, dispatch} = useUser()
   const menuItems = [
-    { name: "Manage Students", href: "/teacher", icon: <GiTeacher /> },
+    { name: "Manage Students", href: "/manage_students", icon: <GiTeacher /> },
     { name: "Manage Teachers", href: "/student", icon: <FaUserGraduate /> },
     { name: "Manage Content", href: "/attendance", icon: <AiOutlineSchedule /> },
     { name: "Approval", href: "/coursemgt", icon: <FaClipboardList /> },
@@ -30,17 +30,24 @@ export default function SidebarLayo() {
     { name: "Payments", href: "/coursemgt", icon: <FaClipboardList /> },
     { name: "Analytics", href: "/coursemgt", icon: <FaClipboardList /> },
     { name: "Help desk", href: "/coursemgt", icon: <FaClipboardList /> },
-    { name: "Setting", href: "/settings", icon: <FaCogs /> },
-    { name: "Logout", href: "/result", icon: <MdAssignment /> },
+    { name: "Setting", href: "/settings", icon: <MdSettings /> },
+    { name: "Logout", href: "/result", icon: <MdLogout /> },
     
     
   ];
 console.log(state)
   return (
     <>
-    <section className='bg-[#FFFFFF] px-[24px] py-[8px] flex items-center justify-between border-b-[0.5px]'>
-      <Image src={Logo} width={227} height={41} alt='logo'/>
-      <div className='flex items-center justify-center gap-[32px]'>
+    <section className='bg-[#FFFFFF] px-[24px] py-[16px] flex items-center justify-between border-b-[0.5px]'>
+      <div className='md:hidden text-[#FFEEE6] '>
+      <Button variant="outline" className='md:hidden bg-[#FF5900] outline-none border-none' onClick={Togglebuttn}>
+          <GiHamburgerMenu />
+        </Button>
+      </div>
+      <div className='hidden lg:block'>
+        <Image src={Logo} width={227} height={41} alt='logo'/>
+      </div>
+      <div className='md:flex items-center justify-center gap-[32px] hidden'>
         <div className='px-[16px] py-[8px] gap-[8px] bg-[#FFEEE6] rounded-[8px] flex'>
           <span>
           <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,11 +65,11 @@ console.log(state)
           <span className='text-[#0F0F0F]'>Upload Class notes</span>
         </div>
       </div>
-      <div className='flex gap-[56px]'>
+      <div className='flex gap-[56px] items-center'>
         <div className='flex gap-[24px]'>
           <span>
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"> 
-          <rect width="32" height="32" rx="16" fill="#FBE3B0"/>
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"> 
+          <rect width="28" height="28" rx="16" fill="#FBE3B0"/>
           <path d="M25 25L20.65 20.65M23 15C23 19.4183 19.4183 23 15 23C10.5817 23 7 19.4183 7 15C7 10.5817 10.5817 7 15 7C19.4183 7 23 10.5817 23 15Z" stroke="#0F0F0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           </span>
@@ -78,7 +85,7 @@ console.log(state)
           </span>
         </div>
         <div className='flex gap-[8px]'>
-          <Image src={admin} height={40} width={ 40} alt=' ' className='rounded-full'/>
+          <Image src={admin}  alt=' ' className='h-[40px] w-[40px] rounded-[20px]'/>
           <div>
             <p className='text-[16px] font-[500] flex gap-[8px] items-center '>Mr. {state?.firstName} 
               <span>
@@ -92,30 +99,10 @@ console.log(state)
         </div>
       </div>
     </section>
-      {/* Mobile Header */}
-      <p>{state?.email}hi</p>
-      <div className="flex justify-between w-[90%] m-auto py-3">
-        <span className="flex flex-col gap-3 md:hidden">   
-          <div className="flex gap-3 items-center">
-        
-            <span className="h-[30px] w-[40px]"> s</span>
-          </div>
-          <p className="text-[#FF5900] text-[14px] px-[16px] py-[10px] bg-[#FFEEE6] flex gap-[8px]">
-            <span>
-            <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1.66663 4.16667C1.66663 3.39011 1.66663 3.00182 1.79346 2.69553C1.96263 2.28716 2.28713 1.9627 2.69546 1.79354C3.00179 1.66667 3.39004 1.66667 4.16663 1.66667H5.83329C6.60988 1.66667 6.99813 1.66667 7.30446 1.79354C7.71279 1.9627 8.03729 2.28716 8.20646 2.69553C8.33329 3.00182 8.33329 3.39011 8.33329 4.16667C8.33329 4.94324 8.33329 5.33152 8.20646 5.63781C8.03729 6.04619 7.71279 6.37065 7.30446 6.53981C6.99813 6.66667 6.60988 6.66667 5.83329 6.66667H4.16663C3.39004 6.66667 3.00179 6.66667 2.69546 6.53981C2.28713 6.37065 1.96263 6.04619 1.79346 5.63781C1.66663 5.33152 1.66663 4.94324 1.66663 4.16667Z" stroke="#FF5900" stroke-width="1.5"/>
-            </svg>
-            </span>
-            Dashboard</p>
-        </span>
-        <Button variant="outline" className='md:hidden bg-[#4B5320]' onClick={Togglebuttn}>
-          <GiHamburgerMenu />
-        </Button>
-      </div>
-
+      
       {/* Desktop Sidebar */}
-      <div className='fixed lg:w-[15%] md:top-16 left-0 z-10 md:w-[20%] py-[19px] 
-      hidden md:flex flex-col shadow h-[100%] bg-white'>
+      <div className='absolute lg:w-[20%] md:top-20 left-0 z-10 md:w-[25%] py-[19px] 
+      hidden md:flex flex-col shadow h-[110%] bg-white'>
         <span className="flex flex-col gap-3">   
           <p className="text-[#FF5900] text-[14px] px-[16px] py-[10px] bg-[#FFEEE6] flex gap-[8px]">
             <span>
@@ -131,7 +118,7 @@ console.log(state)
             <li key={name}>
               <Button
                 variant="ghost"
-                className={`w-[90%] px-5 ${pathname === href ? 'bg-gray-300 text-white' : ''}`}
+                className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] text-white' : ''}`}
               >
                 <Link href={href} className='flex gap-2 items-center font-[400] text-[16px] text-[#1D2939]'>
                   {icon} {name}
@@ -144,15 +131,15 @@ console.log(state)
 
       {/* Mobile Menu */}
       {sidebarOpen && (
-        <div className="block w-[100%] bg-[#4B5320] shadow-lg p-4">
-          <ul className='md:text-[18px] text-[#130F26] flex flex-col gap-[19px] text-[8px]'>
+        <div className="md:hidden block w-[100%] bg-white h-[130%] shadow-lg p-4 absolute top-20 left-0  z-10">
+          <ul className='md:text-[16px] text-[#130F26] flex flex-col gap-[19px] text-[8px]'>
             {menuItems.map(({ name, href, icon }) => (
               <li key={name}>
                 <Button
                   variant="ghost"
-                  className={`w-[90%] px-5 ${pathname === href ? 'bg-gray-300' : ''}`}
+                  className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] hover:bg-[#FFEEE6]' : ''}`}
                 >
-                  <Link href={href} className='flex gap-2 items-center text-[18px] text-[#130F26]'>
+                  <Link href={href} className='flex gap-2 items-center text-[16px] text-[#130F26]'>
                     {icon} {name}
                   </Link>
                 </Button>
