@@ -1,4 +1,5 @@
-import Navbar from './navbar';
+import Navbar, { Header } from './navbar';
+import { SidebarProvider } from '@/app/context/sideBarState'; // adjust the path as needed
 
 import { redirect } from "next/navigation";
 
@@ -7,12 +8,17 @@ export default async function Dashboardlayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   return (
-    <div className="w-full   min-h-[100vh] bg-gray-100">
-      <Navbar/>  
-      {children}
- 
-    </div>
+    <SidebarProvider>
+      <div className="w-full grid grid-rows-layout grid-cols-layout h-screen">
+        <header className='row-span-1 col-span-3'>
+          <Header />
+        </header>
+        <Navbar />
+        <main className='md:row-span-2 md:col-span-2 col-span-3 bg-gray-100 w-full'>
+          {children}
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }

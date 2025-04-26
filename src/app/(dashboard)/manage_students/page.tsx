@@ -1,10 +1,15 @@
+"use client"
 import { DashHook } from "@/app/components/dahHook"
+import { UsersTable } from "@/app/components/usersTable";
+import { useSidebar } from "@/app/context/sideBarState";
 import { FaArrowUp } from "react-icons/fa"
 
 export default function page () {
+    const { sidebarOpen, setSidebarOpen } = useSidebar();
+  
     return(
-      <section className="md:ml-[25%]  lg:ml-[20%] md:w-[75%] lg:w-[80%] w-[100%] px-[16px] pb-[24px] mt-6 min-h-screen">
-         <DashHook name={"Manage Studnts"}/>
+      <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
+         <DashHook name={"Manage Students"}/>
          <section className="grid md:grid-cols-1 lg:grid-cols-3 gap-[24px] mt-10">
             <div className="flex flex-col md:flex-row lg:flex-col  gap-[8px]">
                   <div className='bg-[#FFFFFF] p-[16px] gap-[10px] w-full rounded-[8px] flex items-start justify-between'>
@@ -91,6 +96,10 @@ export default function page () {
           </div>
 
          </section>
+         <section className="bg-white mt-10 rounded-md">
+           <UsersTable/>
+             </section>
+         
       </section>
     )
 }
