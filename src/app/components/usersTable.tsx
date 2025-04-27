@@ -7,82 +7,74 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-  } from "@/components/ui/table"
+  } from "@/components/ui/table";
+  import { FaBan, FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
   
-  const invoices = [
+  const actions = [
     {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
+      name: "View",
+      icon: <FaEye />,
+      color: "text-blue-400",
     },
     {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
+      name: "Edit",
+      icon: <FaPencilAlt />,
+      color: "text-yellow-400",
     },
     {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
+      name: "Suspend",
+      icon: <FaBan />,
+      color: "text-orange-400",
     },
     {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
+      name: "Delete",
+      icon: <FaTrash />,
+      color: "text-red-400",
     },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ]
+  ];
   
-  export function UsersTable() {
+  interface userInterface {
+    Placeholder: string;
+    users: {
+      userId: string;
+      firstName: string;
+      lastName:string,
+      role: string;
+    }[];
+  }
+  
+  export function UsersTable({ Placeholder, users }: userInterface) {
     return (
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+      <Table className="table-fixed overflow-x-scroll">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>UserID</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>{Placeholder}</TableHead>
+            <TableHead>Perform Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+          {users.map((user) => (
+            <TableRow key={user.userId}>
+              <TableCell>{user.userId}</TableCell>
+              <TableCell className="text-[12px] md:text-[14px]">{user.firstName} {user.lastName}</TableCell>
+              <TableCell>{user.role}</TableCell>
+              <TableCell className="text-right flex items-center gap-[8px]">
+                {actions.map((action, index) => (
+                  <p
+                    key={index}
+                    className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
+                  >
+                    <span className="hidden md:block">{action.name}</span>
+                    {action.icon}
+                  </p>
+                ))}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
       </Table>
-    )
+    );
   }
   

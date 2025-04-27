@@ -40,15 +40,14 @@ console.log(state)
      
 
     
-     <aside className={`md:col-span-1`}>
-  {/* Desktop Sidebar */}
-  <div className="z-10 py-[19px] hidden md:flex flex-col bg-white w-full">
+     <aside className="md:col-span-1">
+  <div className="z-10 py-[19px] hidden md:flex flex-col bg-white ">
     <ul className="md:text-[16px] pt-4 flex flex-col gap-[15px] px-2">
       {menuItems.map(({ name, href, icon }, index) => (
         <li key={name}>
           <Button
             variant="ghost"
-            className={`w-[90%] px-5 ${pathname === href ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
+            className={`w-[90%] px-6 ${pathname === href ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
           >
             <Link href={href} className="flex gap-2 items-center font-[400] text-[16px] text-[#1D2939]">
               {icon} {name}
@@ -58,10 +57,9 @@ console.log(state)
       ))}
     </ul>
   </div>
-
+</aside>
       {/* Mobile Menu */}
 
-    </aside>
     {sidebarOpen && (
         <div className=" md:hidden absolute w-full block bg-white min-h-screen z-20">
           <Header/>
@@ -105,7 +103,7 @@ export const Header = () =>{
     <div className='hidden md:block'>
         <Image src={Logo} width={180} height={35} alt='logo'/>
       </div>
-    <div className='md:flex items-center justify-center gap-[32px] hidden'>
+    <div className='lg:flex items-center justify-center gap-[32px] hidden'>
       <div className='px-[16px] py-[8px] gap-[8px] bg-[#FFEEE6] rounded-[8px] flex'>
         <span>
         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">

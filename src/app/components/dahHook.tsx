@@ -10,7 +10,7 @@ export const DashHook = ({name}:hook) =>{
     return(
             <div className='flex justify-between  '>
                <p className='font-[600] lg:text-[24px] '>{name}</p>
-              <div className='md:border-[0.5px] px-2 border-[#98A2B3] flex items-center justify-center rounded-[4px]'>
+              <div className='lg:border-[0.5px] px-2 border-[#98A2B3] flex items-center justify-center rounded-[4px]'>
               <p className='flex gap-[8px] text-[16px] font-[400] text-[#344054]'>
                 <span>
                 <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +20,7 @@ export const DashHook = ({name}:hook) =>{
                 <span>{formattedDate}</span>
               </p>
               </div>
-              <div className='text-[16px] font-[400] text-[#344054] hidden md:flex '>
+              <div className='text-[16px] font-[400] text-[#344054] hidden lg:flex '>
               <p className='flex gap-[8px]'>Last updated:
                 <span>{formattedDate}</span>
               </p>

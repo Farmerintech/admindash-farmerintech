@@ -65,7 +65,7 @@ export default function AdminLogin() {
             email: result?.user?.email,
             firstName: result?.user?.firstName,
             lastName: result?.user?.lastName,
-            token: jwtDecode(result?.user?.token),
+            token: (result?.user?.token),
             role: result?.user?.role
           }
         });

@@ -4,11 +4,43 @@ import { DashHook } from '@/app/components/dahHook';
 import { UsersTable } from '@/app/components/usersTable';
 import { useUser } from '@/app/context/reducer'
 import { useSidebar } from '@/app/context/sideBarState';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaArrowUp } from 'react-icons/fa';
 
 export default function page() {
+  const [data, setData] = useState<any>({})
+  const [error, setError]  = useState<string>()
     const { sidebarOpen, setSidebarOpen } = useSidebar();
+    const {state}=useUser()
+  useEffect( ()=>{
+    const fetchData = async ()=>{
+      try {
+        const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/get_users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            "authorization":`Bearer ${state.token}`
+          },
+          // body: JSON.stringify(data)
+        });
+  
+        const result = await response.json();
+        setData(result);
+  
+         console.log(data)
+   
+          !response.ok && setError(result?.message || 'Something went wrong');
+        
+  
+      } catch (error) {
+        console.error(error);
+        setError('Error connecting to server');
+      }
+  
+    }
+    fetchData()
+  }, [data])
+  
   
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
@@ -92,9 +124,11 @@ export default function page() {
       </div>
 
     </main>
-             <section className="bg-white mt-10 rounded-md">
-             <UsersTable/>
-             </section>
+    <section className="bg-white mt-10 rounded-md over-flow-x-scroll w-[full] px-4">
+      {data &&
+      <UsersTable Placeholder="Role"   users={data?.users ?? []}/>
+      }
+    </section>
     
     </section>
   )
