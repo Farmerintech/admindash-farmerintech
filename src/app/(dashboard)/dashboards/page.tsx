@@ -42,8 +42,8 @@ export default function page() {
   }, [data])
   
   const filterItems= ['By Teachers', 'By Students']
-  const percentageStd = data && Math.ceil((data.count?.totalStudents/data.count?.totalUser)*100)||''
-  const percentageTutor = data && Math.ceil((data.count?.totalTeachers/data.count?.totalUser)*100)||''
+  const percentageStd = Math.ceil((data?.count?.totalStudents/(data?.count?.totalUser))*100) 
+  const percentageTutor = Math.ceil((data?.count?.totalTeachers/(data?.count?.totalUser))*100)
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
       <DashHook name={"Dashboard Overview"}/>
@@ -52,7 +52,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Registered Students</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalStudents || ''}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalStudents}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
                  <p>{percentageStd}%</p>
@@ -71,7 +71,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Registered Teachers</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalTeachers || ''}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalTeachers}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
                  <p>{percentageTutor}%</p>

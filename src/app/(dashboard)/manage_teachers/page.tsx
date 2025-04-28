@@ -134,7 +134,7 @@ export default function page () {
          </section>
          <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
       {data &&
-      <UsersTable Placeholder="Class-Subject Assigned"   users={data?.users ?? []} filterItems={filterItems}/>
+      <UsersTable Placeholder="Subject"   users={data?.users ?? []} filterItems={filterItems}/>
       }
        {!data.user &&
             <p>{`${data?.message ?? "No student record found"}`}</p>

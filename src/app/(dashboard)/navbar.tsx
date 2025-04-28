@@ -22,7 +22,7 @@ export default function SidebarLayo() {
     { name: "Dashboard", href: "/dashboards", icon: <MdDashboard /> },
     { name: "Manage Students", href: "/manage_students", icon: <GiTeacher /> },
     { name: "Manage Teachers", href: "/manage_teachers", icon: <FaUserGraduate /> },
-    { name: "Manage Content", href: "/attendance", icon: <AiOutlineSchedule /> },
+    { name: "Manage Content", href: "/manage_content", icon: <AiOutlineSchedule /> },
     { name: "Approval", href: "/coursemgt", icon: <FaClipboardList /> },
     { name: "Addmission Info", href: "/coursemgt", icon: <FaClipboardList /> },
     { name: "Sponsorship", href: "/coursemgt", icon: <FaClipboardList /> },
