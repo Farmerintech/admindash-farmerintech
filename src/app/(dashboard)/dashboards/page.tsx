@@ -41,7 +41,9 @@ export default function page() {
     fetchData()
   }, [data])
   
-  
+  const filterItems= ['By Teachers', 'By Students']
+  const percentageStd = data && Math.ceil((data.count?.totalStudents/data.count?.totalUser)*100)||''
+  const percentageTutor = data && Math.ceil((data.count?.totalTeachers/data.count?.totalUser)*100)||''
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
       <DashHook name={"Dashboard Overview"}/>
@@ -50,10 +52,10 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Registered Students</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>100</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalStudents || ''}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
-                 <p>12%</p>
+                 <p>{percentageStd}%</p>
               </div>
             </div>
           <p className='text-[#0DAF64] text-[12px] '>4 today</p>
@@ -69,10 +71,10 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Registered Teachers</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>20</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalTeachers || ''}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
-                 <p>0.4%</p>
+                 <p>{percentageTutor}%</p>
               </div>
             </div>
           <p className='text-[#0DAF64] text-[12px] '>2 today</p>
@@ -124,9 +126,9 @@ export default function page() {
       </div>
 
     </main>
-    <section className="bg-white mt-10 rounded-md over-flow-x-scroll w-[full] px-4">
+    <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
       {data &&
-      <UsersTable Placeholder="Role"   users={data?.users ?? []}/>
+      <UsersTable Placeholder="Role"   users={data?.users ?? []} filterItems={filterItems}/>
       }
     </section>
     

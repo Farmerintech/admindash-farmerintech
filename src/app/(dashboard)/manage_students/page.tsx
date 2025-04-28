@@ -41,7 +41,7 @@ export default function page () {
       fetchData()
     }, [data])
     
-  
+  const filterItems = ["KS!", "KS2", "KS3", "SSCE/IGCE"]
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
          <DashHook name={"Manage Students"}/>
@@ -131,15 +131,16 @@ export default function page () {
           </div>
 
          </section>
-         <section className="bg-white mt-10 rounded-md over-flow-x-scroll w-[full] px-4">
-           {data &&
-               <UsersTable Placeholder="Class"   users={data?.users ?? []}/>
-            }   
-            {!data.user &&
+    <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
+      {data &&
+      <UsersTable Placeholder="Class"   users={data?.users ?? []} filterItems={filterItems}/>
+      }
+       {!data.user &&
             <p>{`${data?.message ?? "No student record found"}`}</p>
-            }          
+            }  
+    </section>
+                   
      </section>
-         
-      </section>
+ 
     )
 }
