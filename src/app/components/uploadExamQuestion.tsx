@@ -79,13 +79,17 @@ export const UploadExamQuestion= () => {
         event.preventDefault()
         console.log(form);
         if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || form.year ==='' || form.term ==='' || form.questionType==='' ){
-            return   
+          setActive(false)
+          return   
         }
         console.log(form);
     }
    useEffect(()=>{
     if(form.subject !=='' && form.class !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' && form.year !=='' && form.term !=='' && form.questionType !=='' ){
         setActive(true)        
+    }else{
+
+        setActive(false)
     }
    }, [form])
   return (
@@ -251,7 +255,7 @@ export const UploadExamQuestion= () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
+          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`} 
         >
           Submit
         </button>

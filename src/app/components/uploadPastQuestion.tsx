@@ -63,13 +63,17 @@ export const UploadPastQuestion = () => {
             event.preventDefault()
             console.log(form);
             if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || !form.questionType ){
-                return   
+              setActive(false)
+
+              return   
             }
             console.log(form);
         }
        useEffect(()=>{
-        if(form.subject !=='' && form.examType !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' || form.questionType==='' ){
+        if(form.subject !=='' && form.examType !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' && form.questionType !=='' ){
             setActive(true)        
+        }else{
+          setActive(false)
         }
        }, [form])
   return (
@@ -196,6 +200,7 @@ export const UploadPastQuestion = () => {
           <label className="text-[#344054]">Explanation</label>
           <Textarea
             value={form.explanation}
+            name="explanation"
             onChange={handleTextarea}
             className="w-full  p-[6px] rounded-[8px] hover:border-[#F6C354] border border-[#667085] h-[48px]"
           />
@@ -204,7 +209,7 @@ export const UploadPastQuestion = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]"
+          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`} 
         >
           Submit
         </button>
