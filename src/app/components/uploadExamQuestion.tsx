@@ -8,79 +8,95 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-
+import { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from "react"
+const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
+const Terms = ["First Term", "SecondTerm", "Third Term"]
 const subjects = ['English Language', 'Mathematics']
-const examTypes = 
-['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
+const classes = ['KS1', 'KS2']
+export const UploadExamQuestion= () => {
 
-export const UploadPastQuestion = () => {
-        const [form, setForm] = useState<any>({
-            subject:'',
-            examType:'',
-            questionType:"",
-            question:"",
-            optionA:"",
-            optionB:"",
-            optionC:"",
-            optionD:"",
-            answer:"",
-            explanation:""
-        });
-        const [active, setActive] = useState<boolean>(false)
-        const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
-            setForm({
-                ...form,
-                [event.target.name]:event.target.value
-            })
+    const [form, setForm] = useState<any>({
+        subject:'',
+        class:'',
+        year:'',
+        term:'',
+        questionType:'',
+        question:"",
+        optionA:"",
+        optionB:"",
+        optionC:"",
+        optionD:"",
+        answer:"",
+        explanation:""
+    });
+    const [active, setActive] = useState<boolean>(false)
+    const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
+        setForm({
+            ...form,
+            [event.target.name]:event.target.value
+        })
+    }
+    const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
+        setForm({
+            ...form,
+           [ event.target.name]: event.target.value
+        })
+    }
+    const handleSelectSubject = (value:string) =>{
+        setForm({
+            ...form,
+            subject:value
+        })
+    }
+    
+    const handleSelectClass = (value:string) =>{
+        setForm({
+            ...form,
+            class:value
+        })
+    }
+    const handleSelectTerm = (value:string) =>{
+      setForm({
+          ...form,
+          term:value
+      })
+  }
+  
+  const handleSelectYear= (value:string) =>{
+      setForm({
+          ...form,
+          year:value
+      })
+  }
+  const handleQuestionType= (value:string) =>{
+    setForm({
+        ...form,
+        questionType:value
+    })
+} 
+
+    const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
+        event.preventDefault()
+        console.log(form);
+        if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || form.year ==='' || form.term ==='' || form.questionType==='' ){
+            return   
         }
-        const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
-            setForm({
-                ...form,
-               [ event.target.name]: event.target.value
-            })
-        }
-        const handleSelectSubject = (value:string) =>{
-            setForm({
-                ...form,
-                subject:value
-            })
-        }
-        
-        const handleExamType= (value:string) =>{
-            setForm({
-                ...form,
-                examType:value
-            })
-        }
-        const handleQuestionType= (value:string) =>{
-          setForm({
-              ...form,
-              questionType:value
-          })
-      } 
-        const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-            event.preventDefault()
-            console.log(form);
-            if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || !form.questionType ){
-                return   
-            }
-            console.log(form);
-        }
-       useEffect(()=>{
-        if(form.subject !=='' && form.examType !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' || form.questionType==='' ){
-            setActive(true)        
-        }
-       }, [form])
+        console.log(form);
+    }
+   useEffect(()=>{
+    if(form.subject !=='' && form.class !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' && form.year !=='' && form.term !=='' && form.questionType !=='' ){
+        setActive(true)        
+    }
+   }, [form])
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
-          <Select onValueChange={handleSelectSubject}>
+          <Select onValueChange={handleSelectSubject} >
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Subject" />
+              <SelectValue placeholder="Subject"  />
             </SelectTrigger>
             <SelectContent>
               {subjects.map((subject) => (
@@ -90,22 +106,51 @@ export const UploadPastQuestion = () => {
           </Select>
         </div>
 
-        {/* ExamType */}
+        {/* Class */}
         <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Exam Type</label>
-          <Select onValueChange={handleExamType}>
+          <label className="text-[#344054]">Class</label>
+          <Select onValueChange={handleSelectClass} >
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Exam Type" />
+              <SelectValue placeholder="Class" />
             </SelectTrigger>
             <SelectContent>
-              {examTypes.map((item) => (
+              {classes.map((item) => (
                 <SelectItem key={item} value={item}>{item}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-  {/* Question Type */}
+        {/* Year */}
         <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Year</label>
+          <Select onValueChange={handleSelectYear} >
+            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {Years.map((year, index) => (
+                <SelectItem key={index} value={year}>{year}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+         {/* Term */}
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Term</label>
+          <Select onValueChange={handleSelectTerm} >
+            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Term" />
+            </SelectTrigger>
+            <SelectContent>
+              {Terms.map((term, index) => (
+                <SelectItem key={index} value={term}>{term}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+  {/* Question Type */}
+  <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Question Type</label>
           <Select onValueChange={handleQuestionType}>
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
@@ -117,6 +162,7 @@ export const UploadPastQuestion = () => {
             </SelectContent>
           </Select>
         </div>
+
         {/* Question */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Question</label>
@@ -197,6 +243,7 @@ export const UploadPastQuestion = () => {
           <Textarea
             value={form.explanation}
             onChange={handleTextarea}
+            name="explanation"
             className="w-full  p-[6px] rounded-[8px] hover:border-[#F6C354] border border-[#667085] h-[48px]"
           />
         </div>
@@ -204,7 +251,7 @@ export const UploadPastQuestion = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]"
+          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
         >
           Submit
         </button>
