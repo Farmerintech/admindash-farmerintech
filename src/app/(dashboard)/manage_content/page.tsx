@@ -3,6 +3,7 @@
 import { DashHook } from "@/app/components/dahHook";
 import { UploadCbtQuestion } from "@/app/components/uploadCbtQuestion";
 import { UploadClassNote } from "@/app/components/uploadClassNote";
+import { UploadPastQustion } from "@/app/components/uploadPastQuestion";
 import { UploadResources } from "@/app/components/uploadResources";
 import { useUser } from "@/app/context/reducer"
 import { useSidebar } from "@/app/context/sideBarState";
@@ -51,6 +52,9 @@ export default function page (){
             <main className="p-[32px] bg-white rounded-[8px] gap-[160px] flex justify-between">
                {
                   active ===0 && <UploadClassNote/>
+               }
+                {
+                  active ===1 && <UploadPastQustion/>
                }
                 {
                   active ===2 && <UploadCbtQuestion/>

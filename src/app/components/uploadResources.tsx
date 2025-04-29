@@ -8,13 +8,47 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { Teachers } from "next/font/google"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 const subjects = ['English Language', 'Mathematics']
 const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
 export const UploadResources = () => {
+    type file =any
+    const [form, setForm] = useState<any>({
+        file:'',
+        source:"",
+        description:"",
+        link:"",
+        resourceFor:''
+    });
+    const [active, setActive] = useState<boolean>(false)
+    const handleInputs = (event:ChangeEvent<HTMLInputElement>) =>{
+        setForm({
+            ...form,
+            [event.target.name]:event.target.value
+        })
+    }
+    const handleSelect = (value:string) =>{
+        setForm({
+            ...form,
+            resourceFor:value
+        })
+    }
+    const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
+        event.preventDefault()
+        if(form.file === '' || form.source ==="" || form.description==='' || form.link ==='' || form.resourceFor ===""){
+            return
+        }
+    }
+    useEffect(()=>{
+        if(form.file !== '' && form.source !=="" && form.description!=='' && form.link !=='' && form.resourceFor !==""){
+            setActive(true)
+        }
+    })
   return (
-    <form className="md:flex md:justify-between md:gap-[30px] flex-col w-full">
+    <form className="md:flex md:justify-between md:gap-[30px] flex-col w-full" onSubmit={handleSubmit}>
       {/* Upload File */}
       <div className="flex flex-col gap-[8px] w-full">
         <label className="text-[#344054]">Upload New Resources</label>
@@ -27,7 +61,11 @@ export const UploadResources = () => {
             onChange={(e) => {
               const file = e.target.files?.[0]
               if (file) {
-                console.log("Selected file:", file)
+                console.log("Selected file:", file);
+                setForm({
+                    ...form,
+                    file
+                })
               }
             }}
           />
@@ -59,6 +97,19 @@ export const UploadResources = () => {
           </div>
         </label>
       </div>
+      {/* {resources for} */}
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Resources For</label>
+          <Select onValueChange={handleSelect} >
+            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Subject"  />
+            </SelectTrigger>
+            <SelectContent>
+            <SelectItem key={'Teachers'} value={'Teachers'}>Teachers</SelectItem>
+            <SelectItem key={'Students'} value={'Students'}>Students</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
       {/* Name of Website or Header */}
       <div className="flex flex-col gap-[8px] w-full mt-6">
@@ -66,6 +117,9 @@ export const UploadResources = () => {
         <input
           type="text"
           className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
+          onChange={handleInputs}
+          name="source"
+          value={form.source}
         />
       </div>
 
@@ -75,6 +129,9 @@ export const UploadResources = () => {
         <input
           type="text"
           className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
+          onChange={handleInputs}
+          name="description"
+          value={form.description}
         />
       </div>
 
@@ -84,12 +141,15 @@ export const UploadResources = () => {
         <input
           type="text"
           className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
+          onChange={handleInputs}
+          name="link"
+          value={form.link}
         />
       </div>
       {/* submit */}
       <button
           type="submit"
-          className="mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]"
+          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
         >
           Submit
         </button>

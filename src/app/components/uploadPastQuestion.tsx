@@ -8,73 +8,72 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from "react"
 
 const subjects = ['English Language', 'Mathematics']
-const examTypes = 
-['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
+const classes = ['KS1', 'KS2']
+export const UploadPastQustion= () => {
 
-export const UploadCbtQuestion = () => {
-        const [form, setForm] = useState<any>({
-            subject:'',
-            examType:'',
-            question:"",
-            optionA:"",
-            optionB:"",
-            optionC:"",
-            optionD:"",
-            answer:"",
-            explanation:""
-        });
-        const [active, setActive] = useState<boolean>(false)
-        const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
-            setForm({
-                ...form,
-                [event.target.name]:event.target.value
-            })
+    const [form, setForm] = useState<any>({
+        subject:'',
+        class:'',
+        question:"",
+        optionA:"",
+        optionB:"",
+        optionC:"",
+        optionD:"",
+        answer:"",
+        explanation:""
+    });
+    const [active, setActive] = useState<boolean>(false)
+    const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
+        setForm({
+            ...form,
+            [event.target.name]:event.target.value
+        })
+    }
+    const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
+        setForm({
+            ...form,
+           [ event.target.name]: event.target.value
+        })
+    }
+    const handleSelectSubject = (value:string) =>{
+        setForm({
+            ...form,
+            subject:value
+        })
+    }
+    
+    const handleSelectClass = (value:string) =>{
+        setForm({
+            ...form,
+            class:value
+        })
+    }
+    
+    const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
+        event.preventDefault()
+        console.log(form);
+        if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' ){
+            return   
         }
-        const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
-            setForm({
-                ...form,
-               [ event.target.name]: event.target.value
-            })
-        }
-        const handleSelectSubject = (value:string) =>{
-            setForm({
-                ...form,
-                subject:value
-            })
-        }
-        
-        const handleExamType= (value:string) =>{
-            setForm({
-                ...form,
-                examType:value
-            })
-        }
-        
-        const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-            event.preventDefault()
-            console.log(form);
-            if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' ){
-                return   
-            }
-            console.log(form);
-        }
-       useEffect(()=>{
-        if(form.subject !=='' && form.examType !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' ){
-            setActive(true)        
-        }
-       }, [form])
+        console.log(form);
+    }
+   useEffect(()=>{
+    if(form.subject !=='' && form.class !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' ){
+        setActive(true)        
+    }
+   }, [form])
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
-          <Select onValueChange={handleSelectSubject}>
+          <Select onValueChange={handleSelectSubject} >
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Subject" />
+              <SelectValue placeholder="Subject"  />
             </SelectTrigger>
             <SelectContent>
               {subjects.map((subject) => (
@@ -84,15 +83,15 @@ export const UploadCbtQuestion = () => {
           </Select>
         </div>
 
-        {/* ExamType */}
+        {/* Class */}
         <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">ExamType</label>
-          <Select onValueChange={handleExamType}>
+          <label className="text-[#344054]">Class</label>
+          <Select onValueChange={handleSelectClass} >
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
               <SelectValue placeholder="Class" />
             </SelectTrigger>
             <SelectContent>
-              {examTypes.map((item) => (
+              {classes.map((item) => (
                 <SelectItem key={item} value={item}>{item}</SelectItem>
               ))}
             </SelectContent>
@@ -178,6 +177,7 @@ export const UploadCbtQuestion = () => {
           <Textarea
             value={form.explanation}
             onChange={handleTextarea}
+            name="explanation"
             className="w-full  p-[6px] rounded-[8px] hover:border-[#F6C354] border border-[#667085] h-[48px]"
           />
         </div>
@@ -185,7 +185,7 @@ export const UploadCbtQuestion = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]"
+          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
         >
           Submit
         </button>
