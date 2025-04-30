@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useUser } from "../context/reducer"
 
 const subjects = ['English Language', 'Mathematics']
 const classes = ['KS1', 'KS2']
@@ -16,59 +17,129 @@ const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
 type file=any
 export const UploadClassNote = () => {
-        const [form, setForm] = useState<any>({
-            subject:'',
-            year:'',
-            class:"",
-            term:"",
-            file:""
-        });
-        const [active, setActive] = useState<boolean>(false)
-        const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
-            setForm({
-                ...form,
-                [event.target.name]:event.target.value
-            })
-        }
-        const handleSelectSubject = (value:string) =>{
-            setForm({
-                ...form,
-                subject:value
-            })
-        }
-        const handleSelectTerm = (value:string) =>{
-            setForm({
-                ...form,
-                term:value
-            })
-        }
-        
-        const handleSelectClass= (value:string) =>{
-            setForm({
-                ...form,
-                class:value
-            })
-        }
-        const handleSelectYear= (value:string) =>{
-            setForm({
-                ...form,
-                year:value
-            })
-        }
+  const [form, setForm] = useState<any>({
+    subject: "",
+    year: "",
+    class: "",
+    term: "",
+    file: "",
+  });
+    const [data, setData] = useState<any>({});
+    const [error, setError] = useState<string>();
+    const [message, setMessage] = useState()
+    const { state } = useUser();
   
-        const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-            event.preventDefault()
-            console.log(form);
-            if(form.subject ==='' ||  form.class ==='' ||  form.question ==='' ||  form.year ===''|| form.file ==='' ||  form.term !=='' ){
-                return   
-            }
-            console.log(form);
+  const [active, setActive] = useState<boolean>(false);
+  const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const handleSelectSubject = (value: string) => {
+    setForm({
+      ...form,
+      subject: value,
+    });
+  };
+  const handleSelectTerm = (value: string) => {
+    setForm({
+      ...form,
+      term: value,
+    });
+  };
+
+  const handleSelectClass = (value: string) => {
+    setForm({
+      ...form,
+      class: value,
+    });
+  };
+  const handleSelectYear = (value: string) => {
+    setForm({
+      ...form,
+      year: value,
+    });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(form);
+    if (
+      form.subject === "" ||
+      form.class === "" ||
+      form.question === "" ||
+      form.year === "" ||
+      form.file === "" ||
+      form.term !== ""
+    ) {
+      return;
+    }
+    try {
+      const response = await fetch(
+        "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${state.token}`,
+          },
+          body: JSON.stringify(form),
         }
-       useEffect(()=>{
-        if(form.subject !=='' && form.class !=='' && form.question !=='' && form.year !=='' &&form.file !=='' && form.term !==''){
-            setActive(true)        
-        }
-       }, [form])
+      );
+
+      const result = await response.json();
+      setMessage(result.message);
+
+      !response.ok && setError(result?.message || "Something went wrong");
+
+      setForm({})
+    } catch (error) {
+      console.error(error);
+      setError("Error connecting to server");
+    }
+    console.log(form);
+  };
+  useEffect(() => {
+    if (
+      form.subject !== "" &&
+      form.class !== "" &&
+      form.question !== "" &&
+      form.year !== "" &&
+      form.file !== "" &&
+      form.term !== ""
+    ) {
+      setActive(true);
+    }
+  }, [form]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://citadel-i-project.onrender.com/api/v1/note/get_class_note",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${state.token}`,
+            },
+            body: JSON.stringify(form),
+          }
+        );
+
+        const result = await response.json();
+        setData(result);
+
+        console.log(data);
+
+        !response.ok && setError(result?.message || "Something went wrong");
+      } catch (error) {
+        console.error(error);
+        setError("Error connecting to server");
+      }
+    };
+    fetchData();
+  }, [data]);
 
   return (
     <form className="md:flex md:justify-between md:gap-[30px] flex-col w-full" onSubmit={handleSubmit}>

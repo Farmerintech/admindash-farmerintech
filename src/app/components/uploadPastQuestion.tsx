@@ -9,75 +9,159 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useSidebar } from "../context/sideBarState"
+import { useUser } from "../context/reducer"
 
 const subjects = ['English Language', 'Mathematics']
 const examTypes = 
 ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
 export const UploadPastQuestion = () => {
-        const [form, setForm] = useState<any>({
-            subject:'',
-            examType:'',
-            questionType:"",
-            question:"",
-            optionA:"",
-            optionB:"",
-            optionC:"",
-            optionD:"",
-            answer:"",
-            explanation:""
-        });
-        const [active, setActive] = useState<boolean>(false)
-        const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
-            setForm({
-                ...form,
-                [event.target.name]:event.target.value
-            })
-        }
-        const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
-            setForm({
-                ...form,
-               [ event.target.name]: event.target.value
-            })
-        }
-        const handleSelectSubject = (value:string) =>{
-            setForm({
-                ...form,
-                subject:value
-            })
-        }
-        
-        const handleExamType= (value:string) =>{
-            setForm({
-                ...form,
-                examType:value
-            })
-        }
-        const handleQuestionType= (value:string) =>{
-          setForm({
-              ...form,
-              questionType:value
-          })
-      } 
-        const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-            event.preventDefault()
-            console.log(form);
-            if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || !form.questionType ){
-              setActive(false)
+  const [form, setForm] = useState<any>({
+    subject: "",
+    examType: "",
+    questionType: "",
+    question: "",
+    optionA: "",
+    optionB: "",
+    optionC: "",
+    optionD: "",
+    answer: "",
+    explanation: "",
+  });
+  const [active, setActive] = useState<boolean>(false);
+  const [data, setData] = useState<any>({});
+  const [error, setError] = useState<string>();
+  const [message, setMessage] = useState()
+  const { state } = useUser();
 
-              return   
-            }
-            console.log(form);
+  const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const handleTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const handleSelectSubject = (value: string) => {
+    setForm({
+      ...form,
+      subject: value,
+    });
+  };
+
+  const handleExamType = (value: string) => {
+    setForm({
+      ...form,
+      examType: value,
+    });
+  };
+  const handleQuestionType = (value: string) => {
+    setForm({
+      ...form,
+      questionType: value,
+    });
+  };
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(form);
+    if (
+      form.subject === "" ||
+      form.class === "" ||
+      form.question === "" ||
+      form.optionA === "" ||
+      form.optionB === "" ||
+      form.optionC === "" ||
+      form.optionD === "" ||
+      form.answer === "" ||
+      form.explanation === "" ||
+      !form.questionType
+    ) {
+      setActive(false);
+      return;
+    }
+    try {
+      const response = await fetch(
+        "https://citadel-i-project.onrender.com/api/v1/past_question/upload_question",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${state.token}`,
+          },
+          body: JSON.stringify(form),
         }
-       useEffect(()=>{
-        if(form.subject !=='' && form.examType !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' && form.questionType !=='' ){
-            setActive(true)        
-        }else{
-          setActive(false)
-        }
-       }, [form])
+      );
+
+      const result = await response.json();
+      setMessage(result.message);
+
+      !response.ok && setError(result?.message || "Something went wrong");
+
+      setForm({})
+    } catch (error) {
+      console.error(error);
+      setError("Error connecting to server");
+    }
+
+  };
+  useEffect(() => {
+    if (
+      form.subject !== "" &&
+      form.examType !== "" &&
+      form.question !== "" &&
+      form.optionA !== "" &&
+      form.optionB !== "" &&
+      form.optionC !== "" &&
+      form.optionD !== "" &&
+      form.answer !== "" &&
+      form.explanation !== "" &&
+      form.questionType !== ""
+    ) {
+      setActive(true);
+    } else {
+      setActive(false);
+    }
+  }, [form]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://citadel-i-project.onrender.com/api/v1/past_question/get_questions",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              // authorization: `Bearer ${state.token}`,
+            },
+            // body: JSON.stringify(form),
+          }
+        );
+
+        const result = await response.json();
+        setData(result);
+
+        console.log(data);
+
+        !response.ok && setError(result?.message || "Something went wrong");
+      } catch (error) {
+        console.log(error);
+        setError("Error connecting to server");
+      }
+    };
+    fetchData();
+  }, [data]);
+
   return (
-    <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
+    <form
+      className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full"
+      onSubmit={handleSubmit}
+    >
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
@@ -88,7 +172,9 @@ export const UploadPastQuestion = () => {
             </SelectTrigger>
             <SelectContent>
               {subjects.map((subject) => (
-                <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                <SelectItem key={subject} value={subject}>
+                  {subject}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -103,12 +189,14 @@ export const UploadPastQuestion = () => {
             </SelectTrigger>
             <SelectContent>
               {examTypes.map((item) => (
-                <SelectItem key={item} value={item}>{item}</SelectItem>
+                <SelectItem key={item} value={item}>
+                  {item}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-  {/* Question Type */}
+        {/* Question Type */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Question Type</label>
           <Select onValueChange={handleQuestionType}>
@@ -116,8 +204,12 @@ export const UploadPastQuestion = () => {
               <SelectValue placeholder="Question Type" />
             </SelectTrigger>
             <SelectContent>
-            <SelectItem key={"objective"} value={"objective"}>{"Objective"}</SelectItem>
-            <SelectItem key={"Theory"} value={"Theory"}>{"Theory"}</SelectItem>
+              <SelectItem key={"objective"} value={"objective"}>
+                {"Objective"}
+              </SelectItem>
+              <SelectItem key={"Theory"} value={"Theory"}>
+                {"Theory"}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -155,12 +247,11 @@ export const UploadPastQuestion = () => {
             onChange={handleOptions}
           />
         </div>
-
       </section>
 
       <section className="w-full flex flex-col gap-[8px] mt-6 md:mt-0">
-                {/* Option C */}
-                <div className="flex flex-col gap-[8px] w-full">
+        {/* Option C */}
+        <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Option C</label>
           <input
             type="text"
@@ -209,11 +300,13 @@ export const UploadPastQuestion = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`} 
+          className={`${
+            active ? "bg-orange-500" : ""
+          } mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
         >
           Submit
         </button>
       </section>
     </form>
-  )
-}
+  );
+};

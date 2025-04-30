@@ -8,90 +8,177 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useSidebar } from "../context/sideBarState"
+import { useUser } from "../context/reducer"
 const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
 const subjects = ['English Language', 'Mathematics']
 const classes = ['KS1', 'KS2']
+ 
+
 export const UploadExamQuestion= () => {
+  const [data, setData] = useState<any>({});
+  const [error, setError] = useState<string>();
+  const [message, setMessage] = useState()
+  const { state } = useUser();
 
     const [form, setForm] = useState<any>({
-        subject:'',
-        class:'',
-        year:'',
-        term:'',
-        questionType:'',
-        question:"",
-        optionA:"",
-        optionB:"",
-        optionC:"",
-        optionD:"",
-        answer:"",
-        explanation:""
+      subject: "",
+      class: "",
+      year: "",
+      term: "",
+      questionType: "",
+      question: "",
+      optionA: "",
+      optionB: "",
+      optionC: "",
+      optionD: "",
+      answer: "",
+      explanation: "",
     });
-    const [active, setActive] = useState<boolean>(false)
-    const handleOptions = (event:ChangeEvent<HTMLInputElement>) =>{
-        setForm({
-            ...form,
-            [event.target.name]:event.target.value
-        })
-    }
-    const handleTextarea = (event:ChangeEvent<HTMLTextAreaElement>)=>{
-        setForm({
-            ...form,
-           [ event.target.name]: event.target.value
-        })
-    }
-    const handleSelectSubject = (value:string) =>{
-        setForm({
-            ...form,
-            subject:value
-        })
-    }
-    
-    const handleSelectClass = (value:string) =>{
-        setForm({
-            ...form,
-            class:value
-        })
-    }
-    const handleSelectTerm = (value:string) =>{
+    const [active, setActive] = useState<boolean>(false);
+    const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
       setForm({
-          ...form,
-          term:value
-      })
-  }
-  
-  const handleSelectYear= (value:string) =>{
-      setForm({
-          ...form,
-          year:value
-      })
-  }
-  const handleQuestionType= (value:string) =>{
-    setForm({
         ...form,
-        questionType:value
-    })
-} 
+        [event.target.name]: event.target.value,
+      });
+    };
+    const handleTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
+      setForm({
+        ...form,
+        [event.target.name]: event.target.value,
+      });
+    };
+    const handleSelectSubject = (value: string) => {
+      setForm({
+        ...form,
+        subject: value,
+      });
+    };
 
-    const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-        event.preventDefault()
-        console.log(form);
-        if(form.subject ==='' || form.class ==='' || form.question ==='' || form.optionA ===''||form.optionB ==='' || form.optionC ==='' || form.optionD ==='' || form.answer ==='' || form.explanation ==='' || form.year ==='' || form.term ==='' || form.questionType==='' ){
-          setActive(false)
-          return   
+    const handleSelectClass = (value: string) => {
+      setForm({
+        ...form,
+        class: value,
+      });
+    };
+    const handleSelectTerm = (value: string) => {
+      setForm({
+        ...form,
+        term: value,
+      });
+    };
+
+    const handleSelectYear = (value: string) => {
+      setForm({
+        ...form,
+        year: value,
+      });
+    };
+    const handleQuestionType = (value: string) => {
+      setForm({
+        ...form,
+        questionType: value,
+      });
+    };
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      console.log(form);
+      if (
+        form.subject === "" ||
+        form.class === "" ||
+        form.question === "" ||
+        form.optionA === "" ||
+        form.optionB === "" ||
+        form.optionC === "" ||
+        form.optionD === "" ||
+        form.answer === "" ||
+        form.explanation === "" ||
+        form.year === "" ||
+        form.term === "" ||
+        form.questionType === ""
+      ) {
+        setActive(false);
+        return;
+      }
+      try {
+        const response = await fetch(
+          "https://citadel-i-project.onrender.com/api/v1/exam_question/upload_question",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${state.token}`,
+            },
+            body: JSON.stringify(form),
+          }
+        );
+  
+        const result = await response.json();
+        setMessage(result.message);
+  
+        !response.ok && setError(result?.message || "Something went wrong");
+  
+        setForm({})
+      } catch (error) {
+        console.error(error);
+        setError("Error connecting to server");
+      }
+  
+      console.log(form);
+    };
+    useEffect(() => {
+      if (
+        form.subject !== "" &&
+        form.class !== "" &&
+        form.question !== "" &&
+        form.optionA !== "" &&
+        form.optionB !== "" &&
+        form.optionC !== "" &&
+        form.optionD !== "" &&
+        form.answer !== "" &&
+        form.explanation !== "" &&
+        form.year !== "" &&
+        form.term !== "" &&
+        form.questionType !== ""
+      ) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    }, [form]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://citadel-i-project.onrender.com/api/v1/exam_question/get_questions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${state.token}`,
+              },
+              body: JSON.stringify(form),
+            }
+          );
+  
+          const result = await response.json();
+          setData(result);
+  
+          console.log(data);
+  
+          !response.ok && setError(result?.message || "Something went wrong");
+        } catch (error) {
+          console.error(error);
+          setError("Error connecting to server");
         }
-        console.log(form);
-    }
-   useEffect(()=>{
-    if(form.subject !=='' && form.class !=='' && form.question !=='' && form.optionA !==''&&form.optionB !=='' && form.optionC !=='' && form.optionD !=='' && form.answer !=='' && form.explanation !=='' && form.year !=='' && form.term !=='' && form.questionType !=='' ){
-        setActive(true)        
-    }else{
-
-        setActive(false)
-    }
-   }, [form])
+      };
+      fetchData();
+    }, [data]);
+  
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
