@@ -5,6 +5,7 @@ import { UploadClassNote } from "@/app/components/uploadClassNote";
 import { UploadExamQuestion,  } from "@/app/components/uploadExamQuestion";
 import { UploadPastQuestion } from "@/app/components/uploadPastQuestion";
 import { UploadResources } from "@/app/components/uploadResources";
+import { UploadsTable } from "@/app/components/uploadsTable";
 import { useUser } from "@/app/context/reducer"
 import { useSidebar } from "@/app/context/sideBarState";
 import { useState } from "react";
@@ -62,7 +63,10 @@ export default function page (){
                {
                   active ===3 && <UploadResources/>
                }
+
             </main>
+
+            <UploadsTable data={[]}/>
         </section>
 
     )

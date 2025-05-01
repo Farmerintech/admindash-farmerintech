@@ -29,11 +29,6 @@ import {
       color: "text-yellow-400",
     },
     {
-      name: "Suspend",
-      icon: <FaBan />,
-      color: "text-orange-400",
-    },
-    {
       name: "Delete",
       icon: <FaTrash />,
       color: "text-red-400",
@@ -41,30 +36,22 @@ import {
   ];
   
   interface userInterface {
-    Placeholder: string;
-    filterItems: string[],
-    users: {
-      userId: string;
-      firstName: string;
-      lastName:string;
-      role: string;
-      classCategory:string;
+    data: {
+      uploadType: string;
       subject:string;
-      active:string;
+      createdAt:any,
+      uploadedBy:string
     }[];
   }
   
-  export function UsersTable({ Placeholder, users, filterItems}: userInterface) {
+  const filterItems = ["Subject", "Upload type"]
+  export function UploadsTable({data}: userInterface) {
     return (
-    <>
-    <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px]">
-        <div className="flex gap-[8px]">
-            <input type="text" placeholder="Find user with their name or id" className=" xl:w-[350px] w-[100%] border-1 border-gray-200 outline-non px-[36px] py-[8px] bg-white rounded-[8px] "/>
-            <button className="text-white bg-orange-500 border-none rounded-[8px] px-[16px] outline-none">Serach</button>
-        </div>
+    <section className="bg-white p-[16px] rounded-[8px]">
+    <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px] ">
         <Select >
           <SelectTrigger className="md:w-[300px] lg:w-[350px] w-[100%] outline-none border-1 border-gray-200">
-            <SelectValue placeholder='Filter' />
+            <SelectValue placeholder='Filter By' />
           </SelectTrigger>
           <SelectContent>
             {
@@ -74,25 +61,26 @@ import {
             }
             </SelectContent>
         </Select>
+        <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
     </form>
-    <section className="bg-gray-100 rounded-md over-flow-x-scroll w-[full] px-4">
+    <section className="bg-gray-100 rounded-md over-flow-x-scroll w-[full] px-4 mt-5">
       <Table className="table-fixed overflow-x-scroll">
         <TableHeader>
           <TableRow>
-            <TableHead>UserID</TableHead>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead>{Placeholder}</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Subject</TableHead>
+            <TableHead >Upload Type</TableHead>
+            <TableHead>Uploaded By</TableHead>
+            <TableHead>Date</TableHead>
             <TableHead>Perform Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.userId}>
-              <TableCell>{user.userId}</TableCell>
-              <TableCell className="text-[12px] md:text-[14px]">{user.firstName} {user.lastName}</TableCell>
-              <TableCell>{Placeholder === "Role" ? user.role :  user.classCategory }</TableCell>
-              <TableCell>{user.active ? "active" : "Suspended"}</TableCell>
+          {data.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell>{data.subject}</TableCell>
+              <TableCell className="text-[12px] md:text-[14px]">{data.uploadType}</TableCell>
+              <TableCell>{data.uploadedBy}</TableCell>
+              <TableCell>{data.createdAt}</TableCell>
               <TableCell className="text-right flex items-center gap-[8px]">
                 {actions.map((action, index) => (
                   <p
@@ -109,7 +97,7 @@ import {
         </TableBody>
       </Table>
       </section>
-      </>
+      </section>
     );
   }
   

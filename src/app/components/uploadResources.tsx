@@ -18,7 +18,7 @@ export const UploadResources = () => {
     type file =any
     const [form, setForm] = useState<any>({
         file:'',
-        source:"",
+        title:"",
         description:"",
         link:"",
         resourceFor:''
@@ -113,13 +113,13 @@ export const UploadResources = () => {
 
       {/* Name of Website or Header */}
       <div className="flex flex-col gap-[8px] w-full mt-6">
-        <label className="text-[#344054]">Name of Website or Header</label>
+        <label className="text-[#344054]">Title or Label of the Resources</label>
         <input
           type="text"
           className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
           onChange={handleInputs}
           name="source"
-          value={form.source}
+          value={form.title}
         />
       </div>
 

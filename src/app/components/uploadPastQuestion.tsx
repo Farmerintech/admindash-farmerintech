@@ -68,22 +68,30 @@ export const UploadPastQuestion = () => {
   };
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(form);
-    if (
-      form.subject === "" ||
-      form.class === "" ||
-      form.question === "" ||
-      form.optionA === "" ||
-      form.optionB === "" ||
-      form.optionC === "" ||
-      form.optionD === "" ||
-      form.answer === "" ||
-      form.explanation === "" ||
-      !form.questionType
-    ) {
+    console.log("Submitting form:", form);
+  
+    // Validate form fields
+    const requiredFields = [
+      "subject",
+      "class",
+      "question",
+      "optionA",
+      "optionB",
+      "optionC",
+      "optionD",
+      "answer",
+      "explanation",
+      "questionType",
+    ];
+  
+    const isEmpty = requiredFields.some((field) => form[field as keyof typeof form]?.trim() === "");
+  
+    if (isEmpty) {
       setActive(false);
+      setError("Please fill in all required fields.");
       return;
     }
+  
     try {
       const response = await fetch(
         "https://citadel-i-project.onrender.com/api/v1/past_question/upload_question",
@@ -96,20 +104,36 @@ export const UploadPastQuestion = () => {
           body: JSON.stringify(form),
         }
       );
-
+  
       const result = await response.json();
-      setMessage(result.message);
-
-      !response.ok && setError(result?.message || "Something went wrong");
-
-      setForm({})
+      console.log(result)
+      if (!response.ok) {
+        setError(result?.message || "Something went wrong");
+      } else {
+        setMessage(result?.message || "Question uploaded successfully!");
+      }
+  
     } catch (error) {
-      console.error(error);
+      console.error("Fetch error:", error);
       setError("Error connecting to server");
     }
-
+  
+    // Reset form
+    setForm({
+      subject: "",
+      examType: "",
+      questionType: "",
+      question: "",
+      optionA: "",
+      optionB: "",
+      optionC: "",
+      optionD: "",
+      answer: "",
+      explanation: "",
+      class: "",
+    });
   };
-  useEffect(() => {
+    useEffect(() => {
     if (
       form.subject !== "" &&
       form.examType !== "" &&
