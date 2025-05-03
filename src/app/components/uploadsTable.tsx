@@ -62,7 +62,7 @@ const {state} = useUser()
           const response = await fetch(
             "https://citadel-i-project.onrender.com/api/v1/uploads",
             {
-              method: "POST",
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
                 authorization: `Bearer ${state.token}`,
@@ -74,7 +74,7 @@ const {state} = useUser()
           const result = await response.json();
           setData(result.data);
   
-          console.log(data);
+          console.log(result);
   
           !response.ok && setError(result?.message || "Something went wrong");
         } catch (error) {
