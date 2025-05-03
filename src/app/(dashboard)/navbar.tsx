@@ -1,9 +1,9 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 import Image from 'next/image'
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
@@ -14,6 +14,8 @@ import { useUser } from '../context/reducer';
 import Logo from "@/app/assets/Logo.svg"
 import admin from "@/app/assets/admin.jpg"
 import { useSidebar } from '../context/sideBarState';
+import { jwtDecode } from 'jwt-decode';
+
 export default function SidebarLayo() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const pathname = usePathname();
@@ -34,7 +36,19 @@ export default function SidebarLayo() {
     
     
   ];
-console.log(state)
+console.log(state);
+
+const router = useRouter()
+// useEffect(()=>{
+ 
+// const expireTime = jwtDecode(state.token).exp || 1
+// const currentTime = Math.floor(Date.now()/1000)
+//   if(state.token === '' || state.token ===undefined){
+//     router.push('/login');
+//   }else if(expireTime < currentTime){
+//     router.push('/login');
+//   }
+// }, [state.token])
   return (
     <>
      

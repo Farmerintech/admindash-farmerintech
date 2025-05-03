@@ -86,7 +86,7 @@ export default function AdminLogin() {
   return (
     <section className="flex items-center justify-center content-center min-h-screen mx-w-[448px] gap-[40px] flex-col bg-[#F3F3F3]">
       <div>
-        <h2 className="font-[500] text-[32px]">Login</h2>
+        <h2 className="font-[500] text-[32px]">Admin Login</h2>
       </div>
       <aside className="bg-[#FFFFFF] p-[24px] gap-[46px] rounded-[8px] flex flex-col">
         <form className="space-y-3" onSubmit={handleForm}>

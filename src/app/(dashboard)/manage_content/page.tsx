@@ -66,7 +66,7 @@ export default function page (){
 
             </main>
 
-            <UploadsTable data={[]}/>
+            <UploadsTable />
         </section>
 
     )

@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Table,
     TableBody,
@@ -16,6 +18,8 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { useEffect, useState } from "react";
+import { useUser } from "../context/reducer";
 
   const actions = [
     {
@@ -34,7 +38,8 @@ import {
       color: "text-red-400",
     },
   ];
-  
+
+
   interface userInterface {
     data: {
       uploadType: string;
@@ -45,7 +50,41 @@ import {
   }
   
   const filterItems = ["Subject", "Upload type"]
-  export function UploadsTable({data}: userInterface) {
+  export function UploadsTable() {
+    const [data, setData] = useState<any>();
+    const [error, setError] = useState<string>()
+    const [message, setMessage] = useState()
+const {state} = useUser()
+
+ useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://citadel-i-project.onrender.com/api/v1/uploads",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${state.token}`,
+              },
+              // body: JSON.stringify(''),
+            }
+          );
+  
+          const result = await response.json();
+          setData(result.data);
+  
+          console.log(data);
+  
+          !response.ok && setError(result?.message || "Something went wrong");
+        } catch (error) {
+          console.error(error);
+          setError("Error connecting to server");
+        }
+      };
+      fetchData();
+    }, [data]);
+
     return (
     <section className="bg-white p-[16px] rounded-[8px]">
     <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px] ">
@@ -75,12 +114,12 @@ import {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((data, index) => (
+          {data && data.map((item:any, index:any) => (
             <TableRow key={index}>
-              <TableCell>{data.subject}</TableCell>
-              <TableCell className="text-[12px] md:text-[14px]">{data.uploadType}</TableCell>
-              <TableCell>{data.uploadedBy}</TableCell>
-              <TableCell>{data.createdAt}</TableCell>
+              <TableCell>{item.subject}</TableCell>
+              <TableCell className="text-[12px] md:text-[14px]">{item.uploadType}</TableCell>
+              <TableCell>{item.uploadedBy}</TableCell>
+              <TableCell>{item.createdAt}</TableCell>
               <TableCell className="text-right flex items-center gap-[8px]">
                 {actions.map((action, index) => (
                   <p

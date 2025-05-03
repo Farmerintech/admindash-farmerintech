@@ -11,8 +11,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useSidebar } from "../context/sideBarState"
 import { useUser } from "../context/reducer"
+import { subjects } from "./subjects"
 
-const subjects = ['English Language', 'Mathematics']
+// const subjects = ['English Language', 'Mathematics']
 const examTypes = 
 ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
@@ -73,7 +74,7 @@ export const UploadPastQuestion = () => {
     // Validate form fields
     const requiredFields = [
       "subject",
-      "class",
+      "examType",
       "question",
       "optionA",
       "optionB",
@@ -130,7 +131,6 @@ export const UploadPastQuestion = () => {
       optionD: "",
       answer: "",
       explanation: "",
-      class: "",
     });
   };
     useEffect(() => {
@@ -152,42 +152,18 @@ export const UploadPastQuestion = () => {
     }
   }, [form]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://citadel-i-project.onrender.com/api/v1/past_question/get_questions",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // authorization: `Bearer ${state.token}`,
-            },
-            // body: JSON.stringify(form),
-          }
-        );
 
-        const result = await response.json();
-        setData(result);
-
-        console.log(data);
-
-        !response.ok && setError(result?.message || "Something went wrong");
-      } catch (error) {
-        console.log(error);
-        setError("Error connecting to server");
-      }
-    };
-    fetchData();
-  }, [data]);
 
   return (
+    <>
     <form
       className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full"
       onSubmit={handleSubmit}
     >
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
+        <p className="">{message}</p>
+
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
           <Select onValueChange={handleSelectSubject}>
@@ -195,9 +171,9 @@ export const UploadPastQuestion = () => {
               <SelectValue placeholder="Subject" />
             </SelectTrigger>
             <SelectContent>
-              {subjects.map((subject) => (
-                <SelectItem key={subject} value={subject}>
-                  {subject}
+              {subjects.map((subject, index) => (
+                <SelectItem key={index} value={subject.name}>
+                  {subject.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -332,5 +308,6 @@ export const UploadPastQuestion = () => {
         </button>
       </section>
     </form>
+    </>
   );
 };

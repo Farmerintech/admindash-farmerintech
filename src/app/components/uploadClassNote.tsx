@@ -112,35 +112,6 @@ export const UploadClassNote = () => {
       setActive(true);
     }
   }, [form]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://citadel-i-project.onrender.com/api/v1/note/get_class_note",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${state.token}`,
-            },
-            body: JSON.stringify(form),
-          }
-        );
-
-        const result = await response.json();
-        setData(result);
-
-        console.log(data);
-
-        !response.ok && setError(result?.message || "Something went wrong");
-      } catch (error) {
-        console.error(error);
-        setError("Error connecting to server");
-      }
-    };
-    fetchData();
-  }, [data]);
-
   return (
     <form className="md:flex md:justify-between md:gap-[30px] flex-col w-full" onSubmit={handleSubmit}>
       {/* Upload File */}
