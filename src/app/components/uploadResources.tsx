@@ -10,15 +10,23 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Teachers } from "next/font/google"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { sources } from "./sources"
+import { FaCheck, FaFileImage } from "react-icons/fa"
+import { useUser } from "../context/reducer"
 
 const subjects = ['English Language', 'Mathematics']
 const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
 export const UploadResources = () => {
+  const [data, setData] = useState<any>({});
+  const [error, setError] = useState<string>();
+  const [message, setMessage] = useState()
+  const { state } = useUser();
+
     type file =any
     const [form, setForm] = useState<any>({
-        file:'',
-        title:"",
+        file:null,
+        source:"",
         description:"",
         link:"",
         resourceFor:''
@@ -36,20 +44,84 @@ export const UploadResources = () => {
             resourceFor:value
         })
     }
-    const handleSubmit = (event:FormEvent<HTMLFormElement>) =>{
-        event.preventDefault()
-        if(form.file === '' || form.source ==="" || form.description==='' || form.link ==='' || form.resourceFor ===""){
-            return
-        }
+    const handleSelectSource = (value:string) =>{
+      setForm({
+          ...form,
+          source:value
+      })
+  }
+  const handleFile = (e:ChangeEvent<HTMLInputElement>) =>{
+    const thefile = e.target.files?.[0]
+    if (thefile) {
+      console.log("Selected file:", thefile);
+      setForm({
+          ...form,
+          file:thefile
+      })
+      setFileName(thefile.name);
+      setIsChoosen(true)
     }
-    useEffect(()=>{
+
+  }
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    if (!form.file || !form.source || !form.description || !form.link || !form.resourceFor) {
+      return;
+    }
+  
+    try {
+      const formData = new FormData();
+      formData.append("file", form.file);
+      formData.append("source", form.source);
+      formData.append("description", form.description);
+      formData.append("link", form.link);
+      formData.append("resourceFor", form.resourceFor);
+  
+      const response = await fetch(
+        "https://citadel-i-project.onrender.com/api/v1/resources/upload_resources",
+        {
+          method: "POST",
+          headers: {
+            // Do not set Content-Type manually for FormData
+            authorization: `Bearer ${state.token}`,
+          },
+          body: formData,
+        }
+      );
+  
+      const result = await response.json();
+      setMessage(result?.mesage)
+      !response.ok && setError(result?.message || "Something went wrong");
+
+      setForm({
+        file: null,
+        source: "",
+        description: "",
+        link: "",
+        resourceFor: "",
+      });
+      setFileName('');
+    } catch (error) {
+      console.error(error);
+      setError("Error connecting to server");
+    }
+  };
+
+  useEffect(()=>{
         if(form.file !== '' && form.source !=="" && form.description!=='' && form.link !=='' && form.resourceFor !==""){
             setActive(true)
         }
-    })
+        if(!form.file){
+          setIsChoosen(false);
+        }
+    }, [form])
+    const [fileName, setFileName] = useState('')
+    const [isChoosen, setIsChoosen] = useState(false)
   return (
-    <form className="md:flex md:justify-between md:gap-[30px] flex-col w-full" onSubmit={handleSubmit}>
+    <form className="md:flex md:justify-between md:gap-[30px] w-full" onSubmit={handleSubmit} name="">
       {/* Upload File */}
+      <section className="w-full">
       <div className="flex flex-col gap-[8px] w-full">
         <label className="text-[#344054]">Upload New Resources</label>
 
@@ -58,19 +130,13 @@ export const UploadResources = () => {
           <input
             type="file"
             className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              if (file) {
-                console.log("Selected file:", file);
-                setForm({
-                    ...form,
-                    file
-                })
-              }
-            }}
+            onChange={handleFile}
           />
 
           <div className="flex flex-col items-center justify-center gap-2 text-[#475467] pointer-events-none">
+            {
+              !isChoosen ?
+            <>
             <svg
               width="26"
               height="26"
@@ -86,6 +152,12 @@ export const UploadResources = () => {
                 strokeLinejoin="round"
               />
             </svg>
+            </>
+            :(<p>
+              <FaCheck size={36} className="text-green-500"/>
+            </p>)
+}
+
             <p className="font-medium">Drag and drop file here</p>
             <p className="text-sm text-[#667085]">or</p>
             <button
@@ -97,12 +169,18 @@ export const UploadResources = () => {
           </div>
         </label>
       </div>
+      <p className={`${message ? "text-green-500":'text-red-600'}`}>{message ? message : error}</p>
+      <p>{fileName}</p>
+      </section>
+
       {/* {resources for} */}
-        <div className="flex flex-col gap-[8px] w-full">
+      <section className="w-full">
+
+      <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Resources For</label>
           <Select onValueChange={handleSelect} >
             <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Subject"  />
+              <SelectValue placeholder="Resource For"  />
             </SelectTrigger>
             <SelectContent>
             <SelectItem key={'Teachers'} value={'Teachers'}>Teachers</SelectItem>
@@ -113,14 +191,20 @@ export const UploadResources = () => {
 
       {/* Name of Website or Header */}
       <div className="flex flex-col gap-[8px] w-full mt-6">
-        <label className="text-[#344054]">Title or Label of the Resources</label>
-        <input
-          type="text"
-          className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
-          onChange={handleInputs}
-          name="source"
-          value={form.title}
-        />
+        <label className="text-[#344054]">Source or Label of the Resources</label>
+        <Select onValueChange={handleSelectSource} >
+            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Source"  />
+            </SelectTrigger>
+            <SelectContent>
+              {
+                sources.map(source =>(
+                  <SelectItem key={source.name} value={source.name}>{source.name}</SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+
       </div>
 
       {/* Short Description */}
@@ -153,6 +237,8 @@ export const UploadResources = () => {
         >
           Submit
         </button>
+        </section>
+
     </form>
   )
 }

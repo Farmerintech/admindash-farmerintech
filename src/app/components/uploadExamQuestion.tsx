@@ -153,6 +153,7 @@ export const UploadExamQuestion= () => {
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
+      <p className="text-green-500">{message && message}</p>
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
