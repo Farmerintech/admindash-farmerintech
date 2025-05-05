@@ -136,6 +136,9 @@ export const UploadClassNote = () => {
     ) {
       setActive(true);
     }
+    if(!form.file){
+      setIsChoosen(false);
+    }
   }, [form]);
   return (
     <form className="md:flex md:justify-between md:gap-[30px] md:flex-row flex-col w-full" onSubmit={handleSubmit}>
