@@ -40,7 +40,6 @@ export default function page() {
     }
     fetchData()
   }, [data])
-  
   const filterItems= ['By Teachers', 'By Students']
   const percentageStd = Math.ceil((data?.count?.totalStudents/(data?.count?.totalUser))*100) 
   const percentageTutor = Math.ceil((data?.count?.totalTeachers/(data?.count?.totalUser))*100)
@@ -127,9 +126,7 @@ export default function page() {
 
     </main>
     <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
-      {data &&
-      <UsersTable Placeholder="Role"   users={data?.users ?? []} filterItems={filterItems}/>
-      }
+      <UsersTable/>
     </section>
     
     </section>

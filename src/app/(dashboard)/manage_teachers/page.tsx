@@ -1,5 +1,6 @@
 "use client"
 import { DashHook } from "@/app/components/dahHook"
+import { TutorsTable } from "@/app/components/tutorsTable";
 import { UsersTable } from "@/app/components/usersTable";
 import { useUser } from "@/app/context/reducer";
 import { useSidebar } from "@/app/context/sideBarState";
@@ -41,8 +42,9 @@ export default function page () {
       }
       fetchData()
     }, [data])
-    const filterItems = ["KS1", "KS2", "KS3", "SSCE/IGCE"]
-  
+   
+    const percentageTutor = Math.ceil((data?.count?.totalTeachers/(data?.count?.totalUser))*100)
+
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
          <DashHook name={"Manage Teachers"}/>
@@ -52,10 +54,10 @@ export default function page () {
                     <div className='flex flex-col gap-[16px]'>
                       <p>Registered Teachers</p>
                       <div className='flex items-center gap-[8px]'>
-                          <p className='text-[#0F0F0F] text-[24px] font-[700]'>100</p> 
+                          <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalTeachers}</p> 
                           <div className='flex text-[#0DAF64] text-[12px] '>
                              <FaArrowUp/>
-                             <p>12%</p>
+                             <p>{percentageTutor}%</p>
                           </div>
                         </div>
                       <p className='text-[#0DAF64] text-[12px] '>4 today</p>
@@ -133,12 +135,7 @@ export default function page () {
 
          </section>
          <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
-      {data &&
-      <UsersTable Placeholder="Subject"   users={data?.users ?? []} filterItems={filterItems}/>
-      }
-       {!data.user &&
-            <p>{`${data?.message ?? "No student record found"}`}</p>
-            }  
+          <TutorsTable/>
     </section>
                    
      </section>

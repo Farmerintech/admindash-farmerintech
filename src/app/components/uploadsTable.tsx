@@ -49,7 +49,7 @@ import { useUser } from "../context/reducer";
     }[];
   }
   
-  const filterItems = ["Subject", "Upload type"]
+  const filterItems = ["Subject", "Upload Type"]
   export function UploadsTable() {
     const [data, setData] = useState<any>();
     const [error, setError] = useState<string>()
@@ -84,18 +84,47 @@ const {state} = useUser()
       };
       fetchData();
     }, [data]);
+    const [filter, setFilter] = useState('')
+    const handleSelectFilter = (value:string) =>{
+      setFilter(value)
+    }
+const filterBy = async ()=>{
+  try {
+    const response = await fetch(
+      `https://citadel-i-project.onrender.com/api/v1/uploads/${filter}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${state.token}`,
+        },
+        // body: JSON.stringify(''),
+      }
+    );
+
+    const result = await response.json();
+    setData(result.data);
+
+    console.log(result);
+
+    !response.ok && setError(result?.message || "Something went wrong");
+  } catch (error) {
+    console.error(error);
+    setError("Error connecting to server");
+  }
+};
 
     return (
     <section className="bg-white p-[16px] rounded-[8px]">
-    <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px] ">
-        <Select >
+    <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px] " onSubmit={filterBy}>
+        <Select onValueChange={handleSelectFilter}>
           <SelectTrigger className="md:w-[300px] lg:w-[350px] w-[100%] outline-none border-1 border-gray-200">
             <SelectValue placeholder='Filter By' />
           </SelectTrigger>
           <SelectContent>
             {
                 filterItems.map((item)=>(
-                    <SelectItem value={item}>{item}</SelectItem>
+                    <SelectItem value={item ==='Subject' ? 'subject': "uploadType"}>{item}</SelectItem>
                 ))
             }
             </SelectContent>
@@ -106,11 +135,11 @@ const {state} = useUser()
       <Table className="table-fixed overflow-x-scroll">
         <TableHeader>
           <TableRow>
-            <TableHead>Subject</TableHead>
-            <TableHead >Upload Type</TableHead>
-            <TableHead>Uploaded By</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Perform Actions</TableHead>
+            <TableHead className="w-full">Subject</TableHead>
+            <TableHead className="w-full">Upload Type</TableHead>
+            <TableHead className="w-full">Uploaded By</TableHead>
+            <TableHead className="w-full">Date</TableHead>
+            <TableHead >Perform Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

@@ -79,11 +79,16 @@ export const UploadClassNote = () => {
   const [fileName, setFileName] = useState('')
   const [isChoosen, setIsChoosen] = useState(false)
 
-
+const handleText =(event:ChangeEvent<HTMLInputElement>)=>{
+setForm({
+  ...form,
+  topic:event.target.value
+})
+}
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   
-    if (!form.file || !form.class || !form.subject || !form.year || !form.term) {
+    if (!form.file || !form.class || !form.subject || !form.year || !form.term || !form.topic) {
       return;
     }
 
@@ -94,6 +99,7 @@ export const UploadClassNote = () => {
       formData.append("subject", form.subject);
       formData.append("year", form.year);
       formData.append("term", form.term);
+      formData.append("topic", form.topic);
 
       const response = await fetch(
         "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
@@ -109,6 +115,8 @@ export const UploadClassNote = () => {
   
       const result = await response.json();
       setMessage(result?.message)
+      console.log(result.error);
+
       !response.ok && setError(result?.message || "Something went wrong");
       setForm({
         file: null,
@@ -132,7 +140,8 @@ export const UploadClassNote = () => {
       form.class !== "" &&
       form.year !== "" &&
       form.file !== "" &&
-      form.term !== ""
+      form.term !== "" &&
+      form.topic !==""
     ) {
       setActive(true);
     }
@@ -208,7 +217,14 @@ export const UploadClassNote = () => {
             </SelectContent>
           </Select>
         </div>
-
+        <div className="flex flex-col gap-[8px] w-full">
+        <label className="text-[#344054]">Topic</label>
+        <input type='text' className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]"
+        onChange={handleText}
+        value={form.topic}
+        name='topic'
+        />
+        </div>
         {/* Class */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Class</label>
