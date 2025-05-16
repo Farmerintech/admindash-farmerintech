@@ -5,6 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useUser } from '../context/reducer';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function AdminLogin() {
   const [data, setData] = useState<any>({
@@ -56,7 +57,11 @@ export default function AdminLogin() {
 
       const result = await response.json();
       setData(result);
-
+if (data.token) {
+    // Set cookie, expires in 7 days
+    Cookies.set('token', data.token, { expires: 7, secure: true, sameSite: 'lax' });
+    // Now you can store token in React state if needed
+  }
       if (response.ok) {
         // Dispatch to update context state
         dispatch({
