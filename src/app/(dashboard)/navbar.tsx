@@ -39,26 +39,30 @@ export default function SidebarLayo() {
 console.log(state);
 
 const router = useRouter()
-// useEffect(()=>{
- 
-// const expireTime = jwtDecode(state.token).exp || 1
-// const currentTime = Math.floor(Date.now()/1000)
-//   if(state.token === '' || state.token ===undefined){
-//     router.push('/login');
-//   }else if(expireTime < currentTime){
-//     router.push('/login');
-//   }
-// }, [state.token])
+ useEffect(()=>{
+      const token = state.token 
+      if(!token || token===''){
+        router.push('/login')
+        return
+      }
+      try {
+        const decode:any = jwtDecode(token)
+        console.log(decode)
+        const currentTime = Date.now()/1000
+        if(decode?.exp < currentTime){
+            router.push('/login')
+        }
+      } catch (error) {
+       console.log(error) 
+      }
+    }, [])
   return (
     <>
-     
-
-    
-     <aside className="md:col-span-1">
+  <aside className="md:col-span-1">
   <div className="z-10 py-[19px] hidden md:flex flex-col bg-white ">
     <ul className="md:text-[16px] pt-4 flex flex-col gap-[15px] px-2">
       {menuItems.map(({ name, href, icon }, index) => (
-        <li key={name}>
+        <li key={index}>
           <Button
             variant="ghost"
             className={`w-[90%] px-6 ${pathname === href ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
@@ -106,7 +110,27 @@ export const Header = () =>{
   const toggleButton = () => {
     setSidebarOpen(!sidebarOpen);
   };
+  const router = useRouter()
 
+ useEffect(()=>{
+      const token = state.token 
+      if(!token || token===''){
+        router.push('/login')
+        return
+      }
+      try {
+        const decode:any = jwtDecode(token)
+        console.log(decode)
+        const currentTime = Date.now()/1000
+        if(decode?.exp < currentTime){
+            router.push('/login')
+        }
+      } catch (error) {
+       console.log(error) 
+      }
+    }, [])
+
+    
   return(
     <section className='bg-[#FFFFFF] px-[24px] py-[16px] flex items-center justify-between border-b-[0.5px]'>
     <div className='md:hidden text-[#FFEEE6] '>
