@@ -70,7 +70,7 @@ useEffect(()=>{
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                authorization: `Bearer ${state.token}`,
+                credentials: 'include'
               },
               // body: JSON.stringify(''),
             }
@@ -111,7 +111,7 @@ useEffect(()=>{
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization: `Bearer ${state.token}`,
+              credentials: 'include'
             },
             // body: JSON.stringify(''),
           }
@@ -134,7 +134,7 @@ useEffect(()=>{
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${state.token}`,
+            credentials: 'include'
           },
           // body: JSON.stringify(''),
         }

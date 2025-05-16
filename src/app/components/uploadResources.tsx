@@ -84,7 +84,7 @@ export const UploadResources = () => {
           method: "POST",
           headers: {
             // Do not set Content-Type manually for FormData
-            authorization: `Bearer ${state.token}`,
+            credentials: 'include',
           },
           body: formData,
         }

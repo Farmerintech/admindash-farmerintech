@@ -65,7 +65,7 @@ const {state} = useUser()
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                authorization: `Bearer ${state.token}`,
+               credentials: 'include',
               },
               // body: JSON.stringify(''),
             }
@@ -96,7 +96,7 @@ const filterBy = async ()=>{
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer ${state.token}`,
+         credentials: 'include',
         },
         // body: JSON.stringify(''),
       }
