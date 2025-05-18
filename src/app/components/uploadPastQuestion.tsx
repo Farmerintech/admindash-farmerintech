@@ -98,9 +98,9 @@ export const UploadPastQuestion = () => {
         "https://citadel-i-project.onrender.com/api/v1/past_question/upload_question",
         {
           method: "POST",
+           credentials: 'include',
           headers: {
             "Content-Type": "application/json",
-           credentials: 'include',
           },
           body: JSON.stringify(form),
         }

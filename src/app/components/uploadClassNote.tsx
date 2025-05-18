@@ -105,9 +105,9 @@ setForm({
         "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
         {
           method: "POST",
+           credentials: 'include',
           headers: {
             // Do not set Content-Type manually for FormData
-            authorization: `Bearer ${state.token}`,
           },
           body: formData,
         }

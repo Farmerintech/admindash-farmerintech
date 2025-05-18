@@ -1,24 +1,37 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../context/reducer';
+import {jwtDecode} from 'jwt-decode';
 
 export default function AuthWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-
-  const {state} = useUser()
-  const token =state.token 
+  const [isChecking, setIsChecking] = useState(true);
+  const { state } = useUser();
 
   useEffect(() => {
-    if (!token) {
-      router.replace('/login'); // client-side redirect
+    if (!state.token) {
+      router.replace('/login');
+      return;
     }
-  }, [token, router]);
 
-  if (!token) {
-    return null; // or loading spinner
-  }
+    try {
+      const decoded: any = jwtDecode(state.token);
+      const currentTime = Date.now() / 1000;
+
+      if (decoded.exp < currentTime) {
+        router.replace('/login');
+      } else {
+        setIsChecking(false);
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      router.replace('/login');
+    }
+  }, [state.token, router]);
+
+  if (isChecking) return null; // Or show a spinner here
 
   return <>{children}</>;
 }

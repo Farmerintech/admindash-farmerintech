@@ -109,9 +109,9 @@ useEffect(()=>{
           `https://citadel-i-project.onrender.com/api/get_tutors/${search}`,
           {
             method: "GET",
+           credentials: 'include',
             headers: {
               "Content-Type": "application/json",
-              credentials: 'include'
             },
             // body: JSON.stringify(''),
           }

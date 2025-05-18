@@ -5,8 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useUser } from '../context/reducer';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-
+import Cookies from "js-cookie"
 export default function AdminLogin() {
   const [data, setData] = useState<any>({
     email: '',
@@ -33,60 +32,55 @@ export default function AdminLogin() {
     });
   };
 
-  const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    if (!data.email || data.email.trim() === '') {
-      setError('Email is not allowed to be empty');
-      return;
-    }
+  if (!data.email || data.email.trim() === '') {
+    setError('Email is not allowed to be empty');
+    return;
+  }
 
-    if (!data.password || data.password.length < 8) {
-      setError('Password is too short');
-      return;
-    }
+  if (!data.password || data.password.length < 8) {
+    setError('Password is too short');
+    return;
+  }
 
-    try {
-      const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+  try {
+    const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/auth/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include', // ✅ Required to send and receive cookies!
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Update context with user details
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          email: result?.user?.email,
+          firstName: result?.user?.firstName,
+          lastName: result?.user?.lastName,
+          role: result?.user?.role,
+          token:result?.token
+        }
       });
 
-      const result = await response.json();
-      setData(result);
-if (data.token) {
-    // Set cookie, expires in 7 days
-    Cookies.set('token', data.token, { expires: 7, secure: true, sameSite: 'lax' });
-    // Now you can store token in React state if needed
-  }
-      if (response.ok) {
-        // Dispatch to update context state
-        dispatch({
-          type: 'LOGIN',
-          payload: {
-            email: result?.user?.email,
-            firstName: result?.user?.firstName,
-            lastName: result?.user?.lastName,
-            token: (result?.user?.token),
-            role: result?.user?.role
-          }
-        });
-
-        // Redirect to dashboard after login
-        router.push('/dashboards');
-      } else {
-        setError(result?.message || 'Something went wrong');
-      }
-
-      setData({ email: '', password: '' });
-    } catch (error) {
-      console.error(error);
-      setError('Error connecting to server');
+      router.push('/dashboards');
+    } else {
+      setError(result?.message || 'Something went wrong');
     }
-  };
+
+    setData({ email: '', password: '' });
+  } catch (error) {
+    console.error(error);
+    setError('Error connecting to server' );
+  }
+};
 
   return (
     <section className="flex items-center justify-center content-center min-h-screen mx-w-[448px] gap-[40px] flex-col bg-[#F3F3F3]">

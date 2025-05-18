@@ -69,36 +69,42 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
       setFilter(value)
     }
   
-    useEffect(()=>{
-      const filterBy = async ()=>{
-        let url = filter !=='All' ? `https://citadel-i-project.onrender.com/api/v1/get_users/${filter}`:`https://citadel-i-project.onrender.com/api/v1/get_users`
-        try {
-          const response = await fetch(
-            url,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                credentials: 'include',
-              },
-              // body: JSON.stringify(''),
-            }
-          );
-      
-          const result = await response.json();
-          setData(result.data);
-      
-          console.log(result);
-      
-          !response.ok && setError(result?.message || "Something went wrong");
-        } catch (error) {
-          console.error(error);
-          setError("Error connecting to server");
-        }
-      };
-        filterBy();
-    }, [filter])
-    
+useEffect(() => {
+  const filterBy = async () => {
+    // Construct URL based on filter
+    const url =
+      filter && filter !== 'All'
+        ? `https://citadel-i-project.onrender.com/api/v1/admin/get_users/${filter}`
+        : `https://citadel-i-project.onrender.com/api/v1/admin/get_users`;
+
+    try {
+      setError('null'); // Clear previous errors before fetching
+
+      const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include', // include cookies
+        headers: {
+            "Content-Type": "application/json",
+          },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result?.message || 'Something went wrong');
+      } else {
+        setData(result.data);
+      }
+
+      console.log(result);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setError('Error connecting to server');
+    }
+  };
+
+  filterBy();
+}, [filter]);
 
    const [search, setSearch] = useState<string>();
    const handleSearch = (event:ChangeEvent<HTMLInputElement>) =>{
@@ -111,12 +117,12 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
     }
     try {
       const response = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/get_users/${search}`,
+        `https://citadel-i-project.onrender.com/api/v1/admin/get_users/${search}`,
         {
           method: "GET",
+         credentials: 'include',
           headers: {
             "Content-Type": "application/json",
-            credentials: 'include',
           },
           // body: JSON.stringify(''),
         }

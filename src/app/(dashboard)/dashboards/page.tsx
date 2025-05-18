@@ -17,9 +17,9 @@ export default function page() {
       try {
         const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/get_users', {
           method: 'GET',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            credentials: 'include'
           },
           // body: JSON.stringify(data)
         });

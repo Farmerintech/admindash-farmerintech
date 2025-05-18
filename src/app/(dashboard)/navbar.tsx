@@ -38,24 +38,7 @@ export default function SidebarLayo() {
   ];
 console.log(state);
 
-const router = useRouter()
- useEffect(()=>{
-      const token = state.token 
-      if(!token || token===''){
-        router.push('/login')
-        return
-      }
-      try {
-        const decode:any = jwtDecode(token)
-        console.log(decode)
-        const currentTime = Date.now()/1000
-        if(decode?.exp < currentTime){
-            router.push('/login')
-        }
-      } catch (error) {
-       console.log(error) 
-      }
-    }, [])
+
   return (
     <>
   <aside className="md:col-span-1">
@@ -112,25 +95,6 @@ export const Header = () =>{
   };
   const router = useRouter()
 
- useEffect(()=>{
-      const token = state.token 
-      if(!token || token===''){
-        router.push('/login')
-        return
-      }
-      try {
-        const decode:any = jwtDecode(token)
-        console.log(decode)
-        const currentTime = Date.now()/1000
-        if(decode?.exp < currentTime){
-            router.push('/login')
-        }
-      } catch (error) {
-       console.log(error) 
-      }
-    }, [])
-
-    
   return(
     <section className='bg-[#FFFFFF] px-[24px] py-[16px] flex items-center justify-between border-b-[0.5px]'>
     <div className='md:hidden text-[#FFEEE6] '>

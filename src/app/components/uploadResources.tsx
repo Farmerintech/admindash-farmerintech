@@ -82,9 +82,9 @@ export const UploadResources = () => {
         "https://citadel-i-project.onrender.com/api/v1/resources/upload_resources",
         {
           method: "POST",
+          credentials: 'include',
           headers: {
             // Do not set Content-Type manually for FormData
-            credentials: 'include',
           },
           body: formData,
         }
