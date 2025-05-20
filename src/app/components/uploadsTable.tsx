@@ -63,9 +63,9 @@ const {state} = useUser()
             "https://citadel-i-project.onrender.com/api/v1/uploads",
             {
               method: "GET",
+              credentials: 'include',
               headers: {
                 "Content-Type": "application/json",
-               credentials: 'include',
               },
               // body: JSON.stringify(''),
             }
