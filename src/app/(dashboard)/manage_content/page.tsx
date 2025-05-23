@@ -1,5 +1,6 @@
 "use client"
 
+import { ClassNote } from "@/app/components/classNote";
 import { DashHook } from "@/app/components/dahHook";
 import { UploadClassNote } from "@/app/components/uploadClassNote";
 import { UploadExamQuestion,  } from "@/app/components/uploadExamQuestion";
@@ -52,7 +53,7 @@ export default function page (){
             </div>
             <main className="p-[32px] bg-white rounded-[8px] gap-[160px] flex justify-between">
                {
-                  active ===0 && <UploadClassNote/>
+                  active ===0 && <ClassNote/>
                }
                 {
                   active ===1 && <UploadExamQuestion/>
