@@ -48,10 +48,10 @@ const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
   try {
     const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/auth/signin', {
       method: 'POST',
+      credentials: 'include', // ✅ Required to send and receive cookies!
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: 'include', // ✅ Required to send and receive cookies!
       body: JSON.stringify(data)
     });
 
@@ -59,6 +59,8 @@ const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
 
     if (response.ok) {
       // Update context with user details
+console.log('setting', document.cookie);
+
       dispatch({
         type: 'LOGIN',
         payload: {

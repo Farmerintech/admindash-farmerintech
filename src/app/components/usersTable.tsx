@@ -142,16 +142,17 @@ useEffect(() => {
 
     return (
     <>
-    <div className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px]">
+    <div className="w-full py-[8px] flex lg:items-center justify-between flex-col md:flex-wrap lg:flex-nowrap md:flex-row gap-[8px]">
+      <p className="font-[600]">Registered Users</p>
         <form className="flex gap-[8px]" onSubmit={handleSubmit}>
             <input type="text" 
             onChange={handleSearch}
             placeholder="Find user with their name or id" className=" xl:w-[350px] w-[100%] border-1 border-gray-200 outline-non px-[36px] py-[8px] bg-white rounded-[8px] "/>
             <button className="text-white bg-orange-500 border-none rounded-[8px] px-[16px] outline-none" type="submit">Serach</button>
         </form>
-        <form>
+        <form className="w-full lg:w-auto">
         <Select onValueChange={handleSelectFilter}>
-          <SelectTrigger className="md:w-[300px] lg:w-[350px] w-[100%] outline-none border-1 border-gray-200">
+          <SelectTrigger className="md:w-full lg:w-[100%] w-full outline-none border-1 border-gray-200">
             <SelectValue placeholder='Filter by Role' />
           </SelectTrigger>
           <SelectContent>
@@ -164,9 +165,9 @@ useEffect(() => {
         </Select>
         </form>
     </div>
-    <section className="bg-gray-100 rounded-md over-flow-x-scroll w-[full] px-4">
+    <section className=" rounded-md over-flow-x-scroll w-[full] px-[4px]">
       <Table className="table-fixed overflow-x-scroll">
-        <TableHeader>
+        <TableHeader className="bg-orange-100">
           <TableRow>
             <TableHead>UserID</TableHead>
             <TableHead className="w-[200px]">Name</TableHead>
@@ -188,7 +189,7 @@ useEffect(() => {
                     key={index}
                     className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
                   >
-                    <span className="hidden md:block">{action.name}</span>
+                    {/* <span className="hidden md:block">{action.name}</span> */}
                     {action.icon}
                   </p>
                 ))}

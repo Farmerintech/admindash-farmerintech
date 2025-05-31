@@ -116,29 +116,18 @@ const filterBy = async ()=>{
 
     return (
     <section className="bg-white p-[16px] rounded-[8px]">
-    <form className="py-[8px] flex justify-between flex-col md:flex-row gap-[8px] " onSubmit={filterBy}>
-        <Select onValueChange={handleSelectFilter}>
-          <SelectTrigger className="md:w-[300px] lg:w-[350px] w-[100%] outline-none border-1 border-gray-200">
-            <SelectValue placeholder='Filter By' />
-          </SelectTrigger>
-          <SelectContent>
-            {
-                filterItems.map((item)=>(
-                    <SelectItem value={item ==='Subject' ? 'subject': "uploadType"}>{item}</SelectItem>
-                ))
-            }
-            </SelectContent>
-        </Select>
-        <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
+    <form className="py-[8px] flex justify-between items-center flex-col md:flex-row gap-[8px] " onSubmit={filterBy}>
+      <p className="font-[600]">Recent Uploads</p>  
+    <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
     </form>
-    <section className="bg-gray-100 rounded-md over-flow-x-scroll w-[full] px-4 mt-5">
-      <Table className="table-fixed overflow-x-scroll">
-        <TableHeader>
+    <section className="rounded-md over-flow-x-scroll w-[full] px-[4px] mt-5">
+      <Table className="  overflow-x-scroll">
+        <TableHeader className="bg-gray-100 w-full">
           <TableRow>
-            <TableHead className="w-full">Subject</TableHead>
-            <TableHead className="w-full">Upload Type</TableHead>
-            <TableHead className="w-full">Uploaded By</TableHead>
-            <TableHead className="w-full">Date</TableHead>
+            <TableHead >Subject</TableHead>
+            <TableHead >Upload Type</TableHead>
+            <TableHead >Uploaded By</TableHead>
+            <TableHead >Date</TableHead>
             <TableHead >Perform Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -149,13 +138,13 @@ const filterBy = async ()=>{
               <TableCell className="text-[12px] md:text-[14px]">{item.uploadType}</TableCell>
               <TableCell>{item.uploadedBy}</TableCell>
               <TableCell>{item.createdAt}</TableCell>
-              <TableCell className="text-right flex items-center gap-[8px]">
+              <TableCell className="flex items-center gap-[8px]">
                 {actions.map((action, index) => (
                   <p
                     key={index}
                     className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
                   >
-                    <span className="hidden md:block">{action.name}</span>
+                    {/* <span className="hidden md:block">{action.name}</span> */}
                     {action.icon}
                   </p>
                 ))}

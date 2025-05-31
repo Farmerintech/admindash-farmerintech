@@ -5,7 +5,7 @@ export interface User {
   email:string,
   firstName: string;
   lastName: string;
-  token: string;
+  token: any;
   role: string;
   isLoggedIn: boolean;
 }
@@ -19,7 +19,7 @@ export const initialState: User = {
   email:"",
   firstName: '',
   lastName: '',
-  token: '',
+  token: null,
   role: '',
   isLoggedIn: false,
 };
