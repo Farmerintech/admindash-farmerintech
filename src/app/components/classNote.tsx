@@ -257,7 +257,7 @@ export const ClassNote = () => {
               <button
                 type="button"
                 onClick={handleAddTOCInput}
-                className="mt-2 px-3 py-1 bg-orange-500 text-white text-sm rounded hover:bg-orange-600"
+                className="mt-2 px-3 py-2 bg-orange-500 text-white text-sm rounded-[8px] hover:bg-orange-600"
               >
                 + Add Section
               </button>

@@ -20,6 +20,7 @@ import {
   } from "@/components/ui/select"
 import { useEffect, useState } from "react";
 import { useUser } from "../context/reducer";
+import Link from "next/link";
 
   const actions = [
     {
@@ -120,9 +121,9 @@ const filterBy = async ()=>{
       <p className="font-[600]">Recent Uploads</p>  
     <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
     </form>
-    <section className="rounded-md over-flow-x-scroll w-[full] px-[4px] mt-5">
-      <Table className="  overflow-x-scroll">
-        <TableHeader className="bg-gray-100 w-full">
+    <section className="rounded-md over-flow-x-scroll w-[100%] px-[4px] mt-5">
+      <Table className=" overflow-x-scroll w-full">
+        <TableHeader className="bg-gray-100 ">
           <TableRow>
             <TableHead >Subject</TableHead>
             <TableHead >Upload Type</TableHead>
@@ -140,13 +141,16 @@ const filterBy = async ()=>{
               <TableCell>{item.createdAt}</TableCell>
               <TableCell className="flex items-center gap-[8px]">
                 {actions.map((action, index) => (
-                  <p
+                  <Link
+                  href={action.name==='View' ? `/manage_content/view?type=${item.uploadType}&id=${item.id}`:
+                action.name==='Edit' ? `/manage_content/edit?type=${item.uploadType}&id=${item.id}` :'/'
+                }
                     key={index}
                     className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
                   >
                     {/* <span className="hidden md:block">{action.name}</span> */}
                     {action.icon}
-                  </p>
+                  </Link>
                 ))}
               </TableCell>
             </TableRow>

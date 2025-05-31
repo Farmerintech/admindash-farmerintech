@@ -1,4 +1,3 @@
-
 "use client"
 
 import {
@@ -9,317 +8,264 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { useSidebar } from "../context/sideBarState"
+import { useEffect, useState, ChangeEvent, FormEvent } from "react"
+import { useSearchParams } from "next/navigation"
 import { useUser } from "../context/reducer"
+
 const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
 const subjects = ['English Language', 'Mathematics']
 const classes = ['KS1', 'KS2']
- 
 
-export const EditExamQuestion= () => {
-  const [data, setData] = useState<any>({});
-  const [error, setError] = useState<string>();
-  const [message, setMessage] = useState()
+export const EditExamQuestion = () => {
   const { state } = useUser();
+  const searchParams = useSearchParams();
+  const questionId = searchParams.get("id");
 
-    const [form, setForm] = useState<any>({
-      subject: "",
-      class: "",
-      year: "",
-      term: "",
-      questionType: "",
-      question: "",
-      optionA: "",
-      optionB: "",
-      optionC: "",
-      optionD: "",
-      answer: "",
-      explanation: "",
-    });
-    const [active, setActive] = useState<boolean>(false);
-    const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
-      setForm({
-        ...form,
-        [event.target.name]: event.target.value,
-      });
-    };
-    const handleTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
-      setForm({
-        ...form,
-        [event.target.name]: event.target.value,
-      });
-    };
-    const handleSelectSubject = (value: string) => {
-      setForm({
-        ...form,
-        subject: value,
-      });
-    };
+  const [form, setForm] = useState({
+    subject: "",
+    class: "",
+    year: "",
+    term: "",
+    questionType: "",
+    question: "",
+    optionA: "",
+    optionB: "",
+    optionC: "",
+    optionD: "",
+    answer: "",
+    explanation: "",
+  });
 
-    const handleSelectClass = (value: string) => {
-      setForm({
-        ...form,
-        class: value,
-      });
-    };
-    const handleSelectTerm = (value: string) => {
-      setForm({
-        ...form,
-        term: value,
-      });
-    };
+  const [active, setActive] = useState(false);
+  const [message, setMessage] = useState<string>();
+  const [error, setError] = useState<string>();
 
-    const handleSelectYear = (value: string) => {
-      setForm({
-        ...form,
-        year: value,
-      });
-    };
-    const handleQuestionType = (value: string) => {
-      setForm({
-        ...form,
-        questionType: value,
-      });
-    };
+  // Fetch existing question for editing
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      if (!questionId) return;
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      console.log(form);
-      if (
-        form.subject === "" ||
-        form.class === "" ||
-        form.question === "" ||
-        form.optionA === "" ||
-        form.optionB === "" ||
-        form.optionC === "" ||
-        form.optionD === "" ||
-        form.answer === "" ||
-        form.explanation === "" ||
-        form.year === "" ||
-        form.term === "" ||
-        form.questionType === ""
-      ) {
-        setActive(false);
-        return;
-      }
       try {
         const response = await fetch(
-          "https://citadel-i-project.onrender.com/api/v1/exam_question/upload_question",
+          `https://citadel-i-project.onrender.com/api/v1/exam_question/single_question/${questionId}`,
           {
-            method: "POST",
-           credentials: 'include',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(form),
+            credentials: 'include',
           }
         );
-  
-        const result = await response.json();
-        setMessage(result.message);
-  
-        !response.ok && setError(result?.message || "Something went wrong");
-  
-        setForm({})
-      } catch (error) {
-        console.error(error);
-        setError("Error connecting to server");
+        const data = await response.json();
+
+        if (response.ok) {
+          setForm({
+            subject: data.subject || "",
+            class: data.class || "",
+            year: data.year || "",
+            term: data.term || "",
+            questionType: data.questionType || "",
+            question: data.question || "",
+            optionA: data.optionA || "",
+            optionB: data.optionB || "",
+            optionC: data.optionC || "",
+            optionD: data.optionD || "",
+            answer: data.answer || "",
+            explanation: data.explanation || "",
+          });
+        } else {
+          setError(data.message || "Failed to load question");
+        }
+      } catch (err) {
+        setError("Error fetching question");
       }
-  
-      console.log(form);
     };
-    useEffect(() => {
-      if (
-        form.subject !== "" &&
-        form.class !== "" &&
-        form.question !== "" &&
-        form.optionA !== "" &&
-        form.optionB !== "" &&
-        form.optionC !== "" &&
-        form.optionD !== "" &&
-        form.answer !== "" &&
-        form.explanation !== "" &&
-        form.year !== "" &&
-        form.term !== "" &&
-        form.questionType !== ""
-      ) {
-        setActive(true);
-      } else {
-        setActive(false);
-      }
-    }, [form]);
+
+    fetchQuestion();
+  }, [questionId]);
+
+  // Handle input
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Handle select inputs
+  const handleSelect = (field: string, value: string) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  // Enable submit only when all fields are filled
+  useEffect(() => {
+    const allFilled = Object.values(form).every((v) => v.trim() !== "");
+    setActive(allFilled);
+  }, [form]);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(
+        questionId
+          ? `https://citadel-i-project.onrender.com/api/v1/exam_question/update_question/${questionId}`
+          : `https://citadel-i-project.onrender.com/api/v1/exam_question/upload_question`,
+        {
+          method: questionId ? "PUT" : "POST",
+          credentials: 'include',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Something went wrong");
+
+      setMessage(result.message);
+    } catch (err: any) {
+      setError(err.message || "Error connecting to server");
+    }
+  };
 
   return (
-    <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full">
       <section className="w-full flex gap-[16px] flex-col">
-      <p className="text-green-500">{message && message}</p>
+        {message && <p className="text-green-600">{message}</p>}
+        {error && <p className="text-red-600">{error}</p>}
+
         {/* Subject */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Subject</label>
-          <Select onValueChange={handleSelectSubject} >
-            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Subject"  />
+        <div className="flex flex-col gap-2">
+          <label>Subject</label>
+          <Select value={form.subject} onValueChange={(val) => handleSelect("subject", val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
-              {subjects.map((subject) => (
-                <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+              {subjects.map((s) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
         {/* Class */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Class</label>
-          <Select onValueChange={handleSelectClass} >
-            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Class" />
+        <div className="flex flex-col gap-2">
+          <label>Class</label>
+          <Select value={form.class} onValueChange={(val) => handleSelect("class", val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select class" />
             </SelectTrigger>
             <SelectContent>
-              {classes.map((item) => (
-                <SelectItem key={item} value={item}>{item}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        {/* Year */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Year</label>
-          <Select onValueChange={handleSelectYear} >
-            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Year" />
-            </SelectTrigger>
-            <SelectContent>
-              {Years.map((year, index) => (
-                <SelectItem key={index} value={year}>{year}</SelectItem>
+              {classes.map((c) => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-         {/* Term */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Term</label>
-          <Select onValueChange={handleSelectTerm} >
-            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Term" />
+        {/* Year */}
+        <div className="flex flex-col gap-2">
+          <label>Year</label>
+          <Select value={form.year} onValueChange={(val) => handleSelect("year", val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select year" />
             </SelectTrigger>
             <SelectContent>
-              {Terms.map((term, index) => (
-                <SelectItem key={index} value={term}>{term}</SelectItem>
+              {Years.map((y) => (
+                <SelectItem key={y} value={y}>{y}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-  {/* Question Type */}
-  <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Question Type</label>
-          <Select onValueChange={handleQuestionType}>
-            <SelectTrigger className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
-              <SelectValue placeholder="Question Type" />
+
+        {/* Term */}
+        <div className="flex flex-col gap-2">
+          <label>Term</label>
+          <Select value={form.term} onValueChange={(val) => handleSelect("term", val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select term" />
             </SelectTrigger>
             <SelectContent>
-            <SelectItem key={"objective"} value={"objective"}>{"Objective"}</SelectItem>
-            <SelectItem key={"Theory"} value={"Theory"}>{"Theory"}</SelectItem>
+              {Terms.map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Question Type */}
+        <div className="flex flex-col gap-2">
+          <label>Question Type</label>
+          <Select value={form.questionType} onValueChange={(val) => handleSelect("questionType", val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="objective">Objective</SelectItem>
+              <SelectItem value="theory">Theory</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Question */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Question</label>
-          <Textarea
-            value={form.question}
-            onChange={handleTextarea}
-            name="question"
-            className="w-full  p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]"
-          />
+        <div className="flex flex-col gap-2">
+          <label>Question</label>
+          <Textarea name="question" value={form.question} onChange={handleChange} />
         </div>
 
-        {/* Option A */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Option A</label>
-          <input
-            type="text"
-            className="w-full  p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
-            name="optionA"
-            value={form.optionA}
-            onChange={handleOptions}
-          />
-        </div>
-
-        {/* Option B */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Option B</label>
-          <input
-            type="text"
-            className="w-full  p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
-            name="optionB"
-            value={form.optionB}
-            onChange={handleOptions}
-          />
-        </div>
-
+        {/* Options A & B */}
+        {["optionA", "optionB"].map((opt) => (
+          <div key={opt} className="flex flex-col gap-2">
+            <label>{`Option ${opt.charAt(opt.length - 1).toUpperCase()}`}</label>
+            <input
+              type="text"
+              name={opt}
+              value={(form as any)[opt]}
+              onChange={handleChange}
+              className="p-2 border rounded"
+            />
+          </div>
+        ))}
       </section>
 
-      <section className="w-full flex flex-col gap-[8px] mt-6 md:mt-0">
-                {/* Option C */}
-                <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Option C</label>
-          <input
-            type="text"
-            className="w-full  p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
-            name="optionC"
-            value={form.optionC}
-            onChange={handleOptions}
-          />
-        </div>
-
-        {/* Option D */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Option D</label>
-          <input
-            type="text"
-            className="w-full  p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
-            name="optionD"
-            value={form.optionD}
-            onChange={handleOptions}
-          />
-        </div>
+      <section className="w-full flex flex-col gap-2 mt-6 md:mt-0">
+        {/* Options C & D */}
+        {["optionC", "optionD"].map((opt) => (
+          <div key={opt} className="flex flex-col gap-2">
+            <label>{`Option ${opt.charAt(opt.length - 1).toUpperCase()}`}</label>
+            <input
+              type="text"
+              name={opt}
+              value={(form as any)[opt]}
+              onChange={handleChange}
+              className="p-2 border rounded"
+            />
+          </div>
+        ))}
 
         {/* Answer */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Answer</label>
+        <div className="flex flex-col gap-2">
+          <label>Answer</label>
           <input
             type="text"
-            className="w-full  p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
             name="answer"
             value={form.answer}
-            onChange={handleOptions}
+            onChange={handleChange}
+            className="p-2 border rounded"
           />
         </div>
 
         {/* Explanation */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Explanation</label>
-          <Textarea
-            value={form.explanation}
-            onChange={handleTextarea}
-            name="explanation"
-            className="w-full  p-[6px] rounded-[8px] hover:border-[#F6C354] border border-[#667085] h-[48px]"
-          />
+        <div className="flex flex-col gap-2">
+          <label>Explanation</label>
+          <Textarea name="explanation" value={form.explanation} onChange={handleChange} />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className={`${active ? "bg-orange-500":""} mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`} 
+          disabled={!active}
+          className={`mt-4 p-2 rounded text-white ${active ? "bg-green-600" : "bg-gray-400"}`}
         >
-          Submit
+          {questionId ? "Update Question" : "Submit Question"}
         </button>
       </section>
     </form>
-  )
-}
+  );
+};
