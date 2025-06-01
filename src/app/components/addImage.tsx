@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export const AddImageToContent = () => {
   const [isChoosen, setIsChoosen] = useState<boolean>(false);
@@ -56,6 +56,9 @@ export const AddImageToContent = () => {
     }
   };
 
+  useEffect(()=>{
+    handleImageUpload()
+  }, [isChoosen, form])
   return (
     <>
       <h2>Add Embedded Image</h2>
@@ -110,7 +113,7 @@ export const AddImageToContent = () => {
           <div className="flex gap-[8px] items-center">
             <input placeholder={res} value={res} className="w-[260px] py-[8px] border-1 px-[8px] rounded-[8px]"/>
             <button
-              className="bg-blue-500 text-white px-[16px] py-[8px] rounded-[8px]"
+              className="bg-orange-500 text-white px-[16px] py-2 rounded-[8px] w-[120px]"
               onClick={() => navigator.clipboard.writeText(res)}
             >
               Copy Link
@@ -120,12 +123,12 @@ export const AddImageToContent = () => {
           </>
         ) : (
           <>
-            <button
+            {/* <button
               className="bg-orange-500 text-white px-[16px] py-[8px] rounded-[8px]"
               onClick={handleImageUpload}
             >
               Upload
-            </button>
+            </button> */}
             <p>{error}</p>
           </>
         )}

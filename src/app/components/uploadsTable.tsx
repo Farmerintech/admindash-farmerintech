@@ -121,43 +121,50 @@ const filterBy = async ()=>{
       <p className="font-[600]">Recent Uploads</p>  
     <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
     </form>
-    <section className="rounded-md over-flow-x-scroll w-[100%] px-[4px] mt-5">
-      <Table className=" overflow-x-scroll w-full">
-        <TableHeader className="bg-gray-100 ">
-          <TableRow>
-            <TableHead >Subject</TableHead>
-            <TableHead >Upload Type</TableHead>
-            <TableHead >Uploaded By</TableHead>
-            <TableHead >Date</TableHead>
-            <TableHead >Perform Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data && data.map((item:any, index:any) => (
-            <TableRow key={index}>
-              <TableCell>{item.subject}</TableCell>
-              <TableCell className="text-[12px] md:text-[14px]">{item.uploadType}</TableCell>
-              <TableCell>{item.uploadedBy}</TableCell>
-              <TableCell>{item.createdAt}</TableCell>
-              <TableCell className="flex items-center gap-[8px]">
-                {actions.map((action, index) => (
-                  <Link
-                  href={action.name==='View' ? `/manage_content/view?type=${item.uploadType}&id=${item.id}`:
-                action.name==='Edit' ? `/manage_content/edit?type=${item.uploadType}&id=${item.id}` :'/'
-                }
-                    key={index}
-                    className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
-                  >
-                    {/* <span className="hidden md:block">{action.name}</span> */}
-                    {action.icon}
-                  </Link>
-                ))}
-              </TableCell>
-            </TableRow>
+    <section className="rounded-md overflow-x-auto w-full px-1 mt-5">
+  <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-4 py-2 font-semibold text-gray-700">Subject</th>
+        <th className="px-4 py-2 font-semibold text-gray-700">Upload Type</th>
+        <th className="px-4 py-2 font-semibold text-gray-700">Uploaded By</th>
+        <th className="px-4 py-2 font-semibold text-gray-700">Date</th>
+        <th className="px-4 py-2 font-semibold text-gray-700">Perform Actions</th>
+      </tr>
+    </thead>
+<tbody className="divide-y divide-gray-100">
+  {data && data.map((item:any, index:number) => (
+    <tr key={index}>
+      <td className="px-4 py-2">{item.subject}</td>
+      <td className="px-4 py-2 text-xs md:text-sm">{item.uploadType}</td>
+      <td className="px-4 py-2">{item.uploadedBy}</td>
+      <td className="px-4 py-2">{item.createdAt}</td>
+      <td className="px-4 py-2">
+        <div className="flex items-center gap-2">
+          {actions.map((action, index) => (
+            <Link
+              key={index}
+              href={
+                action.name === 'View'
+                  ? `/manage_content/view?type=${item.uploadType}&id=${item.id}`
+                  : action.name === 'Edit'
+                  ? `/manage_content/edit?type=${item.uploadType}&id=${item.id}`
+                  : '/'
+              }
+              className={`${action.color} text-xs flex items-center gap-1`}
+            >
+              {action.icon}
+              {/* Optional: <span className="hidden md:inline">{action.name}</span> */}
+            </Link>
           ))}
-        </TableBody>
-      </Table>
-      </section>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+  </table>
+</section>
+
       </section>
     );
   }
