@@ -146,9 +146,9 @@ const filterBy = async ()=>{
               key={index}
               href={
                 action.name === 'View'
-                  ? `/manage_content/view?type=${item.uploadType}&id=${item.id}`
+                  ? `/manage_content/view?type=${item.uploadType}&id=${item.ResourceId}`
                   : action.name === 'Edit'
-                  ? `/manage_content/edit?type=${item.uploadType}&id=${item.id}`
+                  ? `/manage_content/edit?type=${item.uploadType}&id=${item.ResourceId}`
                   : '/'
               }
               className={`${action.color} text-xs flex items-center gap-1`}
