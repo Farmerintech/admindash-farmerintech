@@ -122,9 +122,6 @@ export const Header = () => {
           <GiHamburgerMenu />
         </Button>
       </div>
-      <div className='hidden md:block'>
-        <Image src={Logo} width={180} height={35} alt='logo' />
-      </div>
     <div className='hidden md:block'>
         <Image src={Logo} width={180} height={35} alt='logo'/>
       </div>
