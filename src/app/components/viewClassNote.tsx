@@ -69,7 +69,7 @@ export const ViewClassNote= ({id}:ViewClassNoteProps) => {
 
   return (
     <section className=" w-full md:px-[10px] py-[16px] px-[6px] bg-[#F3F3F3] flex-col md:flex-row flex gap-[24px] justify-between">
-      <aside className="w-[200px] h-[300px] py-[24px] px-[12px] flex flex-col gap-[16px] bg-white">
+      <aside className="md: w-full w-[200px] h-[300px] py-[24px] px-[12px] flex flex-col gap-[16px] bg-white">
         <p className="p-[8px] gap-[10px] bg-[#FBE3B0]">Lesson Contents</p>
         <div>
           {loading ? (
