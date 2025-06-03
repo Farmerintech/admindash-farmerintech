@@ -92,6 +92,7 @@ export default function SidebarLayo() {
                     <Button
                       variant="ghost"
                       className={`w-full px-5 text-left ${pathname === href ? 'bg-[#FFEEE6] text-[#FF5900]' : ''}`}
+                      onClick={()=>{setSidebarOpen(false)}}
                     >
                       <span className="flex gap-2 items-center text-[16px] text-[#130F26]">
                         {icon} {name}
