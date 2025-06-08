@@ -8,11 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from '@/components/ui/textarea'
 import { useParams } from 'next/navigation'
   
-type ViewExamquestionProps = {
+
+type ViewPastQuestionProps = {
   id?: number; // or number, depending on your data
 };
-export const ViewExamQuestion = ({id}:ViewExamquestionProps) =>{
-  const params = useParams();
+export const ViewExamQuestion = ({id}:ViewPastQuestionProps) =>{
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string>()
     
@@ -25,6 +25,7 @@ export const ViewExamQuestion = ({id}:ViewExamquestionProps) =>{
         try {
           const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/exam_question/get_a_questions/${id}`, {
             method: "GET",
+            credentials:'include',
             headers: {
               "Content-Type": "application/json",
             },
@@ -44,20 +45,8 @@ export const ViewExamQuestion = ({id}:ViewExamquestionProps) =>{
   
 
   return (
-    <main className="xl:px-[100px] md:px-[24px] py-3 px-[16px] bg-[#F3F3F3] py-[24px]">
-      <div className="flex md:flex-row flex-col md:items-center justify-between gap-[7px]">
-        <span className="">
-          <p className='flex gap-[8px]'>
-          <span className="text-[#FF5900] text-[16px]">
-          </span>
-          </p>
-         
-          <p className="md:text-[32px] text-[24px] font-bold">
-          </p>
-        </span>
-      </div>
       <section className=" flex gap-[20px] md:flex-row flex-col pt-[24px] ">
-        <aside className="lg:w-[836px] bg-[#FFFFFF] flex flex-col gap-[48px] md:px-[32px] py-[24px] p-[8px]">
+        <aside className="bg-[#FFFFFF] flex flex-col gap-[48px] md:px-[32px] py-[24px] p-[8px]">
           <article className="flex flex-col gap-[24px]">
             <div className="flex flex-col gap-2.5">
               {data ? (
@@ -109,6 +98,5 @@ export const ViewExamQuestion = ({id}:ViewExamquestionProps) =>{
             </article>
         </aside>
       </section>
-    </main>
   );
 }
