@@ -14,7 +14,8 @@ export default function AdminLogin() {
   
   const [error, setError] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+  const [loading, setLoading] = useState(false);
+
   // Access state and dispatch from the context
   const { state, dispatch } = useUser();
   const router = useRouter();
@@ -35,33 +36,34 @@ export default function AdminLogin() {
 
 const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
+  setError(undefined); // reset error
+  setLoading(true); // start loading
 
   if (!data.email || data.email.trim() === '') {
     setError('Email is not allowed to be empty');
+    setLoading(false); // stop loading
     return;
   }
 
   if (!data.password || data.password.length < 8) {
     setError('Password is too short');
+    setLoading(false); // stop loading
     return;
   }
 
   try {
     const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/auth/signin', {
       method: 'POST',
-      credentials: 'include', // ✅ Required to send and receive cookies!
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      // Update context with user details
-console.log('setting', document.cookie);
-
       dispatch({
         type: 'LOGIN',
         payload: {
@@ -69,8 +71,8 @@ console.log('setting', document.cookie);
           firstName: result?.user?.firstName,
           lastName: result?.user?.lastName,
           role: result?.user?.role,
-          token:result?.token
-        }
+          token: result?.token,
+        },
       });
 
       router.push('/dashboards');
@@ -81,7 +83,9 @@ console.log('setting', document.cookie);
     setData({ email: '', password: '' });
   } catch (error) {
     console.error(error);
-    setError('Error connecting to server' );
+    setError('Error connecting to server');
+  } finally {
+    setLoading(false); // stop loading regardless of outcome
   }
 };
 
@@ -124,7 +128,7 @@ console.log('setting', document.cookie);
           </div>
 
           <button className="w-full bg-orange-500 text-white py-2 rounded-lg text-sm flex gap-3 items-center justify-center">
-            Login
+             {loading ? "Loading..." : "Login"}
           </button>
         </form>
       </aside>
