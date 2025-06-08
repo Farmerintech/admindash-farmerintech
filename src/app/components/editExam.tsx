@@ -8,25 +8,19 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { useEffect, useState, ChangeEvent, FormEvent } from "react"
-import { useSearchParams } from "next/navigation"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useParams } from "next/navigation"
 import { useUser } from "../context/reducer"
+import { subjects } from "./subjects"
 
-const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
-const Terms = ["First Term", "SecondTerm", "Third Term"]
-const subjects = ['English Language', 'Mathematics']
-const classes = ['KS1', 'KS2']
-
-export const EditExamQuestion = () => {
-  const { state } = useUser();
-  const searchParams = useSearchParams();
-  const questionId = searchParams.get("id");
-
-  const [form, setForm] = useState({
+const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
+type EditPQProps = {
+  id?: number;
+};
+export const EditExamQuestion = ( {id}:EditPQProps) => {
+  const [form, setForm] = useState<any>({
     subject: "",
-    class: "",
-    year: "",
-    term: "",
+    examType: "",
     questionType: "",
     question: "",
     optionA: "",
@@ -36,234 +30,254 @@ export const EditExamQuestion = () => {
     answer: "",
     explanation: "",
   });
-
-  const [active, setActive] = useState(false);
-  const [message, setMessage] = useState<string>();
+  const [active, setActive] = useState<boolean>(false);
   const [error, setError] = useState<string>();
-
-  // Fetch existing question for editing
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      if (!questionId) return;
-
-      try {
-        const response = await fetch(
-          `https://citadel-i-project.onrender.com/api/v1/exam_question/single_question/${questionId}`,
-          {
-            credentials: 'include',
-          }
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setForm({
-            subject: data.subject || "",
-            class: data.class || "",
-            year: data.year || "",
-            term: data.term || "",
-            questionType: data.questionType || "",
-            question: data.question || "",
-            optionA: data.optionA || "",
-            optionB: data.optionB || "",
-            optionC: data.optionC || "",
-            optionD: data.optionD || "",
-            answer: data.answer || "",
-            explanation: data.explanation || "",
-          });
-        } else {
-          setError(data.message || "Failed to load question");
-        }
-      } catch (err) {
-        setError("Error fetching question");
-      }
-    };
-
-    fetchQuestion();
-  }, [questionId]);
-
-  // Handle input
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [message, setMessage] = useState<string>();
+  const [data, setData] =  useState<any>();
+  const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  // Handle select inputs
-  const handleSelect = (field: string, value: string) => {
-    setForm({ ...form, [field]: value });
+  const handleTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  // Enable submit only when all fields are filled
-  useEffect(() => {
-    const allFilled = Object.values(form).every((v) => v.trim() !== "");
-    setActive(allFilled);
-  }, [form]);
+  const handleSelectSubject = (value: string) => {
+    setForm({ ...form, subject: value });
+  };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleExamType = (value: string) => {
+    setForm({ ...form, examType: value });
+  };
+
+  const handleQuestionType = (value: string) => {
+    setForm({ ...form, questionType: value });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const requiredFields = [
+      "subject", "examType", "question", "optionA", "optionB",
+      "optionC", "optionD", "answer", "explanation", "questionType",
+    ];
+    const isEmpty = requiredFields.some(field => form[field]?.trim() === "");
+
+    if (isEmpty) {
+      setActive(false);
+      setError("Please fill in all required fields.");
+      return;
+    }
 
     try {
-      const response = await fetch(
-        questionId
-          ? `https://citadel-i-project.onrender.com/api/v1/exam_question/update_question/${questionId}`
-          : `https://citadel-i-project.onrender.com/api/v1/exam_question/upload_question`,
-        {
-          method: questionId ? "PUT" : "POST",
-          credentials: 'include',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form),
-        }
-      );
+      const url = `https://citadel-i-project.onrender.com/api/v1/exam_question/edit_question/${id}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
       const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Something went wrong");
+      if (!response.ok) {
+        setError(result?.message || "Something went wrong");
+      } else {
+        setMessage(result?.message || (id ? "Question updated!" : "Question uploaded!"));
+      }
 
-      setMessage(result.message);
-    } catch (err: any) {
-      setError(err.message || "Error connecting to server");
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setError("Error connecting to server");
+    }
+
+    if (!id) {
+      setForm({
+        subject: "",
+        examType: "",
+        questionType: "",
+        question: "",
+        optionA: "",
+        optionB: "",
+        optionC: "",
+        optionD: "",
+        answer: "",
+        explanation: "",
+      });
     }
   };
 
+  useEffect(() => {
+    if (Object.values(form).every(value => value !== "")) {
+      setActive(true);
+    } else {
+      setActive(false);
+    }
+  }, [form]);
+
+const [loading, setLoading] = useState<boolean>(true);
+
+useEffect(() => {
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/exam_question/get_a_questions/${id}`, {
+          credentials: 'include',
+        });
+        const result = await response.json();
+          setData(result?.data )
+          console.log(result?.data)
+          setForm({
+            subject: result?.data.subject || "",
+            examType: result?.data.examType || "",
+            questionType: result?.data.questionType || "",
+            question: result?.data?.question || "",
+            optionA: result?.data?.optionA || "",
+            optionB: result?.data?.optionB || "",
+            optionC: result?.data?.optionC || "",
+            optionD: result?.data?.optionD || "",
+            answer: result?.data?.answer || "",
+            explanation: result?.data?.explanation || "",
+          });
+      } catch (error) {
+        console.error(error);
+        setError("Error fetching question.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  
+}, []);
+
   return (
-    <form onSubmit={handleSubmit} className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full">
+    <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
-        {message && <p className="text-green-600">{message}</p>}
-        {error && <p className="text-red-600">{error}</p>}
+        <p className="text-red-600">{error}</p>
+        <p className="text-green-600">{message}</p>
 
         {/* Subject */}
-        <div className="flex flex-col gap-2">
-          <label>Subject</label>
-          <Select value={form.subject} onValueChange={(val) => handleSelect("subject", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select subject" />
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Subject</label>
+          <Select onValueChange={handleSelectSubject} value={form.subject}>
+            <SelectTrigger className="w-full p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Subject" />
             </SelectTrigger>
             <SelectContent>
-              {subjects.map((s) => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
+              {subjects.map((subject, index) => (
+                <SelectItem key={index} value={subject.name}>
+                  {subject.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* Class */}
-        <div className="flex flex-col gap-2">
-          <label>Class</label>
-          <Select value={form.class} onValueChange={(val) => handleSelect("class", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select class" />
+        {/* ExamType */}
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Exam Type</label>
+          <Select onValueChange={handleExamType} value={form.examType}>
+            <SelectTrigger className="w-full p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Exam Type" />
             </SelectTrigger>
             <SelectContent>
-              {classes.map((c) => (
-                <SelectItem key={c} value={c}>{c}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Year */}
-        <div className="flex flex-col gap-2">
-          <label>Year</label>
-          <Select value={form.year} onValueChange={(val) => handleSelect("year", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select year" />
-            </SelectTrigger>
-            <SelectContent>
-              {Years.map((y) => (
-                <SelectItem key={y} value={y}>{y}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Term */}
-        <div className="flex flex-col gap-2">
-          <label>Term</label>
-          <Select value={form.term} onValueChange={(val) => handleSelect("term", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select term" />
-            </SelectTrigger>
-            <SelectContent>
-              {Terms.map((t) => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
+              {examTypes.map((item) => (
+                <SelectItem key={item} value={item}>
+                  {item}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
         {/* Question Type */}
-        <div className="flex flex-col gap-2">
-          <label>Question Type</label>
-          <Select value={form.questionType} onValueChange={(val) => handleSelect("questionType", val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Question Type</label>
+          <Select onValueChange={handleQuestionType} value={form.questionType}>
+            <SelectTrigger className="w-full p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
+              <SelectValue placeholder="Question Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="objective">Objective</SelectItem>
-              <SelectItem value="theory">Theory</SelectItem>
+              <SelectItem value="Theory">Theory</SelectItem>
             </SelectContent>
           </Select>
         </div>
-
+        
         {/* Question */}
-        <div className="flex flex-col gap-2">
-          <label>Question</label>
-          <Textarea name="question" value={form.question} onChange={handleChange} />
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Question</label>
+          <Textarea
+            value={form.question}
+            onChange={handleTextarea}
+            name="question"
+            className="w-full p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]"
+          />
         </div>
 
-        {/* Options A & B */}
-        {["optionA", "optionB"].map((opt) => (
-          <div key={opt} className="flex flex-col gap-2">
-            <label>{`Option ${opt.charAt(opt.length - 1).toUpperCase()}`}</label>
+        {/* Option A & B */}
+        {["A", "B"].map(letter => (
+          <div key={letter} className="flex flex-col gap-[8px] w-full">
+            <label className="text-[#344054]">Option {letter}</label>
             <input
               type="text"
-              name={opt}
-              value={(form as any)[opt]}
-              onChange={handleChange}
-              className="p-2 border rounded"
+              name={`option${letter}`}
+              value={form[`option${letter}`]}
+              onChange={handleOptions}
+              className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
             />
           </div>
         ))}
       </section>
 
-      <section className="w-full flex flex-col gap-2 mt-6 md:mt-0">
-        {/* Options C & D */}
-        {["optionC", "optionD"].map((opt) => (
-          <div key={opt} className="flex flex-col gap-2">
-            <label>{`Option ${opt.charAt(opt.length - 1).toUpperCase()}`}</label>
+      <section className="w-full flex flex-col gap-[8px] mt-6 md:mt-0">
+        {/* Option C & D */}
+        {["C", "D"].map(letter => (
+          <div key={letter} className="flex flex-col gap-[8px] w-full">
+            <label className="text-[#344054]">Option {letter}</label>
             <input
               type="text"
-              name={opt}
-              value={(form as any)[opt]}
-              onChange={handleChange}
-              className="p-2 border rounded"
+              name={`option${letter}`}
+              value={form[`option${letter}`]}
+              onChange={handleOptions}
+              className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
             />
           </div>
         ))}
 
         {/* Answer */}
-        <div className="flex flex-col gap-2">
-          <label>Answer</label>
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Answer</label>
           <input
             type="text"
             name="answer"
             value={form.answer}
-            onChange={handleChange}
-            className="p-2 border rounded"
+            onChange={handleOptions}
+            className="w-full p-[12px] rounded-[8px] border hover:border-[#F6C354] border-[#667085] h-[38px]"
           />
         </div>
 
         {/* Explanation */}
-        <div className="flex flex-col gap-2">
-          <label>Explanation</label>
-          <Textarea name="explanation" value={form.explanation} onChange={handleChange} />
+        <div className="flex flex-col gap-[8px] w-full">
+          <label className="text-[#344054]">Explanation</label>
+          <Textarea
+            value={form.explanation}
+            name="explanation"
+            onChange={handleTextarea}
+            className="w-full p-[6px] rounded-[8px] hover:border-[#F6C354] border border-[#667085] h-[48px]"
+          />
         </div>
 
         <button
           type="submit"
-          disabled={!active}
-          className={`mt-4 p-2 rounded text-white ${active ? "bg-green-600" : "bg-gray-400"}`}
+          className={`mt-10 px-[24px] py-[12px] rounded-[8px] text-white w-full md:w-[230px] ${
+            active ? "bg-orange-500" : "bg-[#98A2B3]"
+          }`}
         >
-          {questionId ? "Update Question" : "Submit Question"}
+          {id ? "Update" : "Submit"}
         </button>
       </section>
     </form>
