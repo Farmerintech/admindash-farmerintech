@@ -178,7 +178,7 @@ useEffect(() => {
 
         {/* ExamType */}
         <div className="flex flex-col gap-[8px] w-full">
-          <label className="text-[#344054]">Exam Type</label>
+          {/* <label className="text-[#344054]">Exam Type</label>
           <Select onValueChange={handleExamType} value={form.examType}>
             <SelectTrigger className="w-full p-[12px] hover:border-[#F6C354] rounded-[8px] border border-[#667085]">
               <SelectValue placeholder="Exam Type" />
@@ -190,7 +190,7 @@ useEffect(() => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
 
         {/* Question Type */}
