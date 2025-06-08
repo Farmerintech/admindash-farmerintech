@@ -14,8 +14,10 @@ import { useUser } from "../context/reducer"
 import { subjects } from "./subjects"
 
 const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
-
-export const EditPastQuestion = () => {
+type EditPQProps = {
+  id?: number;
+};
+export const EditPastQuestion = ( {id}:EditPQProps) => {
   const [form, setForm] = useState<any>({
     subject: "",
     examType: "",
@@ -31,8 +33,7 @@ export const EditPastQuestion = () => {
   const [active, setActive] = useState<boolean>(false);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
-  const { id } = useParams(); // <-- get the ID from route like /edit-past-question/:id
-
+  const [data, setData] =  useState<any>();
   const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
@@ -68,12 +69,10 @@ export const EditPastQuestion = () => {
     }
 
     try {
-      const url = id
-        ? `https://citadel-i-project.onrender.com/api/v1/past_question/update_question/${id}`
-        : "https://citadel-i-project.onrender.com/api/v1/past_question/upload_question";
+      const url = `https://citadel-i-project.onrender.com/api/v1/past_question/edit_question/${id}`;
 
       const response = await fetch(url, {
-        method: id ? "PUT" : "POST",
+        method: "PUT",
         credentials: 'include',
         headers: {
           "Content-Type": "application/json",
@@ -117,27 +116,42 @@ export const EditPastQuestion = () => {
     }
   }, [form]);
 
-  useEffect(() => {
-    if (id) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/past_question/single_question/${id}`, {
-            credentials: 'include',
+const [loading, setLoading] = useState<boolean>(true);
+
+useEffect(() => {
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/past_question/get_a_questions/${id}`, {
+          credentials: 'include',
+        });
+        const result = await response.json();
+          setData(result?.data )
+          console.log(result?.data)
+          setForm({
+            subject: result?.data.subject || "",
+            examType: result?.data.examType || "",
+            questionType: result?.data.questionType || "",
+            question: result?.data?.question || "",
+            optionA: result?.data?.optionA || "",
+            optionB: result?.data?.optionB || "",
+            optionC: result?.data?.optionC || "",
+            optionD: result?.data?.optionD || "",
+            answer: result?.data?.answer || "",
+            explanation: result?.data?.explanation || "",
           });
-          const result = await response.json();
-          if (response.ok) {
-            setForm(result?.data || {});
-          } else {
-            setError("Failed to fetch question.");
-          }
-        } catch (error) {
-          console.error(error);
-          setError("Error fetching question.");
-        }
-      };
-      fetchData();
-    }
-  }, [id]);
+      } catch (error) {
+        console.error(error);
+        setError("Error fetching question.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  
+}, []);
 
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
@@ -192,7 +206,7 @@ export const EditPastQuestion = () => {
             </SelectContent>
           </Select>
         </div>
-
+        
         {/* Question */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Question</label>
