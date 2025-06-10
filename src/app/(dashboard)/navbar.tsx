@@ -25,8 +25,8 @@ export default function SidebarLayo() {
     { name: "Manage Students", href: "/manage_students", icon: <GiTeacher /> },
     { name: "Manage Teachers", href: "/manage_teachers", icon: <FaUserGraduate /> },
     { name: "Manage Content", href: "/manage_content", icon: <AiOutlineSchedule /> },
-    { name: "Approval", href: "/coursemgt", icon: <FaClipboardList /> },
-    { name: "Payments", href: "/coursemgt", icon: <FaPaypal /> },
+    { name: "Approval", href: "/approval", icon: <FaClipboardList /> },
+    { name: "Payments", href: "/payment", icon: <FaPaypal /> },
     { name: "Logout", href: "/logout", icon: <MdLogout /> },
   ];
 
