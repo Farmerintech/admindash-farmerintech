@@ -43,7 +43,7 @@ export default function page() {
     fetchData()
   }, [data])
   const filterItems= ['By Teachers', 'By Students']
-  const percentageApr = Math.ceil((data?.pegination?.totalApprovedCount/(data?.pegination?.totalCount))*100) 
+  const percentageApr = Math.ceil((data?.pagination?.totalApprovedCount/(data?.pagination?.totalCount))*100) 
   const percentageDis = Math.ceil((data?.count?.totalDisapprovedCount/(data?.count?.totalCount))*100)
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
@@ -53,7 +53,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Total Uploaded</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.pegination?.totalCount}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.pagination?.totalCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
               </div>
