@@ -11,40 +11,42 @@ import { FaArrowUp } from 'react-icons/fa';
 
 export default function page() {
   const [data, setData] = useState<any>({})
+  const [page, setpage] = useState<any>({})
   const [error, setError]  = useState<string>()
     const { sidebarOpen, setSidebarOpen } = useSidebar();
     const {state}=useUser()
-  useEffect( ()=>{
-    const fetchData = async ()=>{
-      try {
-        const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/uploads/all`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // body: JSON.stringify(data)
-        });
+ useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://citadel-i-project.onrender.com/api/v1/uploads/all",
+            {
+              method: "GET",
+              credentials: 'include',
+              headers: {
+                "Content-Type": "application/json",
+              },
+              // body: JSON.stringify(''),
+            }
+          );
   
-        const result = await response.json();
-        setData(result);
+          const result = await response.json();
+          setData(result.pagination);
   
-         console.log(data)
-   
-          !response.ok && setError(result?.message || 'Something went wrong');
-        
+          console.log(data);
   
-      } catch (error) {
-        console.error(error);
-        setError('Error connecting to server');
-      }
-  
-    }
-    fetchData()
-  }, [data])
+          !response.ok && setError(result?.message || "Something went wrong");
+        } catch (error) {
+          console.error(error);
+          setError("Error connecting to server");
+        }
+      };
+      fetchData();
+    }, [data]);
+
   const filterItems= ['By Teachers', 'By Students']
-  const percentageApr = Math.ceil((data?.pagination?.totalApprovedCount/(data?.pagination?.totalCount))*100) 
-  const percentageDis = Math.ceil((data?.count?.totalDisapprovedCount/(data?.count?.totalCount))*100)
+  const percentageApr = Math.ceil((data?.totalApprovedCount/(data?.totalCount))*100) 
+  const percentageDis = Math.ceil((data?.totalDisapprovedCount/(data?.totalCount))*100)
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
       <DashHook name={"Dashboard Overview"}/>
@@ -53,7 +55,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Total Uploaded</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.pagination?.totalCount}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
               </div>
@@ -71,7 +73,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Total Approved</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.pagination?.totalApprovedCount}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalApprovedCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
                  <p>{percentageApr}%</p>
@@ -91,7 +93,7 @@ export default function page() {
         <div className='flex flex-col gap-[16px]'>
           <p>Total Disapproved</p>
           <div className='flex items-center gap-[8px]'>
-              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.pagination?.totalDisapprovedCount}</p> 
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalDisapprovedCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
                  <FaArrowUp/>
                  <p>{percentageDis}%</p>
