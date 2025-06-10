@@ -25,17 +25,17 @@ import Link from "next/link";
   const actions = [
     {
       name: "View",
-      icon: <FaEye size={25}/>,
+      icon: <FaEye size={15}/>,
       color: "text-blue-400",
     },
     {
       name: "Edit",
-      icon: <FaPencilAlt size={25}/>,
+      icon: <FaPencilAlt size={15}/>,
       color: "text-yellow-400",
     },
     {
       name: "Delete",
-      icon: <FaTrash size={25}/>,
+      icon: <FaTrash size={15}/>,
       color: "text-red-400",
     },
   ];
