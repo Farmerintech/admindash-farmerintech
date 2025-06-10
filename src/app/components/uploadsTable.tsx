@@ -25,17 +25,17 @@ import Link from "next/link";
   const actions = [
     {
       name: "View",
-      icon: <FaEye />,
+      icon: <FaEye size={15}/>,
       color: "text-blue-400",
     },
     {
       name: "Edit",
-      icon: <FaPencilAlt />,
+      icon: <FaPencilAlt size={15}/>,
       color: "text-yellow-400",
     },
     {
       name: "Delete",
-      icon: <FaTrash />,
+      icon: <FaTrash size={15}/>,
       color: "text-red-400",
     },
   ];
@@ -61,7 +61,7 @@ const {state} = useUser()
       const fetchData = async () => {
         try {
           const response = await fetch(
-            "https://citadel-i-project.onrender.com/api/v1/uploads",
+            "https://citadel-i-project.onrender.com/api/v1/uploads/all",
             {
               method: "GET",
               credentials: 'include',
@@ -119,7 +119,7 @@ const filterBy = async ()=>{
     <section className="bg-white p-[16px] rounded-[8px]">
     <form className="py-[8px] flex justify-between items-center flex-col md:flex-row gap-[8px] " onSubmit={filterBy}>
       <p className="font-[600]">Recent Uploads</p>  
-    <button className="outline-none border-none bg-orange-500 px-[8px] text-white rounded-[4px]">View all</button>
+    <button className="outline-none border-none bg-orange-500 px-[16px] py-[8px] text-white rounded-[8px]">View all</button>
     </form>
     <section className="rounded-md overflow-x-auto w-full px-1 mt-5">
   <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
