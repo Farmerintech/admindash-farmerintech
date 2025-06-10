@@ -61,7 +61,7 @@ const {state} = useUser()
       const fetchData = async () => {
         try {
           const response = await fetch(
-            "https://citadel-i-project.onrender.com/api/v1/uploads",
+            "https://citadel-i-project.onrender.com/api/v1/uploads/all",
             {
               method: "GET",
               credentials: 'include',
@@ -180,7 +180,7 @@ const Disapprove = async (Type:string, id:number)=>{
         <th className="px-4 py-2 font-semibold text-gray-700">Subject</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Upload Type</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Uploaded By</th>
-        <th className="px-4 py-2 font-semibold text-gray-700">Date</th>
+        <th className="px-4 py-2 font-semibold text-gray-700">Status</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Perform Actions</th>
       </tr>
     </thead>
@@ -190,7 +190,7 @@ const Disapprove = async (Type:string, id:number)=>{
       <td className="px-4 py-2">{item.subject}</td>
       <td className="px-4 py-2 text-xs md:text-sm">{item.uploadType}</td>
       <td className="px-4 py-2">{item.uploadedBy}</td>
-      <td className="px-4 py-2">{item.createdAt}</td>
+      <td className={`px-4 py-2 ${item.status === "Pending" ? "text-yellow-500": item.status === "Approved" ?"text-green-500":"text-red-500"}`}>{item.status}</td>
       <td className="px-4 py-2">
         <div className="flex items-center gap-2">
          <button onClick={()=>Approve(item.uploadType, item.id)}>Approve</button>
