@@ -47,13 +47,15 @@ export default function page() {
   const filterItems= ['By Teachers', 'By Students']
   const percentageApr = Math.ceil((data?.totalApprovedCount/(data?.totalCount))*100) 
   const percentageDis = Math.ceil((data?.totalDisapprovedCount/(data?.totalCount))*100)
+    const percentagePending = Math.ceil((data?.totalPending/(data?.totalCount))*100)
+
     return(
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
       <DashHook name={"Dashboard Overview"}/>
     <main className='grid xl:grid-cols-4 md:grid-cols-2 mt-10 gap-[16px]'>
       <div className='bg-[#FFFFFF] p-[16px] gap-[10px] rounded-[8px] flex items-start justify-between'>
         <div className='flex flex-col gap-[16px]'>
-          <p>Total Uploaded</p>
+          <p>Uploaded Contents</p>
           <div className='flex items-center gap-[8px]'>
               <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
@@ -68,10 +70,30 @@ export default function page() {
           </svg>
       </div>
       </div>
-      
+            <div className='bg-[#FFFFFF] p-[16px] gap-[10px] rounded-[8px] flex items-start justify-between'>
+        <div className='flex flex-col gap-[16px]'>
+          <p>Pending Review</p>
+          <div className='flex items-center gap-[8px]'>
+              <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalPending}</p> 
+              <div className='flex text-[#0DAF64] text-[12px] '>
+                 <FaArrowUp/>
+                 <p>{percentagePending}%</p>
+              </div>
+            </div>
+        </div>
+
+
+        <div>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="20" fill="#FFEEE6"/>
+          <path d="M26.0001 23.8369C27.456 24.5683 28.7042 25.742 29.6153 27.2096C29.7957 27.5003 29.886 27.6456 29.9172 27.8468C29.9805 28.2558 29.7009 28.7585 29.32 28.9204C29.1326 29 28.9218 29 28.5001 29M24.0001 19.5322C25.4818 18.7959 26.5001 17.2669 26.5001 15.5C26.5001 13.7331 25.4818 12.2041 24.0001 11.4678M22.0001 15.5C22.0001 17.9853 19.9854 20 17.5001 20C15.0148 20 13.0001 17.9853 13.0001 15.5C13.0001 13.0147 15.0148 11 17.5001 11C19.9854 11 22.0001 13.0147 22.0001 15.5ZM10.5593 26.9383C12.1536 24.5446 14.6695 23 17.5001 23C20.3307 23 22.8465 24.5446 24.4409 26.9383C24.7901 27.4628 24.9648 27.725 24.9446 28.0599C24.929 28.3207 24.758 28.64 24.5496 28.7976C24.282 29 23.9139 29 23.1777 29H11.8224C11.0863 29 10.7182 29 10.4505 28.7976C10.2421 28.64 10.0712 28.3207 10.0555 28.0599C10.0354 27.725 10.21 27.4628 10.5593 26.9383Z" stroke="#FF5900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+      </div>
+      </div>
+
       <div className='bg-[#FFFFFF] p-[16px] gap-[10px] rounded-[8px] flex items-start justify-between'>
         <div className='flex flex-col gap-[16px]'>
-          <p>Total Approved</p>
+          <p> Approved Contents</p>
           <div className='flex items-center gap-[8px]'>
               <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalApprovedCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
@@ -91,7 +113,7 @@ export default function page() {
       </div>
     <div className='bg-[#FFFFFF] p-[16px] gap-[10px] rounded-[8px] flex items-start justify-between'>
         <div className='flex flex-col gap-[16px]'>
-          <p>Total Disapproved</p>
+          <p>Rejected Contents</p>
           <div className='flex items-center gap-[8px]'>
               <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.totalDisapprovedCount}</p> 
               <div className='flex text-[#0DAF64] text-[12px] '>
