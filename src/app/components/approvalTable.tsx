@@ -92,7 +92,7 @@ const {state} = useUser()
 const filterBy = async ()=>{
   try {
     const response = await fetch(
-      `https://citadel-i-project.onrender.com/api/v1/uploads/all`,
+      `https://citadel-i-project.onrender.com/api/v1/uploads`,
       {
         method: "GET",
         credentials: 'include',
@@ -193,8 +193,8 @@ const Disapprove = async (Type:string, id:number)=>{
       <td className={`px-4 py-2 ${item.status === "Pending" ? "text-yellow-500": item.status === "Approved" ?"text-green-500":"text-red-500"}`}>{item.status}</td>
       <td className="px-4 py-2">
         <div className="flex items-center gap-2">
-         <button onClick={()=>Approve(item.uploadType, item.id)}>Approve</button>
-         <button onClick={()=>Disapprove(item.uploadType, item.id)}>Disapprove</button>
+         <button onClick={()=>Approve(item.uploadType, item.id)} className="bg-green-500 text-white p-[4px] rounded-[4px] text-[12px]">Approve</button>
+         <button onClick={()=>Disapprove(item.uploadType, item.id)} className="bg-red-500 text-white p-[4px] rounded-[4px] text-[12px]">Disapprove</button>
         </div>
       </td>
     </tr>
