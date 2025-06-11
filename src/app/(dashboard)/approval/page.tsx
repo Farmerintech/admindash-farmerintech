@@ -19,7 +19,7 @@ export default function page() {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            "https://citadel-i-project.onrender.com/api/v1/uploads/all",
+            "https://citadel-i-project.onrender.com/api/v1/uploads",
             {
               method: "GET",
               credentials: 'include',
