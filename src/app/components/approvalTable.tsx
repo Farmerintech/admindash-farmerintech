@@ -198,7 +198,7 @@ const Disapprove = async (Type:string, id:number)=>{
       <td className="px-4 py-2">
         <div className="flex items-center gap-2">
          <button onClick={()=>Approve(item.uploadType, item.id)} className="bg-green-500 text-white p-[4px] rounded-[4px] text-[12px]">Approve</button>
-         <button onClick={()=>Disapprove(item.uploadType, item.id)} className="bg-red-500 text-white p-[4px] rounded-[4px] text-[12px]">Disapprove</button>
+         <button onClick={()=>Disapprove(item.uploadType, item.id)} className="bg-red-500 text-white p-[4px] rounded-[4px] text-[12px]">Reject</button>
         </div>
       </td>
     </tr>
