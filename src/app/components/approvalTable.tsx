@@ -54,7 +54,7 @@ import Link from "next/link";
   export function ApprovalTable() {
     const [data, setData] = useState<any>();
     const [error, setError] = useState<string>()
-    const [message, setMessage] = useState()
+    const [message, setMessage] = useState('')
 const {state} = useUser()
 
  useEffect(() => {
@@ -117,6 +117,8 @@ const filterBy = async ()=>{
 
 const Approve = async (Type:string, id:number)=>{
   try {
+      console.log(Type, id)
+
     const response = await fetch(
       `https://citadel-i-project.onrender.com/api/v1/uploads/approve/${id}`,
       {
@@ -136,16 +138,18 @@ const Approve = async (Type:string, id:number)=>{
     !response.ok && setError(result?.message || "Something went wrong");
   } catch (error) {
     console.error(error);
+    setMessage('')
     setError("Error connecting to server");
   }
 };
 
 const Disapprove = async (Type:string, id:number)=>{
+  console.log(Type, id)
   try {
     const response = await fetch(
       `https://citadel-i-project.onrender.com/api/v1/uploads/disapprove/${id}`,
       {
-        method: "PUT",
+        method: "POST",
         credentials: 'include',
         headers: {
           "Content-Type": "application/json",
