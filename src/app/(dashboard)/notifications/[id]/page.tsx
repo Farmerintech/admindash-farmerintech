@@ -22,7 +22,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         const response = await fetch(
           `https://citadel-i-project.onrender.com/api/v1/notification/${id}`,
           {
-            method: "GET",
+            method: "PATCH",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
