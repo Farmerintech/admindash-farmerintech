@@ -59,9 +59,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         {!loading && !data && <p className="text-gray-500 text-center py-4">No notification found.</p>}
         {data && (
           <div>
-            <div className="mb-2 cursor-pointer hover:bg-gray-100 p-2 rounded">
-              <p className="font-semibold">{data.title}</p>
-              <p className="text-xs text-orange-500">{data.body}</p>
+            <div className="mb-2 cursor-pointer hover:bg-gray-100 p-2 rounded flex flex-col gap-[8px]">
+              <p className="font-[600]">{data.title}</p>
+              <p className="">{data.body}</p>
             </div>
           </div>
         )}
