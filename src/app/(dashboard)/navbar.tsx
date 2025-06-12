@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation';
@@ -13,6 +13,7 @@ import { useSidebar } from '../context/sideBarState';
 import Cookies from 'js-cookie';
 import Logo from "@/app/assets/Logo.svg"
 import admin from "@/app/assets/admin.jpg"
+import { Notifications } from '../components/notifications';
 
 export default function SidebarLayo() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
@@ -115,7 +116,42 @@ export const Header = () => {
     setSidebarOpen(!sidebarOpen);
   };
   const { state, dispatch } = useUser();
-
+  const [show, setShow] = useState(false)
+   const handleShow = () => {
+    setShow(!show);
+  };
+  const [data, setData] = useState<any>()
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://citadel-i-project.onrender.com/api/v1/notification/receive",
+            {
+              method: "GET",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
+          const result = await response.json();
+          if (!response.ok) {
+            // setError(result?.message || "Something went wrong");
+          } else {
+            setData(result);
+          }
+        } catch (error) {
+          console.error(error);
+          // setError("Error connecting to server");
+        } finally {
+          // setLoading(false);
+        }
+      };
+      fetchData();
+    }, []);
+  
+  
   return (
     <section className='bg-[#FFFFFF] px-[24px] py-[16px] flex items-center justify-between border-b-[0.5px]'>
       <div className='md:hidden text-[#FFEEE6] '>
@@ -146,17 +182,17 @@ export const Header = () => {
     </div>
     <div className='flex gap-[56px] items-center'>
       <div className='flex gap-[24px]'>
-        <span>
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"> 
-        <rect width="28" height="28" rx="16" fill="#FBE3B0"/>
-        <path d="M25 25L20.65 20.65M23 15C23 19.4183 19.4183 23 15 23C10.5817 23 7 19.4183 7 15C7 10.5817 10.5817 7 15 7C19.4183 7 23 10.5817 23 15Z" stroke="#0F0F0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        </span>
-        <span>
+        <div>
+          <span onClick={()=>{handleShow()}} className='relative'>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.35419 21C10.0593 21.6224 10.9856 22 12 22C13.0145 22 13.9407 21.6224 14.6458 21M18 8C18 6.4087 17.3679 4.88258 16.2427 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.8826 2.63214 7.75738 3.75736C6.63216 4.88258 6.00002 6.4087 6.00002 8C6.00002 11.0902 5.22049 13.206 4.34968 14.6054C3.61515 15.7859 3.24788 16.3761 3.26134 16.5408C3.27626 16.7231 3.31488 16.7926 3.46179 16.9016C3.59448 17 4.19261 17 5.38887 17H18.6112C19.8074 17 20.4056 17 20.5382 16.9016C20.6852 16.7926 20.7238 16.7231 20.7387 16.5408C20.7522 16.3761 20.3849 15.7859 19.6504 14.6054C18.7795 13.206 18 11.0902 18 8Z" stroke="#0F0F0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+        <p className={`${data?.count ? "absolute top-0 left-2 bg-orange-500 w-[20px] h-[20px] text-[12px] text-white rounded-full text-center":"hidden"}`}>{data ? data?.count :0}</p>
         </span>
+        <div className={`${show ? "absolute top-[55px] right-[120px] flex bg-red-600 shadow-md":"hidden"}`}>
+          <Notifications/>
+        </div>
+        </div>
         <span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z" stroke="#0F0F0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
