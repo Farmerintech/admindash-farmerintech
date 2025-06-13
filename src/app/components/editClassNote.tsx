@@ -242,7 +242,7 @@ console.log(result.data)
             </button>
           </div>
 
-          <Modal message={message && message} error={"error && error"}/>
+             <Modal message={message || ""} error={error || ""}/>
         </section>
 
         <section className="flex-1">
