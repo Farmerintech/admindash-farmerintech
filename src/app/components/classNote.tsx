@@ -14,6 +14,7 @@ import { subjects } from "./subjects";
 import dynamic from "next/dynamic";
 import { AddImageToContent } from "./addImage";
 import { AddSubject } from "./addSubject";
+import {Modal} from "@/app/components/modal"
 
 const MyEditor = dynamic(() => import("./editor"), { ssr: false });
 
@@ -37,7 +38,7 @@ export const ClassNote = () => {
   const [tableOfContent, setTableOfContent] = useState<string[]>([]);
 
   const [error, setError] = useState<string>();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string>();
   const [active, setActive] = useState(false);
   const [isChoosen, setIsChoosen] = useState(false);
   const { state } = useUser();
@@ -163,7 +164,7 @@ export const ClassNote = () => {
 
   return (
     <section className="flex flex-col gap-[64px] w-full">
-      <AddSubject />
+      {/* <AddSubject /> */}
       <form
         onSubmit={handleSubmit}
         className="md:flex md:justify-between md:gap-8 md:flex-row flex-col w-full"
@@ -265,8 +266,7 @@ export const ClassNote = () => {
             {/* === END TABLE OF CONTENT === */}
 
           {/* Message / Error */}
-          {message && <p className="text-green-500">{message}</p>}
-          {error && <p className="text-red-600">{error}</p>}
+             <Modal message={message!=='' && message} error={error!=='' && error}/>
         </section>
 
         <section className="w-full flex-1 mt-6 md:mt-0">
