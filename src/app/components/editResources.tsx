@@ -168,7 +168,7 @@ export const EditResources = ({ resourceId }: Props) => {
   return (
     <form className="md:flex md:justify-between md:gap-[30px] w-full" onSubmit={handleSubmit}>
       {/* Upload File */}
-            <Modal message={message && message} error={"error && error"}/>
+             <Modal message={message || ""} error={error || ""}/>
 
       <section className="w-full">
         <div className="flex flex-col gap-[8px] w-full">
