@@ -266,7 +266,7 @@ export const ClassNote = () => {
             {/* === END TABLE OF CONTENT === */}
 
           {/* Message / Error */}
-             <Modal message={message!=='' && message} error={error!=='' && error}/>
+             <Modal message={message || ""} error={error || ""}/>
         </section>
 
         <section className="w-full flex-1 mt-6 md:mt-0">
