@@ -169,7 +169,7 @@ export const UploadResources = () => {
           </div>
         </label>
       </div>
-      <Modal message={message && message} error={error && error}/>
+             <Modal message={message || ""} error={error || ""}/>
       <p>{fileName}</p>
       </section>
 
