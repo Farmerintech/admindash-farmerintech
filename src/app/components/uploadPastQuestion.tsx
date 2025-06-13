@@ -12,6 +12,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useSidebar } from "../context/sideBarState"
 import { useUser } from "../context/reducer"
 import { subjects } from "./subjects"
+import {Modal} from "@/app/components/modal"
 
 // const subjects = ['English Language', 'Mathematics']
 const examTypes = 
@@ -162,7 +163,7 @@ export const UploadPastQuestion = () => {
     >
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
-        <p className="">{message}</p>
+      <Modal message={message && message} error={error && error}/>
 
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
