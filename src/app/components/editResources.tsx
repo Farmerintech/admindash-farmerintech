@@ -133,7 +133,7 @@ export const EditResources = ({ resourceId }: Props) => {
       formData.append("resourceFor", form.resourceFor);
 
       const endpoint =`https://citadel-i-project.onrender.com/api/v1/resources/${resourceId}`
-      const method = isEditing ? "PUT"
+      const method = "PUT"
       const response = await fetch(endpoint, {
         method,
         credentials: "include",
