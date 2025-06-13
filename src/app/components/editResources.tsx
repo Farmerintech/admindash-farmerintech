@@ -11,6 +11,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { sources } from "./sources";
 import { FaCheck } from "react-icons/fa";
 import { useUser } from "../context/reducer";
+import {Modal} from "@/app/components/modal"
 
 // Replace this with real data or props
 const subjects = ["English Language", "Mathematics"];
@@ -131,12 +132,8 @@ export const EditResources = ({ resourceId }: Props) => {
       formData.append("link", form.link);
       formData.append("resourceFor", form.resourceFor);
 
-      const endpoint = isEditing
-        ? `https://citadel-i-project.onrender.com/api/v1/resources/${resourceId}`
-        : "https://citadel-i-project.onrender.com/api/v1/resources/upload_resources";
-
-      const method = isEditing ? "PATCH" : "POST";
-
+      const endpoint =`https://citadel-i-project.onrender.com/api/v1/resources/${resourceId}`
+      const method = isEditing ? "PUT"
       const response = await fetch(endpoint, {
         method,
         credentials: "include",
@@ -171,6 +168,8 @@ export const EditResources = ({ resourceId }: Props) => {
   return (
     <form className="md:flex md:justify-between md:gap-[30px] w-full" onSubmit={handleSubmit}>
       {/* Upload File */}
+            <Modal message={message && message} error={"error && error"}/>
+
       <section className="w-full">
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Upload New Resources</label>
