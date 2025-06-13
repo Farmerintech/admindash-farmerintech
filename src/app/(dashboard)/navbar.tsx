@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
 import { FaUserGraduate, FaClipboardList, FaPaypal } from "react-icons/fa";
-import { MdDashboard, MdLogout } from "react-icons/md";
+import { MdDashboard, MdLogout, MdSettings } from "react-icons/md";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { useUser } from '../context/reducer';
 import { useSidebar } from '../context/sideBarState';
@@ -28,6 +28,7 @@ export default function SidebarLayo() {
     { name: "Manage Content", href: "/manage_content", icon: <AiOutlineSchedule /> },
     { name: "Approval", href: "/approval", icon: <FaClipboardList /> },
     { name: "Payments", href: "/payment", icon: <FaPaypal /> },
+    { name: "Settings", href: "/settings", icon: <MdSettings /> },
     { name: "Logout", href: "/logout", icon: <MdLogout /> },
   ];
 
