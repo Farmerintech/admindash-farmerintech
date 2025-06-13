@@ -13,7 +13,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { sources } from "./sources"
 import { FaCheck, FaFileImage } from "react-icons/fa"
 import { useUser } from "../context/reducer"
-
+import {Modal} from "@/app/components/modal"
 const subjects = ['English Language', 'Mathematics']
 const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
@@ -169,7 +169,7 @@ export const UploadResources = () => {
           </div>
         </label>
       </div>
-      <p className={`${message ? "text-green-500":'text-red-600'}`}>{message ? message : error}</p>
+      <Modal message={message && message} error={error && error}/>
       <p>{fileName}</p>
       </section>
 
