@@ -14,7 +14,7 @@ export const Modal = ({ message, error }: ModalProps) => {
       setShow(true);
       const timeout = setTimeout(() => {
         setShow(false);
-      }, 1000);
+      }, 2000);
 
       return () => clearTimeout(timeout); // cleanup to avoid memory leak
     }
@@ -24,13 +24,19 @@ export const Modal = ({ message, error }: ModalProps) => {
     <section
       className={`${
         show
-          ? "w-1/2 bg-white p-5 absolute z-10 shadow-md top-[50%] left-[30%] md:left-[35%] -translate-y-1/2 -translate-x-1/3 md:-translate-x-[35%]"
+          ? "fixed inset-0 z-50 flex items-center justify-center"
           : "hidden"
       }`}
     >
-      <p className={`${message ? "text-green-500" : "text-red-500"} text-center`}>
-        {message || error}
-      </p>
+      <div className="w-1/2 max-w-md bg-white p-5 shadow-lg rounded-md">
+        <p
+          className={`${
+            message ? "text-green-500" : "text-red-500"
+          } text-center`}
+        >
+          {message || error}
+        </p>
+      </div>
     </section>
   );
 };
