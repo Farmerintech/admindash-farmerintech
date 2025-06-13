@@ -12,6 +12,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { useUser } from "../context/reducer"
 import { subjects } from "./subjects"
+import {Modal} from "@/app/components/modal"
 
 const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 type EditPQProps = {
@@ -156,8 +157,7 @@ useEffect(() => {
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
-        <p className="text-red-600">{error}</p>
-        <p className="text-green-600">{message}</p>
+            <Modal message={message && message} error={"error && error"}/>
 
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
