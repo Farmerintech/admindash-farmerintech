@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { subjects } from "./subjects";
 import { AddImageToContent } from "./addImage";
+import {Modal} from "@/app/components/modal"
 
 const MyEditor = dynamic(() => import("./editor"), { ssr: false });
 
@@ -241,8 +242,7 @@ console.log(result.data)
             </button>
           </div>
 
-          {error && <p className="text-red-600">{error}</p>}
-          {message && <p className="text-green-500">{message}</p>}
+          <Modal message={message && message} error={"error && error"}/>
         </section>
 
         <section className="flex-1">
