@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useSidebar } from "../context/sideBarState"
 import { useUser } from "../context/reducer"
+import {Modal} from "@/app/components/modal"
 const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
 const subjects = ['English Language', 'Mathematics']
@@ -153,7 +154,7 @@ export const UploadExamQuestion= () => {
   return (
     <form className="md:flex md:justify-between md:gap-[60px] flex-col md:flex-row w-full" onSubmit={handleSubmit}>
       <section className="w-full flex gap-[16px] flex-col">
-      <p className="text-green-500">{message && message}</p>
+      <Modal message={message && message} error={error && error}/>
         {/* Subject */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
