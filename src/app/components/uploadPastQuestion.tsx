@@ -163,7 +163,7 @@ export const UploadPastQuestion = () => {
     >
       <section className="w-full flex gap-[16px] flex-col">
         {/* Subject */}
-      <Modal message={message && message} error={error && error}/>
+             <Modal message={message || ""} error={error || ""}/>
 
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Subject</label>
