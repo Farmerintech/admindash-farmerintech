@@ -165,40 +165,46 @@ useEffect(() => {
         </Select>
         </form>
     </div>
-    <section className=" rounded-md over-flow-x-scroll w-[full] px-[4px]">
-      <Table className="table-fixed overflow-x-scroll">
-        <TableHeader className="bg-orange-100">
-          <TableRow>
-            <TableHead>UserID</TableHead>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Perform Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data && data.map((user:userInterface) => (
-            <TableRow key={user.userId}>
-              <TableCell>{user.userId}</TableCell>
-              <TableCell className="text-[12px] md:text-[14px]">{user.firstName} {user.lastName}</TableCell>
-              <TableCell>{user.role }</TableCell>
-              <TableCell>{user.active ? "active" : "Suspended"}</TableCell>
-              <TableCell className="text-right flex items-center gap-[8px]">
-                {actions.map((action, index) => (
-                  <p
-                    key={index}
-                    className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
-                  >
-                    {/* <span className="hidden md:block">{action.name}</span> */}
-                    {action.icon}
-                  </p>
-                ))}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      </section>
+<section className="w-full overflow-x-auto px-2 rounded-md">
+  <table className="min-w-full table-auto border-collapse">
+    <thead className="bg-orange-100">
+      <tr>
+        <th className="px-4 py-2 text-left text-xs md:text-sm font-semibold text-gray-600">UserID</th>
+        <th className="px-4 py-2 text-left text-xs md:text-sm font-semibold text-gray-600 min-w-[150px]">Name</th>
+        <th className="px-4 py-2 text-left text-xs md:text-sm font-semibold text-gray-600">Role</th>
+        <th className="px-4 py-2 text-left text-xs md:text-sm font-semibold text-gray-600">Status</th>
+        <th className="px-4 py-2 text-left text-xs md:text-sm font-semibold text-gray-600 min-w-[130px]">Perform Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {data?.map((user) => (
+        <tr key={user.userId} className="border-b hover:bg-gray-50">
+          <td className="px-4 py-2 text-xs md:text-sm">{user.userId}</td>
+          <td className="px-4 py-2 text-xs md:text-sm whitespace-nowrap">
+            {user.firstName} {user.lastName}
+          </td>
+          <td className="px-4 py-2 text-xs md:text-sm">{user.role}</td>
+          <td className="px-4 py-2 text-xs md:text-sm">
+            {user.active ? "Active" : "Suspended"}
+          </td>
+          <td className="px-4 py-2 text-xs md:text-sm">
+            <div className="flex flex-wrap gap-2">
+              {actions.map((action, index) => (
+                <span
+                  key={index}
+                  className={`cursor-pointer flex items-center gap-1 ${action.color} text-xs md:text-sm`}
+                >
+                  {/* <span className="hidden md:inline">{action.name}</span> */}
+                  {action.icon}
+                </span>
+              ))}
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</section>
       </>
     );
   }
