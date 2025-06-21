@@ -19,8 +19,8 @@ const examTypes = ['JAMB', 'WAEC', "NECO", "GCE/IGCE"]
 
 export const UploadResources = () => {
   const [data, setData] = useState<any>({});
-  const [error, setError] = useState<string>();
-  const [message, setMessage] = useState()
+  const [error, setError] = useState<string>('');
+  const [message, setMessage] = useState('')
   const { state } = useUser();
 
     type file =any
@@ -119,6 +119,10 @@ export const UploadResources = () => {
     const [fileName, setFileName] = useState('')
     const [isChoosen, setIsChoosen] = useState(false)
   return (
+    <>
+                 <Modal message={message || ""} error={error || ""}/>
+
+   
     <form className="md:flex md:justify-between md:gap-[30px] w-full" onSubmit={handleSubmit} name="">
       {/* Upload File */}
       <section className="w-full">
@@ -169,7 +173,6 @@ export const UploadResources = () => {
           </div>
         </label>
       </div>
-             <Modal message={message || ""} error={error || ""}/>
       <p>{fileName}</p>
       </section>
 
@@ -240,5 +243,6 @@ export const UploadResources = () => {
         </section>
 
     </form>
+       </>
   )
 }
