@@ -163,6 +163,10 @@ export const ClassNote = () => {
   }, [form]);
 
   return (
+    <>
+    {/* Message / Error */}
+             <Modal message={message || ""} error={error || ""}/>
+   
     <section className="flex flex-col gap-[64px] w-full">
       {/* <AddSubject /> */}
       <form
@@ -265,8 +269,7 @@ export const ClassNote = () => {
             </div>
             {/* === END TABLE OF CONTENT === */}
 
-          {/* Message / Error */}
-             <Modal message={message || ""} error={error || ""}/>
+          
         </section>
 
         <section className="w-full flex-1 mt-6 md:mt-0">
@@ -329,6 +332,7 @@ export const ClassNote = () => {
         </section>
       </form>
     </section>
+       </>
   );
 };
 
