@@ -93,7 +93,7 @@ useEffect(() => {
       if (!response.ok) {
         setError(result?.message || 'Something went wrong');
       } else {
-        setData(result.data);
+        setData(result.users);
       }
 
       console.log(result);
