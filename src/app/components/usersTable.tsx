@@ -1,15 +1,6 @@
 "use client"
 
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table";
+
   import { FaBan, FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
   import {
     Select,
@@ -169,7 +160,6 @@ useEffect(() => {
   <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
     <thead className="bg-gray-100">
       <tr>
-        <th className="px-4 py-2 font-semibold text-gray-700">UserID</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Name</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Role</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Status</th>
@@ -180,7 +170,6 @@ useEffect(() => {
       {data && data.length > 0 ? (
         data.map((user:any, index:number) => (
           <tr key={user.userId || index}>
-            <td className="px-4 py-2">{user.userId}</td>
             <td className="px-4 py-2 whitespace-nowrap">{user.firstName} {user.lastName}</td>
             <td className="px-4 py-2">{user.role}</td>
             <td className="px-4 py-2">
