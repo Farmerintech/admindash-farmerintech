@@ -178,7 +178,7 @@ useEffect(() => {
     </thead>
     <tbody className="divide-y divide-gray-100">
       {data && data.length > 0 ? (
-        data.map((user, index) => (
+        data.map((user:any, index:number) => (
           <tr key={user.userId || index}>
             <td className="px-4 py-2">{user.userId}</td>
             <td className="px-4 py-2 whitespace-nowrap">{user.firstName} {user.lastName}</td>
