@@ -23,7 +23,7 @@ export const UploadResources = () => {
   const [message, setMessage] = useState('')
   const { state } = useUser();
 
-    type file =any
+    type image =any
     const [form, setForm] = useState<any>({
         image:null,
         source:"",
