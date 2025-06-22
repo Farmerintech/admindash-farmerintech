@@ -25,7 +25,7 @@ export const UploadResources = () => {
 
     type file =any
     const [form, setForm] = useState<any>({
-        file:null,
+        image:null,
         source:"",
         description:"",
         link:"",
@@ -51,13 +51,12 @@ export const UploadResources = () => {
       })
   }
   const handleFile = (e:ChangeEvent<HTMLInputElement>) =>{
-    const thefile = e.target.files?.[0]
-    if (thefile) {
-      console.log("Selected file:", thefile);
-      setForm({
-          ...form,
-          file:thefile
-      })
+   const file = e.target.files?.[0];
+    if (file) {
+      setForm((prevForm: any) => ({
+        ...prevForm,
+        image: file,
+      }));
       setFileName(thefile.name);
       setIsChoosen(true)
     }
@@ -66,13 +65,13 @@ export const UploadResources = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   
-    if (!form.file || !form.source || !form.description || !form.link || !form.resourceFor) {
+    if (!form.image || !form.source || !form.description || !form.link || !form.resourceFor) {
       return;
     }
   
     try {
       const formData = new FormData();
-      formData.append("file", form.file);
+      formData.append("image", form.image);
       formData.append("source", form.source);
       formData.append("description", form.description);
       formData.append("link", form.link);
@@ -95,7 +94,7 @@ export const UploadResources = () => {
       setMessage(result?.message)
       console.log(error)
       setForm({
-        file: null,
+        image: null,
         source: "",
         description: "",
         link: "",
