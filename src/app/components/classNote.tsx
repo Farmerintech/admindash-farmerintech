@@ -37,8 +37,8 @@ export const ClassNote = () => {
   // New state for Table of Contents (TOC)
   const [tableOfContent, setTableOfContent] = useState<string[]>([]);
 
-  const [error, setError] = useState<string>();
-  const [message, setMessage] = useState<string>();
+  const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [active, setActive] = useState(false);
   const [isChoosen, setIsChoosen] = useState(false);
   const { state } = useUser();
