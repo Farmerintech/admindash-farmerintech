@@ -91,9 +91,8 @@ export const UploadResources = () => {
       );
   
       const result = await response.json();
-      setMessage(result?.message)
       !response.ok && setError(result?.error || "Something went wrong");
-
+      setMessage(result?.error)
       setForm({
         file: null,
         source: "",
