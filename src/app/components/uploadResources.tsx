@@ -57,7 +57,7 @@ export const UploadResources = () => {
         ...prevForm,
         image: file,
       }));
-      setFileName(thefile.name);
+      setFileName(file.name);
       setIsChoosen(true)
     }
 
