@@ -108,10 +108,10 @@ export const UploadResources = () => {
   };
 
   useEffect(()=>{
-        if(form.file !== '' && form.source !=="" && form.description!=='' && form.link !=='' && form.resourceFor !==""){
+        if(form.image !== '' && form.source !=="" && form.description!=='' && form.link !=='' && form.resourceFor !==""){
             setActive(true)
         }
-        if(!form.file){
+        if(!form.image){
           setIsChoosen(false);
         }
     }, [form])
