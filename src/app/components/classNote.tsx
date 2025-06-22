@@ -153,8 +153,8 @@ export const ClassNote = () => {
   };
 
   useEffect(() => {
-    setError("");
-    setMessage("");
+    //setError("");
+   // setMessage("");
 
     const isComplete =
       form.subject && form.class && form.year && form.image && form.term && form.topic;
