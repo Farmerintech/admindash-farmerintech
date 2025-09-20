@@ -14,9 +14,10 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
   };
 
   const handleImageUpload = (blobInfo: any, success: any, failure: any) => {
-    // Add a check to ensure blobInfo is not undefined
+    // Crucial check to ensure blobInfo and its methods are available
     if (!blobInfo || typeof blobInfo.blob !== 'function') {
-      failure('Invalid image data provided.');
+      console.error("Error: blobInfo is undefined or blob() is not a function.");
+      failure('Invalid image data. Please try a different image.');
       return;
     }
 
@@ -36,7 +37,7 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
     })
     .then(json => {
       if (!json || typeof json.location !== 'string') {
-        failure('Invalid JSON: ' + JSON.stringify(json));
+        failure('Invalid JSON response: ' + JSON.stringify(json));
         return;
       }
       success(json.location);
