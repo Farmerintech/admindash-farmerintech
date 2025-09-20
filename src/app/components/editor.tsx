@@ -13,7 +13,7 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
     onChange(content);
   };
 
-  const handleImageUpload = (blobInfo: any, success: any, failure: any) => {
+  const handleImageUpload = async (blobInfo: any, success: any, failure: any) => {
     // Crucial check to ensure blobInfo and its methods are available
     if (!blobInfo || typeof blobInfo.blob !== 'function') {
       console.error("Error: blobInfo is undefined or blob() is not a function.");
@@ -24,27 +24,29 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-    fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
-      method: 'POST',
-      credentials: 'include',
-      body: formData,
-    })
-    .then(response => {
+    try {
+      const response = await fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
       if (!response.ok) {
         throw new Error('HTTP Error: ' + response.status);
       }
-      return response.json();
-    })
-    .then(json => {
+
+      const json = await response.json();
+
       if (!json || typeof json.location !== 'string') {
-        failure('Invalid JSON response: ' + JSON.stringify(json));
-        return;
+        throw new Error('Invalid JSON response: ' + JSON.stringify(json));
       }
+
       success(json.location);
-    })
-    .catch(error => {
+
+    } catch (error: any) {
+      console.error('Upload failed:', error.message);
       failure('Upload failed: ' + error.message);
-    });
+    }
   };
 
   return (
