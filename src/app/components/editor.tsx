@@ -24,10 +24,8 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
   fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
 
     method: 'POST',
-
+    credentials: 'include',
     body: formData,
-
-    // Add custom headers if needed, e.g., an authentication token
 
     // headers: {
 
