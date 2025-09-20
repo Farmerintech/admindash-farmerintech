@@ -89,51 +89,53 @@ export const ClassNote = () => {
     setTableOfContent(updated);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const [loading, setLoading] = useState(false);
 
-    if (
-      !form.image ||
-      !form.class ||
-      !form.subject ||
-      !form.year ||
-      !form.term ||
-      !form.topic
-    ) {
-      setError("Please fill in all required fields.");
-      return;
-    }
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setError(""); 
+  setMessage("");
+  setLoading(true);
 
-    try {
-      const formData = new FormData();
-      formData.append("image", form.image);
-      formData.append("class", form.class);
-      formData.append("subject", form.subject);
-      formData.append("year", form.year);
-      formData.append("term", form.term);
-      formData.append("topic", form.topic);
-      formData.append("content", form.content);
-      formData.append("tableOfContent", JSON.stringify(tableOfContent)); // <-- Added here
-      if (form.videoSection) formData.append("videoSection", form.videoSection);
+  if (
+    !form.image ||
+    !form.class ||
+    !form.subject ||
+    !form.year ||
+    !form.term ||
+    !form.topic
+  ) {
+    setError("Please fill in all required fields.");
+    setLoading(false);
+    return;
+  }
 
-      console.log("Submitting form with TOC:", tableOfContent);
+  try {
+    const formData = new FormData();
+    formData.append("image", form.image);
+    formData.append("class", form.class);
+    formData.append("subject", form.subject);
+    formData.append("year", form.year);
+    formData.append("term", form.term);
+    formData.append("topic", form.topic);
+    formData.append("content", form.content);
+    formData.append("tableOfContent", JSON.stringify(tableOfContent));
+    if (form.videoSection) formData.append("videoSection", form.videoSection);
 
-      const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      );
-
-      const result = await response.json();
-      if (!response.ok) {
-        setError(result?.message || "Something went wrong");
-        return;
+    const response = await fetch(
+      "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
       }
+    );
 
-      setMessage(result?.message || "Upload successful");
+    const result = await response.json();
+    if (!response.ok) {
+      setError(result?.message || "Something went wrong");
+    } else {
+      setMessage(result?.message || "Upload successful ✅");
       setForm({
         subject: "",
         year: "",
@@ -144,13 +146,16 @@ export const ClassNote = () => {
         content: "",
         videoSection: "",
       });
-      setTableOfContent([]); // reset TOC on success
+      setTableOfContent([]);
       setIsChoosen(false);
-    } catch (err) {
-      console.error(err);
-      setError("Error connecting to server");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Error connecting to server");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     //setError("");
@@ -277,7 +282,7 @@ export const ClassNote = () => {
             <label className="text-[#344054] block mb-1">Content</label>
             <MyEditor value={form.content} onChange={handleEditorChange} />
           </div>
-          <AddImageToContent />
+          {/*<AddImageToContent />*/}
           {/* Upload Video Section */}
           <h2 className="mt-6 mb-2 text-[#344054]">Add Video Section</h2>
           <label className="relative w-full h-60 border border-[#667085] xl:w-[430px] rounded-lg hover:border-[#F6C354] flex items-center justify-center text-center p-4 cursor-pointer">
@@ -319,15 +324,16 @@ export const ClassNote = () => {
             </div>
           </label>
           <button
-            type="submit"
-            disabled={!active}
-            className={`mt-6 w-[280px] rounded-[8px] py-3 text-white text-lg font-semibold ${
-              active
-                ? "bg-orange-500 hover:bg-orange-600"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-          >
-            Submit 
+  type="submit"
+  disabled={!active || loading}
+  className={`mt-6 w-[280px] rounded-[8px] py-3 text-white text-lg font-semibold ${
+    !active || loading
+      ? "bg-gray-300 cursor-not-allowed"
+      : "bg-orange-500 hover:bg-orange-600"
+  }`}
+>
+  {loading ? "Submitting..." : "Submit"}
+</button>
           </button>
         </section>
       </form>
