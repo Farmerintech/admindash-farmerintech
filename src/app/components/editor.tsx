@@ -14,67 +14,41 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
   };
 
   const handleImageUpload = (blobInfo: any, success: any, failure: any) => {
-
-  const formData = new FormData();
-
-  formData.append('file', blobInfo.blob(), blobInfo.filename());
-
-
-
-  fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
-
-    method: 'POST',
-    credentials: 'include',
-    body: formData,
-
-    // headers: {
-
-    //   'Authorization': 'Bearer YOUR_AUTH_TOKEN'
-
-    // }
-
-  })
-
-  .then(response => {
-
-    if (!response.ok) {
-
-      throw new Error('HTTP Error: ' + response.status);
-
-    }
-
-    return response.json();
-
-  })
-
-  .then(json => {
-
-    if (!json || typeof json.location !== 'string') {
-
-      failure('Invalid JSON: ' + JSON.stringify(json));
-
+    // Add a check to ensure blobInfo is not undefined
+    if (!blobInfo || typeof blobInfo.blob !== 'function') {
+      failure('Invalid image data provided.');
       return;
-
     }
 
-    success(json.location);
+    const formData = new FormData();
+    formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-  })
+    fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('HTTP Error: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(json => {
+      if (!json || typeof json.location !== 'string') {
+        failure('Invalid JSON: ' + JSON.stringify(json));
+        return;
+      }
+      success(json.location);
+    })
+    .catch(error => {
+      failure('Upload failed: ' + error.message);
+    });
+  };
 
-  .catch(error => {
-
-    failure('Upload failed: ' + error.message);
-
-  });
-
-};
-
-
-
-        
   return (
     <Editor
-      apiKey="6w9bc8dum7gzu0h6fqaiexu8tr2lsk22vprqlh3kz2znncio" // Replace with your actual API key or use `tinymce.init` for self-hosted
+      apiKey="6w9bc8dum7gzu0h6fqaiexu8tr2lsk22vprqlh3kz2znncio"
       value={value}
       init={{
         height: 500,
