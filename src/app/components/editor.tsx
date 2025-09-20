@@ -8,45 +8,40 @@ interface EditorProps {
 }
 
 const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
-  const handleEditorChange = (content: string, editor: any) => {
-    console.log("Editor content was updated: ", content);
+  const handleEditorChange = (content: string) => {
+    console.log('Editor content was updated:', content);
     onChange(content);
   };
 
-  const handleImageUpload = async (blobInfo: any, success: any, failure: any) => {
-    // Crucial check to ensure blobInfo and its methods are available
+  // TinyMCE v6 expects a Promise-based image upload handler
+  const handleImageUpload = async (blobInfo: any): Promise<string> => {
     if (!blobInfo || typeof blobInfo.blob !== 'function') {
-      console.error("Error: blobInfo is undefined or blob() is not a function.");
-      failure('Invalid image data. Please try a different image.');
-      return;
+      throw new Error('Invalid image data. Please try a different image.');
     }
 
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-    try {
-      const response = await fetch('https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image', {
+    const response = await fetch(
+      'https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image',
+      {
         method: 'POST',
         credentials: 'include',
         body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('HTTP Error: ' + response.status);
       }
+    );
 
-      const json = await response.json();
-
-      if (!json || typeof json.location !== 'string') {
-        throw new Error('Invalid JSON response: ' + JSON.stringify(json));
-      }
-
-      success(json.location);
-
-    } catch (error: any) {
-      console.error('Upload failed:', error.message);
-      failure('Upload failed: ' + error.message);
+    if (!response.ok) {
+      throw new Error('HTTP Error: ' + response.status);
     }
+
+    const json = await response.json();
+
+    if (!json || typeof json.location !== 'string') {
+      throw new Error('Invalid JSON response: ' + JSON.stringify(json));
+    }
+
+    return json.location; // TinyMCE will insert the image with this URL
   };
 
   return (
@@ -57,14 +52,29 @@ const MyEditor: FC<EditorProps> = ({ value = '', onChange }) => {
         height: 500,
         menubar: true,
         plugins: [
-          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'image',
+          'charmap',
+          'preview',
+          'anchor',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'insertdatetime',
+          'media',
+          'table',
+          'help',
+          'wordcount',
         ],
         toolbar:
           'undo redo | formatselect | bold italic | alignleft aligncenter alignright | outdent indent | link image',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-        images_upload_handler: handleImageUpload
+        content_style:
+          'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+        images_upload_handler: handleImageUpload,
       }}
       onEditorChange={handleEditorChange}
     />
