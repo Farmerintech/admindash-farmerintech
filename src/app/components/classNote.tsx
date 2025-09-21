@@ -100,7 +100,7 @@ export const ClassNote = () => {
       !form.topic
     ) {
       setError("Please fill in all required fields.");
-      alert("Please fill in all required fields ❌");
+      alert("Please fill in all required fields ");
       setLoading(false);
       return;
     }
@@ -129,7 +129,7 @@ export const ClassNote = () => {
       const result = await response.json();
       if (!response.ok) {
         setError(result?.message || "Something went wrong");
-        alert(result?.message || "Something went wrong ❌");
+        alert(result?.message || "Something went wrong ");
       } else {
         setMessage(result?.message || "Upload successful ✅");
         alert(result?.message || "Upload successful ✅");
@@ -150,7 +150,7 @@ export const ClassNote = () => {
     } catch (err) {
       console.error(err);
       setError("Error connecting to server");
-      alert("Error connecting to server ❌");
+      alert("Error connecting to server ");
     } finally {
       setLoading(false);
     }
