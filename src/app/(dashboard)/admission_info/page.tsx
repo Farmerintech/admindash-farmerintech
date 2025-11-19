@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState, FormEvent } from "react";
 import { Courses, Schools } from "./data";
-import { useUser } from "../context/reducer";
+import { useUser } from "@/app/context/reducer";
 import { Modal } from "@/app/components/modal";
 
 const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false });
