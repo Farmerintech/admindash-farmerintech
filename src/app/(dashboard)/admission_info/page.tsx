@@ -68,50 +68,55 @@ export default function AdmissionRequirementForm() {
   // ---------------------------
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    setLoading(true)
-    event.preventDefault();
-    setError("");
-    setMessage("");
+  event.preventDefault();
+  setError("");
+  setMessage("");
+  setLoading(true);
 
-    // REQUIRED VALUES CHECK
-    if (!form.school || !form.course || !form.year || !form.requirements) {
-      setError("All fields are required");
+  if (!form.school || !form.course || !form.year || !form.requirements) {
+    setError("All fields are required");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://citadel-i-project.onrender.com/api/v1/admin/admission_requirements",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      }
+    );
+
+    const result = await response.json();
+    console.log(result);
+
+    if (!response.ok) {
+      setError(result?.error || "Something went wrong");
+      setLoading(false);
       return;
     }
-   
-    try {
 
-      const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/admin/admission_requirements",
-        {
-          method: "POST",
-          credentials: "include",
-          body: JSON.stringify(form),
-        }
-      );
+    setMessage(result?.message || "Submitted successfully");
+    setLoading(false);
 
-      const result = await response.json();
-      console.log(result, form);
-      if (!response.ok) {
-        setError(result?.error || "Something went wrong");
-        return;
-      }
+    setForm({
+      course: "",
+      school: "",
+      year: "",
+      requirements: "",
+    });
 
-      setMessage(result?.message || "Submitted successfully");
-      setLoading(false)
-      // RESET FORM
-      setForm({
-        course: "",
-        school: "",
-        year: "",
-        requirements: "",
-      });
-    } catch (err) {
-      console.error(err);
-      setError("Error connecting to server");
-      setLoading(false)
-    }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Error connecting to server");
+    setLoading(false);
+  }
+};
 
   // ---------------------------
   // JSX
