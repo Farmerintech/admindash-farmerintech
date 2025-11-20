@@ -22,7 +22,7 @@ export default function AdmissionRequirementForm() {
 
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState("");
-  const [active, setActive] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [form, setForm] = useState<any>({
     course: "",
@@ -68,6 +68,7 @@ export default function AdmissionRequirementForm() {
   // ---------------------------
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setLoading(true)
     event.preventDefault();
     setError("");
     setMessage("");
@@ -77,7 +78,7 @@ export default function AdmissionRequirementForm() {
       setError("All fields are required");
       return;
     }
-    setActive(true)
+   
     try {
       const payload = new FormData();
       payload.append("school", form.school);
@@ -102,7 +103,7 @@ export default function AdmissionRequirementForm() {
       }
 
       setMessage(result?.message || "Submitted successfully");
-
+      setLoading(false)
       // RESET FORM
       setForm({
         course: "",
@@ -113,6 +114,7 @@ export default function AdmissionRequirementForm() {
     } catch (err) {
       console.error(err);
       setError("Error connecting to server");
+      setLoading(false)
     }
   };
 
@@ -194,7 +196,7 @@ export default function AdmissionRequirementForm() {
           <button
             type="submit"
             className={`${
-              active ? "bg-orange-500" : ""
+              loading ? "bg-orange-500" : ""
             } mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
           >
             Submit
