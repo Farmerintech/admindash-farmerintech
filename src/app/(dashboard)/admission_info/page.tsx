@@ -196,8 +196,8 @@ export default function AdmissionRequirementForm() {
           <button
             type="submit"
             className={`${
-              loading ? "bg-orange-500" : ""
-            } mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
+              loading ? "bg-[#98A2B3]" : "bg-orange-500"
+            } mt-10 px-[24px] py-[12px] rounded-[8px]  text-white w-full md:w-[230px]`}
           >
             Submit
           </button>
