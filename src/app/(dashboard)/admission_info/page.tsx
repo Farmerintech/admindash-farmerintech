@@ -77,7 +77,7 @@ export default function AdmissionRequirementForm() {
       setError("All fields are required");
       return;
     }
-
+    setActive(true)
     try {
       const payload = new FormData();
       payload.append("school", form.school);
@@ -86,7 +86,7 @@ export default function AdmissionRequirementForm() {
       payload.append("requirements", form.requirements);
 
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/admission_requirements",
+        "https://citadel-i-project.onrender.com/api/v1/admin/admission_requirements",
         {
           method: "POST",
           credentials: "include",
@@ -124,7 +124,7 @@ export default function AdmissionRequirementForm() {
     <>
       <Modal message={message} error={error} />
       <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
-      <DashHook name={"Dashboard Overview"}/>
+      <DashHook name={"Admission Information"}/>
       <form
         className="md:flex md:justify-between md:gap-[30px] w-full"
         onSubmit={handleSubmit}
