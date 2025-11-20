@@ -96,7 +96,7 @@ export default function AdmissionRequirementForm() {
       );
 
       const result = await response.json();
-
+      console.log(result, payload);
       if (!response.ok) {
         setError(result?.error || "Something went wrong");
         return;
