@@ -8,12 +8,12 @@ import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
 import { FaUserGraduate, FaClipboardList, FaPaypal } from "react-icons/fa";
 import { MdDashboard, MdLogout, MdSettings,  MdCampaign } from "react-icons/md";
 import { AiOutlineSchedule } from "react-icons/ai";
-import { useUser } from '@/context/reducer';
-import { useSidebar } from '@/context/sideBarState';
+import { useUser } from '@/app/context/reducer';
+import { useSidebar } from '@/app/context/sideBarState';
 import Cookies from 'js-cookie';
 import Logo from "@/app/assets/Logo.svg"
 import admin from "@/app/assets/admin.jpg"
-import { Notifications } from '@/components/notifications';
+import { Notifications } from '@/app/components/notifications';
 
 export default function SidebarLayo() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();

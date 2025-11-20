@@ -10,13 +10,15 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState, FormEvent } from "react";
 import { Courses, Schools } from "./data";
-import { useUser } from "../context/reducer";
+import { useUser } from "@/app/context/reducer";
 import { Modal } from "@/app/components/modal";
-
+import { DashHook } from '@/app/components/dahHook';
+import { useSidebar } from '@/app/context/sideBarState';
 const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false });
 
 export default function AdmissionRequirementForm() {
   const { state } = useUser();
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
 
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState("");
@@ -121,7 +123,8 @@ export default function AdmissionRequirementForm() {
   return (
     <>
       <Modal message={message} error={error} />
-
+      <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
+      <DashHook name={"Dashboard Overview"}/>
       <form
         className="md:flex md:justify-between md:gap-[30px] w-full"
         onSubmit={handleSubmit}
@@ -198,6 +201,7 @@ export default function AdmissionRequirementForm() {
           </button>
         </section>
       </form>
+      </section>
     </>
   );
 }
