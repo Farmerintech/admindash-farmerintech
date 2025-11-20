@@ -86,7 +86,7 @@ export default function AdmissionRequirementForm() {
         {
           method: "POST",
           credentials: "include",
-          body: form,
+          body: JSON.stringify(form),
         }
       );
 
