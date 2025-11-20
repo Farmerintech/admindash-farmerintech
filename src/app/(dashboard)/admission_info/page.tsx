@@ -80,18 +80,13 @@ export default function AdmissionRequirementForm() {
     }
    
     try {
-      const payload = new FormData();
-      payload.append("school", form.school);
-      payload.append("course", form.course);
-      payload.append("year", form.year);
-      payload.append("requirements", form.requirements);
 
       const response = await fetch(
         "https://citadel-i-project.onrender.com/api/v1/admin/admission_requirements",
         {
           method: "POST",
           credentials: "include",
-          body: payload,
+          body: form,
         }
       );
 
