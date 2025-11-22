@@ -118,7 +118,7 @@ export const ClassNote = () => {
       if (form.videoSection) formData.append("videoSection", form.videoSection);
 
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
+        "https://api.citadel-i.com.ng/api/v1/note/upload_note",
         {
           method: "POST",
           credentials: "include",

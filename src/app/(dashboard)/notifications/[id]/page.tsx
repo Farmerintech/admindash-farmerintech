@@ -20,7 +20,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://citadel-i-project.onrender.com/api/v1/notification/${id}`,
+          `https://api.citadel-i.com.ng/api/v1/notification/${id}`,
           {
             method: "PATCH",
             credentials: "include",

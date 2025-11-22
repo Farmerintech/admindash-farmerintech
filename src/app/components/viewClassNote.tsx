@@ -28,7 +28,7 @@ export const ViewClassNote= ({id}:ViewClassNoteProps) => {
       setData(null);
       try {
         const res = await fetch(
-          `https://citadel-i-project.onrender.com/api/v1/note/get_note/${id}`,
+          `https://api.citadel-i.com.ng/api/v1/note/get_note/${id}`,
           {
             method: "GET",
             credentials:'include',

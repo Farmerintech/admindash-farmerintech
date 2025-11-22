@@ -23,7 +23,7 @@ export const ViewExamQuestion = ({id}:ViewPastQuestionProps) =>{
         setError("");
     
         try {
-          const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/exam_question/get_a_questions/${id}`, {
+          const response = await fetch(`https://api.citadel-i.com.ng/api/v1/exam_question/get_a_questions/${id}`, {
             method: "GET",
             credentials:'include',
             headers: {

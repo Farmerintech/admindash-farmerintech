@@ -96,7 +96,7 @@ export const UploadPastQuestion = () => {
   
     try {
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/past_question/upload_question",
+        "https://api.citadel-i.com.ng/api/v1/past_question/upload_question",
         {
           method: "POST",
            credentials: 'include',

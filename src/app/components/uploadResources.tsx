@@ -78,7 +78,7 @@ export const UploadResources = () => {
       formData.append("resourceFor", form.resourceFor);
   
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/resources/upload_resources",
+        "https://api.citadel-i.com.ng/api/v1/resources/upload_resources",
         {
           method: "POST",
           credentials: 'include',

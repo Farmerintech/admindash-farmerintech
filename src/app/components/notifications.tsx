@@ -20,7 +20,7 @@ export const Notifications = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://citadel-i-project.onrender.com/api/v1/notification/receive",
+          "https://api.citadel-i.com.ng/api/v1/notification/receive",
           {
             method: "GET",
             credentials: "include",

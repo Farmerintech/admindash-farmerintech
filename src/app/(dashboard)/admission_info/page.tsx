@@ -14,7 +14,7 @@ import { useUser } from "@/app/context/reducer";
 import { Modal } from "@/app/components/modal";
 import { DashHook } from '@/app/components/dahHook';
 import { useSidebar } from '@/app/context/sideBarState';
-const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false });
+const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false })
 
 export default function AdmissionRequirementForm() {
   const { state } = useUser();
@@ -82,7 +82,7 @@ export default function AdmissionRequirementForm() {
     try {
 
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/admin/admission_requirements",
+        "https://api.citadel-i.com.ng/api/v1/admin/admission_requirements",
         {
           method: "POST",
           credentials: "include",

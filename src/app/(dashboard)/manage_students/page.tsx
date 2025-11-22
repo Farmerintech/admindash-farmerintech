@@ -17,7 +17,7 @@ export default function page () {
     useEffect( ()=>{
       const fetchData = async ()=>{
         try {
-          const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/get_students', {
+          const response = await fetch('https://api.citadel-i.com.ng/api/v1/admin/get_students', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

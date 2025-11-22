@@ -38,7 +38,7 @@ export function ApprovalTable() {
     try {
       const offset = (page - 1) * limit;
       const response = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/uploads?limit=${limit}&offset=${offset}`,
+        `https://api.citadel-i.com.ng/api/v1/uploads?limit=${limit}&offset=${offset}`,
         {
           method: "GET",
           credentials: "include",

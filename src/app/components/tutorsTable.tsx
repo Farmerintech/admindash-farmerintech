@@ -60,7 +60,7 @@ import { subjects } from "./subjects";
     const [filter, setFilter] = useState<string>('All')
 
 useEffect(()=>{
-    let url = filter !=='All'  ? `https://citadel-i-project.onrender.com/api/get_tutors/${filter}` :`https://citadel-i-project.onrender.com/api/get_tutors`
+    let url = filter !=='All'  ? `https://api.citadel-i.com.ng/api/get_tutors/${filter}` :`https://api.citadel-i.com.ng/api/get_tutors`
     const filterBy = async ()=>{
 
         try {
@@ -106,7 +106,7 @@ useEffect(()=>{
     }
     try {
         const response = await fetch(
-          `https://citadel-i-project.onrender.com/api/get_tutors/${search}`,
+          `https://api.citadel-i.com.ng/api/get_tutors/${search}`,
           {
             method: "GET",
            credentials: 'include',
@@ -129,7 +129,7 @@ useEffect(()=>{
       }
     try {
       const response = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/get_users/${search}`,
+        `https://api.citadel-i.com.ng/api/v1/get_users/${search}`,
         {
           method: "GET",
           headers: {

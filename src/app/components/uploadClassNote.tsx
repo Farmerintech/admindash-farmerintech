@@ -102,7 +102,7 @@ setForm({
       formData.append("topic", form.topic);
 
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/note/upload_note",
+        "https://api.citadel-i.com.ng/api/v1/note/upload_note",
         {
           method: "POST",
            credentials: 'include',

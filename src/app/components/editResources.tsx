@@ -76,7 +76,7 @@ export const EditResources = ({ resourceId }: Props) => {
 
     try {
       const res = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/resources/${resourceId}`,
+        `https://api.citadel-i.com.ng/api/v1/resources/${resourceId}`,
         {
           method: "GET",
           credentials: "include",
@@ -132,7 +132,7 @@ export const EditResources = ({ resourceId }: Props) => {
       formData.append("link", form.link);
       formData.append("resourceFor", form.resourceFor);
 
-      const endpoint =`https://citadel-i-project.onrender.com/api/v1/resources/${resourceId}`
+      const endpoint =`https://api.citadel-i.com.ng/api/v1/resources/${resourceId}`
       const method = "PUT"
       const response = await fetch(endpoint, {
         method,

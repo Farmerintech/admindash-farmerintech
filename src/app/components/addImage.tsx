@@ -32,7 +32,7 @@ export const AddImageToContent = () => {
       formData.append("coverImage", form.coverImage);
 
       const response = await fetch(
-        "https://citadel-i-project.onrender.com/api/v1/note/upload_cover_image",
+        "https://api.citadel-i.com.ng/api/v1/note/upload_cover_image",
         {
           method: "POST",
           credentials: 'include',

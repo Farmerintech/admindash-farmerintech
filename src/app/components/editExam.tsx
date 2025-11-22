@@ -70,7 +70,7 @@ export const EditExamQuestion = ( {id}:EditPQProps) => {
     }
 
     try {
-      const url = `https://citadel-i-project.onrender.com/api/v1/exam_question/edit_question/${id}`;
+      const url = `https://api.citadel-i.com.ng/api/v1/exam_question/edit_question/${id}`;
 
       const response = await fetch(url, {
         method: "PUT",
@@ -124,7 +124,7 @@ useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://citadel-i-project.onrender.com/api/v1/exam_question/get_a_questions/${id}`, {
+        const response = await fetch(`https://api.citadel-i.com.ng/api/v1/exam_question/get_a_questions/${id}`, {
           credentials: 'include',
         });
         const result = await response.json();

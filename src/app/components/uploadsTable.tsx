@@ -41,7 +41,7 @@ export function UploadsTable() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://citadel-i-project.onrender.com/api/v1/uploads?offset=${offset}`,
+          `https://api.citadel-i.com.ng/api/v1/uploads?offset=${offset}`,
           {
             method: "GET",
             credentials: "include",

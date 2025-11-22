@@ -49,7 +49,7 @@ useEffect(() => {
   const fetchNote = async () => {
     try {
       const res = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/note/get_note/${noteId}`,
+        `https://api.citadel-i.com.ng/api/v1/note/get_note/${noteId}`,
         {
           method: "GET",
           credentials: "include",
@@ -162,7 +162,7 @@ useEffect(() => {
       formData.append("tableOfContent", JSON.stringify(tableOfContent));
 
       const res = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/note/edit_note/${noteId}`,
+        `https://api.citadel-i.com.ng/api/v1/note/edit_note/${noteId}`,
         {
           method: "PUT",
           credentials: "include",

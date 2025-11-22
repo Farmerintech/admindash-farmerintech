@@ -46,7 +46,7 @@ const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
   }
 
   try {
-    const response = await fetch('https://citadel-i-project.onrender.com/api/v1/admin/auth/signin', {
+    const response = await fetch('https://api.citadel-i.com.ng/api/v1/admin/auth/signin', {
       method: 'POST',
       credentials: 'include', // ✅ Required to send and receive cookies!
       headers: {
