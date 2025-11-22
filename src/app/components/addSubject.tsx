@@ -63,7 +63,7 @@ export const AddSubject = () => {
       formData.append("subject", form.subject);
 
       console.log(form)
-      const response = await fetch("https://citadel-i-project.onrender.com/api/v1/note/upload_note", {
+      const response = await fetch("https://api.citadel-i.com.ng/api/v1/note/upload_note", {
         method: "POST",
         credentials: 'include',
         body: formData,

@@ -14,7 +14,7 @@ import { useUser } from "@/app/context/reducer";
 import { Modal } from "@/app/components/modal";
 import { DashHook } from '@/app/components/dahHook';
 import { useSidebar } from '@/app/context/sideBarState';
-const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false })
+const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false });
 
 export default function AdmissionRequirementForm() {
   const { state } = useUser();
@@ -68,50 +68,55 @@ export default function AdmissionRequirementForm() {
   // ---------------------------
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    setLoading(true)
-    event.preventDefault();
-    setError("");
-    setMessage("");
+  event.preventDefault();
+  setError("");
+  setMessage("");
+  setLoading(true);
 
-    // REQUIRED VALUES CHECK
-    if (!form.school || !form.course || !form.year || !form.requirements) {
-      setError("All fields are required");
+  if (!form.school || !form.course || !form.year || !form.requirements) {
+    setError("All fields are required");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://api.citadel-i.com.ng/api/v1/admin/admission_requirements",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      }
+    );
+
+    const result = await response.json();
+    console.log(result);
+
+    if (!response.ok) {
+      setError(result?.error || "Something went wrong");
+      setLoading(false);
       return;
     }
-   
-    try {
 
-      const response = await fetch(
-        "https://api.citadel-i.com.ng/api/v1/admin/admission_requirements",
-        {
-          method: "POST",
-          credentials: "include",
-          body: form,
-        }
-      );
+    setMessage(result?.message || "Submitted successfully");
+    setLoading(false);
 
-      const result = await response.json();
-      console.log(result, form);
-      if (!response.ok) {
-        setError(result?.error || "Something went wrong");
-        return;
-      }
+    setForm({
+      course: "",
+      school: "",
+      year: "",
+      requirements: "",
+    });
 
-      setMessage(result?.message || "Submitted successfully");
-      setLoading(false)
-      // RESET FORM
-      setForm({
-        course: "",
-        school: "",
-        year: "",
-        requirements: "",
-      });
-    } catch (err) {
-      console.error(err);
-      setError("Error connecting to server");
-      setLoading(false)
-    }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Error connecting to server");
+    setLoading(false);
+  }
+};
 
   // ---------------------------
   // JSX
