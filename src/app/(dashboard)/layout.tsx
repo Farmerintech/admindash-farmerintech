@@ -1,9 +1,8 @@
 import AuthWrapper from '../components/authWrapper';
 import Navbar, { Header } from './navbar';
 import { SidebarProvider } from '@/app/context/sideBarState';
-import type {Metadata} from "next";
-
-const metadata: Metadata = {
+import type {Metadata} from "next"
+const metadata: Metadata= {
   title: "Admin Dashboard || Citadel-i",
 };
 export default function Dashboardlayout({
