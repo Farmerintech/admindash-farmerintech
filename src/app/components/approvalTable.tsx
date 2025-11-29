@@ -81,7 +81,7 @@ export function ApprovalTable() {
     updateStatusLocally(id, "Approved");
     try {
       const response = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/uploads/approve/${id}`,
+        `https://api.citadel-i.com.ng/api/v1/uploads/approve/${id}`,
         {
           method: "POST",
           credentials: "include",
@@ -113,7 +113,7 @@ export function ApprovalTable() {
     updateStatusLocally(id, "Rejected");
     try {
       const response = await fetch(
-        `https://citadel-i-project.onrender.com/api/v1/uploads/disapprove/${id}`,
+        `https://api.citadel-i.com.ng/api/v1/uploads/disapprove/${id}`,
         {
           method: "POST",
           credentials: "include",
