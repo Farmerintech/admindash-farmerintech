@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useUser } from "../context/reducer"
 import { subjects } from "./subjects"
 import { Modal } from "@/app/components/modal"
 
@@ -31,19 +32,14 @@ export const UploadPastQuestion = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
+  const { state } = useUser();
 
   const handleOptions = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
+    setForm({ ...form, [event.target.name]: event.target.value });
   };
 
   const handleTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
+    setForm({ ...form, [event.target.name]: event.target.value });
   };
 
   const handleSelectSubject = (value: string) => {
@@ -64,7 +60,6 @@ export const UploadPastQuestion = () => {
     setError(undefined);
     setMessage(undefined);
 
-    // Validate required fields
     const requiredFields = [
       "subject", "examType", "question", "optionA", "optionB", 
       "optionC", "optionD", "answer", "explanation", "questionType"
@@ -92,13 +87,12 @@ export const UploadPastQuestion = () => {
       );
 
       const result = await response.json();
-
       if (!response.ok) {
         setError(result?.message || "Something went wrong");
       } else {
         setMessage(result?.message || "Question uploaded successfully!");
 
-        // Reset form for another entry
+        // Reset form for new entry
         setForm({
           subject: "",
           examType: "",
@@ -113,7 +107,7 @@ export const UploadPastQuestion = () => {
         });
       }
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error(err);
       setError("Error connecting to server");
     } finally {
       setLoading(false);
@@ -121,7 +115,9 @@ export const UploadPastQuestion = () => {
   };
 
   useEffect(() => {
-    const allFilled = Object.values(form).every((value) => value.trim() !== "");
+    const allFilled = Object.values(form).every(
+      (value) => typeof value === "string" && value.trim() !== ""
+    );
     setActive(allFilled);
   }, [form]);
 
@@ -191,7 +187,7 @@ export const UploadPastQuestion = () => {
             />
           </div>
 
-          {/* Options A & B */}
+          {/* Option A & B */}
           {["A", "B"].map((opt) => (
             <div className="flex flex-col gap-[8px] w-full" key={opt}>
               <label className="text-[#344054]">Option {opt}</label>
@@ -207,7 +203,7 @@ export const UploadPastQuestion = () => {
         </section>
 
         <section className="w-full flex flex-col gap-[8px] mt-6 md:mt-0">
-          {/* Options C & D */}
+          {/* Option C & D */}
           {["C", "D"].map((opt) => (
             <div className="flex flex-col gap-[8px] w-full" key={opt}>
               <label className="text-[#344054]">Option {opt}</label>
@@ -257,5 +253,5 @@ export const UploadPastQuestion = () => {
         </section>
       </form>
     </>
-  );
-};
+  )
+}
