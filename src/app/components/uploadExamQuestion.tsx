@@ -16,7 +16,7 @@ import { subjects } from "./subjects"
 
 const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
-const classes = ['KS1', 'KS2', "KS#"]
+const classes = ['KS1', 'KS2', "KS3"]
  
 
 export const UploadExamQuestion= () => {
