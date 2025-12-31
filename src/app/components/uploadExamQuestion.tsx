@@ -12,10 +12,11 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useSidebar } from "../context/sideBarState"
 import { useUser } from "../context/reducer"
 import {Modal} from "@/app/components/modal"
+import { subjects } from "./subjects"
+
 const Years = ["Year1", "Year2", "Year3", "Year4", "Year5", "Year6"]
 const Terms = ["First Term", "SecondTerm", "Third Term"]
-const subjects = ['English Language', 'Mathematics']
-const classes = ['KS1', 'KS2']
+const classes = ['KS1', 'KS2', "KS#"]
  
 
 export const UploadExamQuestion= () => {
