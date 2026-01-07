@@ -135,7 +135,7 @@ const deleteTeacher = async (id: number) => {
   const viewTeacher = async (id: number) => {
   try {
     const res = await fetch(
-      `https://api.citadel-i.com.ng/api/v1/admin/get_tutor/${id}`,
+      `https://api.citadel-i.com.ng/api/v1/admin/view_tutor/${id}`,
       {
         method: "GET",
         credentials: "include",
