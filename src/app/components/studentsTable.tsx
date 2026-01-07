@@ -60,7 +60,7 @@ import { subjects } from "./subjects";
     const [filter, setFilter] = useState<string>('All')
 
 useEffect(()=>{
-    let url = filter !=='All'  ? `https://api.citadel-i.com.ng/api/get_students/${filter}` :`https://api.citadel-i.com.ng/api/get_students`
+    let url = filter !=='All'  ? `https://api.citadel-i.com.ng/api/v1/admin/get_students/${filter}` :`https://api.citadel-i.com.ng/api/v1/admin/get_students`
     const filterBy = async ()=>{
 
         try {
