@@ -1,216 +1,202 @@
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table";
-  import { FaBan, FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
-  import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-import { useUser } from "../context/reducer";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { subjects } from "./subjects";
+"use client";
 
-  const actions = [
-    {
-      name: "View",
-      icon: <FaEye />,
-      color: "text-blue-400",
-    },
-    {
-      name: "Edit",
-      icon: <FaPencilAlt />,
-      color: "text-yellow-400",
-    },
-    {
-      name: "Suspend",
-      icon: <FaBan />,
-      color: "text-orange-400",
-    },
-    {
-      name: "Delete",
-      icon: <FaTrash />,
-      color: "text-red-400",
-    },
-  ];
-  
-  interface userInterface {
-      userId: string;
-      firstName: string;
-      lastName:string;
-      role: string;
-      classCategory:string;
-      subject:string;
-      active:string
-  }
-      
-  export function TutorsTable() {
-    const {state} = useUser();
-    const [data, setData] = useState<any>([])
-    const [error, setError]  = useState<string>()
-    const [filter, setFilter] = useState<string>('All')
+import { useState, useEffect } from "react";
 
-useEffect(()=>{
-    let url = filter !=='All'  ? `https://api.citadel-i.com.ng/api/get_tutors/${filter}` :`https://api.citadel-i.com.ng/api/get_tutors`
-    const filterBy = async ()=>{
+// ================= TYPES =================
+interface Subject {
+  name: string;
+}
 
-        try {
-          const response = await fetch(
-            url,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${state.token}`,
-              },
-              // body: JSON.stringify(''),
-            }
-          );
-      
-          const result = await response.json();
-          setData(result.data);
-      
-          console.log(result);
-      
-          !response.ok && setError(result?.message || "Something went wrong");
-        } catch (error) {
-          console.error(error);
-          setError("Error connecting to server");
-        }
-      };
-      filterBy()
-}, [filter])
+interface ClassLevel {
+  group: string;
+  years: string[];
+}
 
-    const handleSelectFilter = (value:string) =>{
-      setFilter(value)
-    }
+interface Teacher {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  discipline: string;
+  subjects: string[] | Subject[]; // handles raw strings or related table
+  isVerified: boolean;
+  classLevels: ClassLevel[];
+}
 
-    // search
-   const [search, setSearch] = useState<string>();
-   const handleSearch = (event:ChangeEvent<HTMLInputElement>) =>{
-    setSearch(event.target.value);
-   }
-  const handleSubmit = async (event:FormEvent<HTMLFormElement>) =>{
-    event.preventDefault()
-    if(!search){
-        return
-    }
+interface PaginatedTeachersResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  teachers: Teacher[];
+}
+
+// ================= COMPONENT =================
+export default function TutorsTable() {
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const limit = 10;
+
+  // ---------------- Fetch teachers ----------------
+  const fetchTeachers = async (pageNumber: number = 1) => {
+    setLoading(true);
     try {
-        const response = await fetch(
-          `https://api.citadel-i.com.ng/api/get_tutors/${search}`,
-          {
-            method: "GET",
-           credentials: 'include',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            // body: JSON.stringify(''),
-          }
-        );
-    
-        const result = await response.json();
-        setData(result.data);
-    
-        console.log(result);
-    
-        !response.ok && setError(result?.message || "Something went wrong");
-      } catch (error) {
-        console.error(error);
-        setError("Error connecting to server");
-      }
-    try {
-      const response = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/get_users/${search}`,
+      const res = await fetch(
+        `https://api.citadel-i.com.ng/api/teachers?page=${pageNumber}&limit=${limit}`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${state.token}`,
-          },
-          // body: JSON.stringify(''),
+          credentials: "include", // include cookies
         }
       );
-  
-      const result = await response.json();
-      setData(result.data);
-  
-      console.log(result);
-  
-      !response.ok && setError(result?.message || "Something went wrong");
-    } catch (error) {
-      console.error(error);
-      setError("Error connecting to server");
+
+      if (!res.ok) throw new Error("Failed to fetch teachers");
+
+      const data: PaginatedTeachersResponse = await res.json();
+      setTeachers(data.teachers);
+      setTotalPages(data.totalPages);
+      setPage(data.page);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-    return (
-    <>
-    <div className="w-full py-[8px] flex lg:items-center justify-between flex-col md:flex-wrap lg:flex-nowrap md:flex-row gap-[8px]">
-        <form className="flex gap-[8px]" onSubmit={handleSubmit}>
-            <input type="text" placeholder="Find user with their name or id" onChange={handleSearch}
-             className=" xl:w-[350px] w-[100%] border-1 border-gray-200 outline-non px-[36px] py-[8px] bg-white rounded-[8px] "/>
-            <button className="text-white bg-orange-500 border-none rounded-[8px] px-[16px] outline-none">Serach</button>
-        </form>
-        <form className="w-full lg:w-auto">
-        <Select onValueChange={handleSelectFilter}>
-          <SelectTrigger className="md:w-full lg:w-[100%] w-full outline-none border-1 border-gray-200">
-            <SelectValue placeholder='Filter By SubjectHeld' />
-          </SelectTrigger>
-          <SelectContent>
-          <SelectItem value={'All'}>All</SelectItem>
-            {
-                subjects.map((item)=>(
-                    <SelectItem value={item.name}>{item.name} Teachers</SelectItem>
-                ))
-            }
-            </SelectContent>
-        </Select>
-        </form>
-    </div>
-    <section className="bg-gray-100 rounded-md over-flow-x-scroll w-[full] px-4">
-      <Table className="table-fixed overflow-x-scroll">
-        <TableHeader>
-          <TableRow>
-            <TableHead>UserID</TableHead>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead>Subject Held</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Perform Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data && data.map((user:userInterface) => (
-            <TableRow key={user.userId}>
-              <TableCell>{user.userId}</TableCell>
-              <TableCell className="text-[12px] md:text-[14px]">{user.firstName} {user.lastName}</TableCell>
-              <TableCell>{user.classCategory }</TableCell>
-              <TableCell>{user.active ? "active" : "Suspended"}</TableCell>
-              <TableCell className="text-right flex items-center gap-[8px]">
-                {actions.map((action, index) => (
-                  <p
-                    key={index}
-                    className={`${action.color} cursor-pointer flex items-center text-[12px] gap-[8px]`}
-                  >
-                    {/* <span className="hidden md:block">{action.name}</span> */}
-                    {action.icon}
-                  </p>
-                ))}
-              </TableCell>
-            </TableRow>
+  useEffect(() => {
+    fetchTeachers(page);
+  }, [page]);
+
+  // ---------------- Toggle verification ----------------
+  const toggleVerification = async (id: number, currentStatus: boolean) => {
+    try {
+      const res = await fetch(`/api/teachers/${id}/verify`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isVerified: !currentStatus }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update verification");
+
+      fetchTeachers(page);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ---------------- Delete teacher ----------------
+  const deleteTeacher = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this teacher?")) return;
+
+    try {
+      const res = await fetch(`/api/teachers/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to delete teacher");
+
+      fetchTeachers(page);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <p>Loading teachers...</p>;
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full border border-gray-300">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="p-2 border">ID</th>
+            <th className="p-2 border">Name</th>
+            <th className="p-2 border">Email</th>
+            <th className="p-2 border">Phone</th>
+            <th className="p-2 border">Discipline</th>
+            <th className="p-2 border">Subjects</th>
+            <th className="p-2 border">Class Levels</th>
+            <th className="p-2 border">Verified</th>
+            <th className="p-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {teachers.map((teacher) => (
+            <tr key={teacher.id} className="text-center">
+              <td className="p-2 border">{teacher.id}</td>
+              <td className="p-2 border">
+                {teacher.firstName} {teacher.lastName}
+              </td>
+              <td className="p-2 border">{teacher.email}</td>
+              <td className="p-2 border">{teacher.phoneNumber}</td>
+              <td className="p-2 border">{teacher.discipline}</td>
+
+              {/* Subjects */}
+              <td className="p-2 border">
+                {Array.isArray(teacher.subjects)
+                  ? teacher.subjects
+                      .map((s) => (typeof s === "string" ? s : s.name))
+                      .join(", ")
+                  : "-"}
+              </td>
+
+              {/* Class Levels */}
+              <td className="p-2 border">
+                {teacher.classLevels
+                  .map((level) => `${level.group}: ${level.years.join(", ")}`)
+                  .join(" | ")}
+              </td>
+
+              <td className="p-2 border">{teacher.isVerified ? "Yes" : "No"}</td>
+
+              {/* Actions */}
+              <td className="p-2 border flex justify-center gap-2">
+                <button
+                  className={`px-3 py-1 text-white rounded ${
+                    teacher.isVerified ? "bg-yellow-500" : "bg-green-500"
+                  }`}
+                  onClick={() =>
+                    toggleVerification(teacher.id, teacher.isVerified)
+                  }
+                >
+                  {teacher.isVerified ? "Unverify" : "Verify"}
+                </button>
+                <button
+                  className="px-3 py-1 bg-red-500 text-white rounded"
+                  onClick={() => deleteTeacher(teacher.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-      </section>
-      </>
-    );
-  }
-  
+        </tbody>
+      </table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4 gap-2">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="px-3 py-1">{page}</span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}

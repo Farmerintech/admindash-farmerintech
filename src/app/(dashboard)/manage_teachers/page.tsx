@@ -1,7 +1,8 @@
 "use client"
 import { DashHook } from "@/app/components/dahHook"
 import UserStatusChart from "@/app/components/piecharts";
-import { TutorsTable } from "@/app/components/tutorsTable";
+import TutorsTable from "@/app/components/tutorsTable";
+
 import { UsersTable } from "@/app/components/usersTable";
 import { useUser } from "@/app/context/reducer";
 import { useSidebar } from "@/app/context/sideBarState";
@@ -137,7 +138,7 @@ export default function page () {
 
          </section>
          <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
-          <TutorsTable/>
+         <TutorsTable/>
     </section>
                    
      </section>
