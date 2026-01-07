@@ -65,8 +65,8 @@ useEffect(() => {
     // Construct URL based on filter
     const url =
       filter && filter !== 'All'
-        ? `https://api.citadel-i.com.ng/api/v1/admin/get_students/${filter}`
-        : `https://api.citadel-i.com.ng/api/v1/admin/get_students`;
+        ? `https://api.citadel-i.com.ng/api/v1/admin/get_users/${filter}`
+        : `https://api.citadel-i.com.ng/api/v1/admin/get_users`;
 
     try {
       setError('null'); // Clear previous errors before fetching
@@ -108,7 +108,7 @@ useEffect(() => {
     }
     try {
       const response = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/admin/get_students/${search}`,
+        `https://api.citadel-i.com.ng/api/v1/admin/get_users/${search}`,
         {
           method: "GET",
          credentials: 'include',
