@@ -32,7 +32,7 @@ interface Teacher {
   subjects: string[] | Subject[];
   isVerified: boolean;
   classLevels: ClassLevel[];
-  image:any
+  passportPhoto:any
 }
 
 interface PaginatedTeachersResponse {
@@ -137,8 +137,11 @@ const deleteTeacher = async (id: number) => {
     const res = await fetch(
       `https://api.citadel-i.com.ng/api/v1/admin/view_tutor/${id}`,
       {
-        method: "GET",
-        credentials: "include",
+       method: "GET",
+  credentials: "include", // ✅ MUST be here
+  headers: {
+    "Content-Type": "application/json",
+  },
       }
     );
 
@@ -271,6 +274,14 @@ function TeacherDetailsModal({
   teacher: Teacher;
   onClose: () => void;
 }) {
+
+  const normalizeClassLevels = (
+  levels: ClassLevel | ClassLevel[] | undefined
+): ClassLevel[] => {
+  if (Array.isArray(levels)) return levels;
+  if (levels) return [levels];
+  return [];
+};
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-[95%] md:w-[600px] rounded-lg p-6 relative">
@@ -285,23 +296,23 @@ function TeacherDetailsModal({
         {/* Header */}
         <div className="flex items-center gap-4 mb-4">
           <img
-            src={teacher?.image || "/avatar.png"}
+            src={teacher?.passportPhoto || "/avatar.png"}
             alt="Teacher"
             className="w-20 h-20 rounded-full object-cover border"
           />
           <div>
             <h2 className="text-lg font-semibold">
-              {teacher.firstName} {teacher.lastName}
+              {teacher?.firstName} {teacher?.lastName}
             </h2>
-            <p className="text-sm text-gray-500">{teacher.email}</p>
-            <p className="text-sm">{teacher.phoneNumber}</p>
+            <p className="text-sm text-gray-500">{teacher?.email}</p>
+            <p className="text-sm">{teacher?.phoneNumber}</p>
           </div>
         </div>
 
         {/* Details */}
         <div className="space-y-2 text-sm">
           <p>
-            <strong>Discipline:</strong> {teacher.discipline}
+            <strong>Discipline:</strong> {teacher?.discipline}
           </p>
 
           <p>
@@ -322,16 +333,21 @@ function TeacherDetailsModal({
               .join(", ")}
           </p>
 
-          <div>
-            <strong>Class Levels:</strong>
-            <ul className="list-disc ml-5">
-              {teacher.classLevels.map((level, idx) => (
-                <li key={idx}>
-                  {level.group}: {level.years.join(", ")}
-                </li>
-              ))}
-            </ul>
-          </div>
+         <div>
+  <strong>Class Levels:</strong>
+
+  {normalizeClassLevels(teacher.classLevels).length > 0 ? (
+    <ul className="list-disc ml-5">
+      {normalizeClassLevels(teacher.classLevels).map((level, idx) => (
+        <li key={idx}>
+          {level.group}: {level.years.join(", ")}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-gray-500">—</p>
+  )}
+</div>
         </div>
       </div>
     </div>
