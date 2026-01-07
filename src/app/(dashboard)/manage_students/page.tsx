@@ -18,12 +18,13 @@ export default function page () {
       const fetchData = async ()=>{
         try {
           const response = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/admin/get_teachers`,
+        `https://api.citadel-i.com.ng/api/v1/admin/get_users`,
              {
             method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
-              credentials: 'include'
+              
             },
             // body: JSON.stringify(body)
           });
@@ -55,7 +56,7 @@ export default function page () {
                     <div className='flex flex-col gap-[16px]'>
                       <p>Registered Students</p>
                       <div className='flex items-center gap-[8px]'>
-                          <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data.count?.totalStudents}</p> 
+                          <p className='text-[#0F0F0F] text-[24px] font-[700]'>{data && data?.users?.length}</p> 
                           <div className='flex text-[#0DAF64] text-[12px] '>
                              <FaArrowUp/>
                              <p>{percentageStd}%</p>
