@@ -162,7 +162,7 @@ useEffect(() => {
       <tr>
         <th className="px-4 py-2 font-semibold text-gray-700">Name</th>
         <th className="px-4 py-2 font-semibold text-gray-700">Role</th>
-        <th className="px-4 py-2 font-semibold text-gray-700">Status</th>
+        {/* <th className="px-4 py-2 font-semibold text-gray-700">Status</th> */}
         <th className="px-4 py-2 font-semibold text-gray-700">Actions</th>
       </tr>
     </thead>
@@ -172,13 +172,13 @@ useEffect(() => {
           <tr key={user.userId || index}>
             <td className="px-4 py-2 whitespace-nowrap">{user.firstName} {user.lastName}</td>
             <td className="px-4 py-2">{user.role}</td>
-            <td className="px-4 py-2">
+            {/* <td className="px-4 py-2">
               {user.active ? (
                 <span className="text-green-600 font-medium">Active</span>
               ) : (
                 <span className="text-red-500 font-medium">Suspended</span>
               )}
-            </td>
+            </td> */}
             <td className="px-4 py-2">
               <div className="flex items-center gap-2 flex-wrap">
                 {actions.map((action, idx) => (

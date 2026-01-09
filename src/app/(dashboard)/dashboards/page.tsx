@@ -1,6 +1,7 @@
 "use client"
 
 import { DashHook } from '@/app/components/dahHook';
+import { StudentsTable } from '@/app/components/studentsTable';
 import { UploadsTable } from '@/app/components/uploadsTable';
 import { UsersTable } from '@/app/components/usersTable';
 import { useUser } from '@/app/context/reducer'
@@ -130,7 +131,7 @@ export default function page() {
       <UploadsTable/>
     </section>
     <section className="py-[8px] flex flex-col gap-[8px] bg-white mt-20 rounded-[8px] px-[16px]">
-      <UsersTable/>
+      <StudentsTable/>
     </section>
     </section>
   )
