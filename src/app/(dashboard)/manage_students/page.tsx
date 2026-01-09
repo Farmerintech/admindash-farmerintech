@@ -18,7 +18,7 @@ export default function page () {
       const fetchData = async ()=>{
         try {
           const response = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/admin/get_users`,
+        `https://api.citadel-i.com.ng/api/v1/admin/get_students`,
              {
             method: 'GET',
             credentials: 'include',
