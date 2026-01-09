@@ -65,8 +65,8 @@ useEffect(() => {
     // Construct URL based on filter
     const url =
       filter && filter !== 'All'
-        ? `https://api.citadel-i.com.ng/api/v1/admin/get_users/${filter}`
-        : `https://api.citadel-i.com.ng/api/v1/admin/get_users`;
+        ? `https://api.citadel-i.com.ng/api/v1/admin/get_students/${filter}`
+        : `https://api.citadel-i.com.ng/api/v1/admin/get_students`;
 
     try {
       setError('null'); // Clear previous errors before fetching

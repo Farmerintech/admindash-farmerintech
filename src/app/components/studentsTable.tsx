@@ -108,7 +108,7 @@ useEffect(() => {
     }
     try {
       const response = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/admin/get_students/${search}`,
+        `https://api.citadel-i.com.ng/api/v1/admin/get_users/${search}`,
         {
           method: "GET",
          credentials: 'include',
@@ -197,7 +197,7 @@ useEffect(() => {
       ) : (
         <tr>
           <td colSpan={5} className="text-center py-4 text-gray-500">
-            No users found.
+            No users found....
           </td>
         </tr>
       )}
