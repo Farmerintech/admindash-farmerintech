@@ -238,7 +238,9 @@ function TeacherDetailsModal({
         }
       );
       alert("Verification status updated")
+      window.location.reload();
       if (!res.ok) throw new Error("Verification failed");
+      
     } catch (err) {
       console.error(err);
     }
