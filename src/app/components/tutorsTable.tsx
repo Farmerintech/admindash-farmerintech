@@ -237,6 +237,7 @@ function TeacherDetailsModal({
           body: JSON.stringify({ isVerified: !status }),
         }
       );
+      alert("Verification status updated")
       if (!res.ok) throw new Error("Verification failed");
     } catch (err) {
       console.error(err);
