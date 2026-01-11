@@ -28,7 +28,7 @@ export default function SidebarLayo() {
     { name: "Manage Content", href: "/manage_content", icon: <AiOutlineSchedule /> },
         { name: "Admission Information", href: "/admission_info", icon: < MdCampaign/> },
     { name: "Approval", href: "/approval", icon: <FaClipboardList /> },
-    { name: "Payments", href: "/payment", icon: <FaPaypal /> },
+    { name: "Payments", href: "/payments", icon: <FaPaypal /> },
     { name: "Settings", href: "/settings", icon: <MdSettings /> },
     { name: "Logout", href: "/logout", icon: <MdLogout /> },
   ];
