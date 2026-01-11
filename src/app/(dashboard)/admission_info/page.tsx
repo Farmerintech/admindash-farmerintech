@@ -14,6 +14,7 @@ import { useUser } from "@/app/context/reducer";
 import { Modal } from "@/app/components/modal";
 import { DashHook } from '@/app/components/dahHook';
 import { useSidebar } from '@/app/context/sideBarState';
+import AdmissionTable from "./admission_table";
 const MyEditor = dynamic(() => import("@/app/components/editor"), { ssr: false });
 
 export default function AdmissionRequirementForm() {
@@ -23,7 +24,7 @@ export default function AdmissionRequirementForm() {
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [staticContent, setStaticContent] = useState<string>("")
   const [form, setForm] = useState<any>({
     course: "",
     school: "",
@@ -62,6 +63,7 @@ export default function AdmissionRequirementForm() {
       requirements: value,
     }));
   };
+
 
   // ---------------------------
   // SUBMIT FORM
@@ -117,6 +119,83 @@ export default function AdmissionRequirementForm() {
     setLoading(false);
   }
 };
+
+
+const [fetching, setFetching] = useState(true);
+useEffect(() => {
+  const fetchStaticContent = async () => {
+    try {
+      const res = await fetch(
+        "https://api.citadel-i.com.ng/api/v1/admin/get_admission_static",
+        {
+          credentials: "include",
+        }
+      );
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result?.message || "Failed to fetch static content");
+      }
+
+      // 👇 hydrate editor
+      setStaticContent(result?.data?.staticContent || "");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load static content");
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  fetchStaticContent();
+}, []);
+
+const handleStaticContent = (value: string) => {
+  setStaticContent(value);
+};
+const handleSubmitStatic = async (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  setError("");
+  setMessage("");
+  setLoading(true);
+
+  if (!staticContent) {
+    setError("Static content is required");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://api.citadel-i.com.ng/api/v1/admin/admission_static",
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ staticContent }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      setError(result?.message || "Something went wrong");
+      return;
+    }
+
+    setMessage(result?.message || "Updated successfully");
+  } catch (err) {
+    console.error(err);
+    setError("Error connecting to server");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   // ---------------------------
   // JSX
@@ -203,7 +282,50 @@ export default function AdmissionRequirementForm() {
           </button>
         </section>
       </form>
+         {/* Addmission info static page */}
+<section className="border-t-2 border-gray-500 my-5">
+  <p className="text-xl text-center font-[600] my-4">
+    Admission Requirements Static Page
+  </p>
+
+  {fetching ? (
+    <p className="text-center">Loading content...</p>
+  ) : (
+    <form
+      className="flex flex-col gap-[30px] w-full"
+      onSubmit={handleSubmitStatic}
+    >
+      {/* EDITOR */}
+      <section className="w-full">
+        <label className="text-[#344054] block mb-1">
+          Static Page Content
+        </label>
+        <MyEditor
+          value={staticContent}
+          onChange={handleStaticContent}
+        />
       </section>
+
+      {/* SUBMIT */}
+      <button
+        type="submit"
+        disabled={loading}
+        className={`${
+          loading ? "bg-[#98A2B3]" : "bg-orange-500"
+        } mt-10 px-[24px] py-[12px] rounded-[8px] text-white w-full md:w-[230px]`}
+      >
+        {loading ? "Saving..." : "Save Changes"}
+      </button>
+
+      {error && <p className="text-red-500">{error}</p>}
+      {message && <p className="text-green-600">{message}</p>}
+    </form>
+  )}
+</section>
+      <p className="text-xl font-[600] text-center">Addmission Info Table</p>
+      <AdmissionTable/>
+      </section>
+  
     </>
   );
 }
