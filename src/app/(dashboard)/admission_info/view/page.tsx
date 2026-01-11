@@ -79,7 +79,7 @@ const id = idString ? Number(idString) : undefined;
         </div>
 
         <div className="flex gap-3 pt-4">
-          <Button onClick={() => router.push(`/admin/admissions/edit/${id}`)}>
+          <Button onClick={() => router.push(`/admin/admissions/edit?${id}`)}>
             Edit
           </Button>
           <Button variant="outline" onClick={() => router.back()}>
