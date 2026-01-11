@@ -8,8 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import MyEditor from "../editor";
+import { DashHook } from "@/app/components/dahHook";
+import { useSidebar } from "@/app/context/sideBarState";
 
 export default function EditAdmissionPage() {
+      const { sidebarOpen, setSidebarOpen } = useSidebar();
+    
   const router = useRouter();
   const searchParams = useSearchParams();
   const idString = searchParams.get("id"); // might be null or string
@@ -31,7 +35,7 @@ const id = idString ? Number(idString) : undefined;
           `https://api.citadel-i.com.ng/api/v1/admin/get_admission_requirements/${id}`
         );
         const result = await res.json();
-        setFormData(result.data);
+        setFormData(result.data[0]);
       } catch (error) {
         console.error("Error loading admission:", error);
       } finally {
@@ -64,7 +68,7 @@ const id = idString ? Number(idString) : undefined;
         }
       );
 
-      router.push(`/admin/admissions/${id}`);
+    router.push(`/admission_info/view?id=${id}`)
     } catch (error) {
       console.error("Update failed:", error);
     } finally {
@@ -75,6 +79,8 @@ const id = idString ? Number(idString) : undefined;
   if (loading) return <p>Loading...</p>;
 
   return (
+      <section className={`w-ful px-[16px] pb-[24px] mt-6 min-h-screen ${sidebarOpen && "hidden md:block"}`}>
+          <DashHook name={"Edit Admission Information"}/>
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
         <CardTitle>Edit Admission Requirement</CardTitle>
@@ -140,5 +146,6 @@ const id = idString ? Number(idString) : undefined;
         </form>
       </CardContent>
     </Card>
+    </section>
   );
 }

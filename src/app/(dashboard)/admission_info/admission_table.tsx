@@ -46,12 +46,12 @@ export default function AdmissionTable() {
 const router = useRouter()
   const handleView = (id: number) => {
     console.log("View", id);
-    router.push(`/admission_info/view/${id}`)
+    router.push(`/admission_info/view?id=${id}`)
   };
 
   const handleEdit = (id: number) => {
     console.log("Edit", id);
-    router.push(`/admission_info/edit/${id}`)
+    router.push(`/admission_info/edit?id=${id}`)
   };
 
   const handleDelete = async (id: number) => {
