@@ -203,7 +203,11 @@ export const Header = () => {
         </span>
       </div>
       <Link href="/profile" className='flex gap-[8px]'>
-        <Image src={admin}  alt=' ' className='h-[40px] w-[40px] rounded-[20px]'/>
+      {/* <p>{state?.profileImage}</p> */}
+        <Image src={state?.profileImage}  alt={state?.profileImage} 
+        width={100}
+        height={100}
+        className='h-[40px] w-[40px] rounded-[20px]'/>
         <div>
           <p className='text-[16px] font-[500] flex gap-[8px] items-center '>Mr. {state?.firstName} 
             <span>

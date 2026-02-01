@@ -4,14 +4,20 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/app/context/reducer";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
+        const { state, dispatch} = useUser();
+
   const [admin, setAdmin] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    profileImage: "",
+    firstName: state.firstName,
+    lastName: state.lastName,
+    email: state.email,
+    profileImage: state.profileImage,
+    role:state.role,
+    isLoggedIn:state?.isLoggedIn,
+    token:state?.token
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -49,9 +55,15 @@ export default function ProfilePage() {
           lastName: data.lastName,
           email: data.email,
           profileImage: data.profileImage || "",
+          role:data.role,
+          isLoggedIn:state?.isLoggedIn,
+          token:state?.token
         });
               console.log(data)
-
+dispatch({
+        type: 'LOGIN',
+        payload: admin
+})
       } catch (err: any) {
         setMessage(err.message);
       } finally {
@@ -119,81 +131,119 @@ export default function ProfilePage() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
 
-  const handleProfileUpdate = async () => {
-    if (!validateProfile()) return;
-    setSavingProfile(true);
-    try {
-      const res = await fetch(
-        "https://api.citadel-i.com.ng/api/v1/admin/update_profile",
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName: admin.firstName,
-            lastName: admin.lastName,
-            email: admin.email,
-          }),
-        }
-      );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to update profile");
-      setMessage("Profile updated successfully ✅");
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setSavingProfile(false);
-    }
-  };
+const handleProfileUpdate = async () => {
+  if (!validateProfile()) return;
 
-  const handleImageUpload = async (file: File) => {
-    setUploadingImage(true);
-    try {
-      const formData = new FormData();
-      formData.append("avatar", file);
+  setSavingProfile(true);
+  setMessage("");
 
-      const res = await fetch(
-        "https://api.citadel-i.com.ng/api/v1/admin/uplaod_img",
-        { method: "PUT", credentials: "include", body: formData }
-      );
-      const data = await res.json();
-            console.log(data)
+  try {
+    const res = await fetch(
+      "https://api.citadel-i.com.ng/api/v1/admin/update_profile",
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: admin.firstName,
+          lastName: admin.lastName,
+          email: admin.email,
+        }),
+      }
+    );
 
-      if (!res.ok) throw new Error(data.message || "Image upload failed");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to update profile");
 
-      setAdmin({ ...admin, profileImage: data.data.url });
-      setMessage("Profile image updated ✅");
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setUploadingImage(false);
-    }
-  };
+    // Update local state
+    setAdmin((prev) => ({
+      ...prev,
+      firstName: admin.firstName,
+      lastName: admin.lastName,
+      email: admin.email,
+    }));
 
-  const handlePasswordUpdate = async () => {
-    if (!validatePassword()) return;
-    setUpdatingPassword(true);
-    try {
-      const res = await fetch(
-        "https://api.citadel-i.com.ng/api/v1/admin/change_psw",
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(passwordForm),
-        }
-      );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to change password");
+    // Update global context
+    dispatch({
+      type: "UPDATE_USER",
+      payload: {
+        ...state,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        email: admin.email,
+      },
+    });
 
-      alert("Password updated ✅");
-      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setUpdatingPassword(false);
-    }
-  };
+    alert("Profile updated successfully ✅");
+  } catch (err: any) {
+    setMessage(err.message || "Something went wrong");
+  } finally {
+    setSavingProfile(false);
+  }
+};
+
+
+
+const handleImageUpload = async (file: File) => {
+  setUploadingImage(true);
+  setMessage("");
+
+  try {
+    const formData = new FormData();
+    formData.append("profileImage", file);
+
+    const res = await fetch(
+      "https://api.citadel-i.com.ng/api/v1/admin/uplaod_img",
+      { method: "PUT", credentials: "include", body: formData }
+    );
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Image upload failed");
+
+    // Update local state
+    setAdmin((prev) => ({ ...prev, profileImage: data.data.url }));
+
+    // Update global context
+    dispatch({
+      type: "UPDATE_USER",
+      payload: { ...state, profileImage: data.data.url },
+    });
+
+    alert("Profile image updated ✅");
+  } catch (err: any) {
+    setMessage(err.message);
+  } finally {
+    setUploadingImage(false);
+  }
+};
+
+const handlePasswordUpdate = async () => {
+  if (!validatePassword()) return;
+  setUpdatingPassword(true);
+  setMessage("");
+
+  try {
+    const res = await fetch(
+      "https://api.citadel-i.com.ng/api/v1/admin/change_psw",
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(passwordForm),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to change password");
+
+    alert("Password updated ✅");
+    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  } catch (err: any) {
+    setMessage(err.message);
+  } finally {
+    setUpdatingPassword(false);
+  }
+};
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-10">

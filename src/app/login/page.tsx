@@ -68,7 +68,8 @@ console.log('setting', document.cookie);
           firstName: result?.user?.firstName,
           lastName: result?.user?.lastName,
           role: result?.user?.role,
-          token:result?.token
+          token:result?.token,
+          profileImage:result?.user?.profileImage,
         }
       });
 

@@ -11,14 +11,10 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { sources } from "./sources";
 import { FaCheck } from "react-icons/fa";
 import { useUser } from "../context/reducer";
-import {Modal} from "@/app/components/modal"
-
-// Replace this with real data or props
-const subjects = ["English Language", "Mathematics"];
-const examTypes = ["JAMB", "WAEC", "NECO", "GCE/IGCE"];
+import { Modal } from "@/app/components/modal";
 
 type Props = {
-  resourceId?: string; // optional: for edit mode
+  resourceId?: any; // optional: for edit mode
 };
 
 export const EditResources = ({ resourceId }: Props) => {
@@ -35,6 +31,7 @@ export const EditResources = ({ resourceId }: Props) => {
   const [fileName, setFileName] = useState("");
   const [isChoosen, setIsChoosen] = useState(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [existingFilePath, setExistingFilePath] = useState<string>("");
 
   const { state } = useUser();
 
@@ -46,52 +43,60 @@ export const EditResources = ({ resourceId }: Props) => {
   };
 
   const handleSelect = (value: string) => {
-    setForm({
-      ...form,
-      resourceFor: value,
-    });
+    setForm({ ...form, resourceFor: value });
   };
 
   const handleSelectSource = (value: string) => {
-    setForm({
-      ...form,
-      source: value,
-    });
+    setForm({ ...form, source: value });
   };
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const thefile = e.target.files?.[0];
     if (thefile) {
-      setForm({
-        ...form,
-        file: thefile,
-      });
+      setForm({ ...form, file: thefile });
       setFileName(thefile.name);
       setIsChoosen(true);
+      setExistingFilePath(""); // clear existing file preview when new file is chosen
     }
   };
 
+  // Fetch existing resource
   const fetchResource = async () => {
     if (!resourceId) return;
 
     try {
       const res = await fetch(
-        `https://api.citadel-i.com.ng/api/v1/resources/${resourceId}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
+        `https://api.citadel-i.com.ng/api/v1/resources/get_a_resources/${resourceId}`,
+        { method: "GET", credentials: "include" }
       );
       const result = await res.json();
 
-      if (res.ok) {
-        const { source, description, link, resourceFor } = result.data || result;
-        setForm({ file: null, source, description, link, resourceFor });
-        setIsEditing(true);
-      } else {
+      if (!res.ok) {
         setError(result.message || "Could not load resource.");
+        return;
       }
+
+      const resource = result.resource;
+
+      // Populate form with existing values
+      setForm({
+        file: null,
+        source: resource.source || "",
+        description: resource.description || "",
+        link: resource.link || "",
+        resourceFor: resource.resourceFor || "",
+      });
+
+      // If there is already a file, show its path
+      if (resource.filePath) {
+        setExistingFilePath(resource.filePath);
+        setIsChoosen(true);
+        setFileName(resource.filePath.split("/").pop() || "");
+      }
+
+      setIsEditing(true);
     } catch (err) {
+      console.error(err);
       setError("Error fetching resource.");
     }
   };
@@ -101,26 +106,21 @@ export const EditResources = ({ resourceId }: Props) => {
   }, [resourceId]);
 
   useEffect(() => {
-    if (
+    setActive(
       form.source !== "" &&
       form.description !== "" &&
       form.link !== "" &&
       form.resourceFor !== ""
-    ) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
+    );
 
-    if (!form.file) {
-      setIsChoosen(false);
-    }
-  }, [form]);
+    setIsChoosen(!!form.file || !!existingFilePath);
+  }, [form, existingFilePath]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!form.source || !form.description || !form.link || !form.resourceFor) {
+      setError("Please fill all required fields");
       return;
     }
 
@@ -132,44 +132,36 @@ export const EditResources = ({ resourceId }: Props) => {
       formData.append("link", form.link);
       formData.append("resourceFor", form.resourceFor);
 
-      const endpoint =`https://api.citadel-i.com.ng/api/v1/resources/${resourceId}`
-      const method = "PUT"
+      const endpoint = `https://api.citadel-i.com.ng/api/v1/resources/edit_resources/${resourceId}`;
       const response = await fetch(endpoint, {
-        method,
+        method: "PUT",
         credentials: "include",
         body: formData,
       });
 
       const result = await response.json();
+
       if (!response.ok) {
         setError(result.message || "Something went wrong");
         return;
       }
 
-      setMessage(result.message || "Resource updated!");
+      setMessage(result.message || "Resource updated successfully");
       setError(undefined);
-
-      if (!isEditing) {
-        setForm({
-          file: null,
-          source: "",
-          description: "",
-          link: "",
-          resourceFor: "",
-        });
-        setFileName("");
-      }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       setError("Error connecting to server");
     }
   };
 
   return (
-    <form className="md:flex md:justify-between md:gap-[30px] w-full" onSubmit={handleSubmit}>
-      {/* Upload File */}
-             <Modal message={message || ""} error={error || ""}/>
+    <form
+      className="md:flex md:justify-between md:gap-[30px] w-full"
+      onSubmit={handleSubmit}
+    >
+      <Modal message={message || ""} error={error || ""} />
 
+      {/* Upload File */}
       <section className="w-full">
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Upload New Resources</label>
@@ -178,27 +170,23 @@ export const EditResources = ({ resourceId }: Props) => {
             <input type="file" className="hidden" onChange={handleFile} />
             <div className="flex flex-col items-center justify-center gap-2 text-[#475467] pointer-events-none">
               {!isChoosen ? (
-                <>
-                  <svg
-                    width="26"
-                    height="26"
-                    viewBox="0 0 26 26"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M25 17.0002V18.6002C25 20.8405 25 21.9606 24.564 22.8162C24.1805 23.5689 23.5686 24.1808 22.816 24.5643C21.9603 25.0002 20.8402 25.0002 18.6 25.0002H7.4C5.15979 25.0002 4.03969 25.0002 3.18404 24.5643C2.43139 24.1808 1.81947 23.5689 1.43597 22.8162C1 21.9606 1 20.8405 1 18.6002V17.0002M19.6667 10.3336L13 17.0002M13 17.0002L6.33333 10.3336M13 17.0002V1.00024"
-                      stroke="#475467"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </>
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M25 17.0002V18.6002C25 20.8405 25 21.9606 24.564 22.8162C24.1805 23.5689 23.5686 24.1808 22.816 24.5643C21.9603 25.0002 20.8402 25.0002 18.6 25.0002H7.4C5.15979 25.0002 4.03969 25.0002 3.18404 24.5643C2.43139 24.1808 1.81947 23.5689 1.43597 22.8162C1 21.9606 1 20.8405 1 18.6002V17.0002M19.6667 10.3336L13 17.0002M13 17.0002L6.33333 10.3336M13 17.0002V1.00024"
+                    stroke="#475467"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               ) : (
-                <p>
-                  <FaCheck size={36} className="text-green-500" />
-                </p>
+                <FaCheck size={36} className="text-green-500" />
               )}
               <p className="font-medium">Drag and drop file here</p>
               <p className="text-sm text-[#667085]">or</p>
@@ -208,15 +196,22 @@ export const EditResources = ({ resourceId }: Props) => {
               >
                 Choose File
               </button>
+              {existingFilePath && (
+                <p className="text-sm mt-2 text-blue-500 underline break-all">
+                  Current file: {fileName}
+                </p>
+              )}
             </div>
           </label>
         </div>
-        <p className={`${message ? "text-green-500" : "text-red-600"}`}>{message || error}</p>
-        <p>{fileName}</p>
+        <p className={`${message ? "text-green-500" : "text-red-600"}`}>
+          {message || error}
+        </p>
       </section>
 
-      {/* Right section */}
+      {/* Right Section */}
       <section className="w-full">
+        {/* Resource For */}
         <div className="flex flex-col gap-[8px] w-full">
           <label className="text-[#344054]">Resources For</label>
           <Select onValueChange={handleSelect} value={form.resourceFor}>
@@ -224,12 +219,8 @@ export const EditResources = ({ resourceId }: Props) => {
               <SelectValue placeholder="Resource For" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem key={"Teachers"} value={"Teachers"}>
-                Teachers
-              </SelectItem>
-              <SelectItem key={"Students"} value={"Students"}>
-                Students
-              </SelectItem>
+              <SelectItem value="Teachers">Teachers</SelectItem>
+              <SelectItem value="Students">Students</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -279,8 +270,8 @@ export const EditResources = ({ resourceId }: Props) => {
         <button
           type="submit"
           className={`${
-            active ? "bg-orange-500" : ""
-          } mt-10 px-[24px] py-[12px] rounded-[8px] bg-[#98A2B3] text-white w-full md:w-[230px]`}
+            active ? "bg-orange-500" : "bg-[#98A2B3]"
+          } mt-10 px-[24px] py-[12px] rounded-[8px] text-white w-full md:w-[230px]`}
         >
           {isEditing ? "Update" : "Submit"}
         </button>

@@ -66,13 +66,13 @@ const id = idString ? Number(idString) : undefined; // or null, or 0, depends on
 
                }
                 {
-                  type === 'Exam Question' && <EditExamQuestion id={id}/>
+                  type === 'Exam Question'&& id !== undefined && <EditExamQuestion id={id}/>
                }
                 {
-                  type === 'Past Question' && <EditPastQuestion id={id}/>
+                  type === 'Past Question'&& id !== undefined && <EditPastQuestion id={id}/>
                }
                {
-                  type === "Resources" && <EditResources/>
+                  type === "Resources"&& id !== undefined && <EditResources resourceId={id}/>
                }
 
             </main>

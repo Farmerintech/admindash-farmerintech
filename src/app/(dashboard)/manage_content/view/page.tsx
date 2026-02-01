@@ -13,6 +13,7 @@ import { EditResources } from "@/app/components/editResources";
 import { ViewClassNote } from "@/app/components/viewClassNote";
 import { ViewExamQuestion } from "@/app/components/viewexamQuestion";
 import { ViewpastQuestion } from "@/app/components/viewPastQuestion";
+import { ViewResources } from "@/app/components/viewResources";
 
 export default function page (){
     const { sidebarOpen, setSidebarOpen } = useSidebar();
@@ -70,7 +71,7 @@ const id = idString ? Number(idString) : undefined; // or null, or 0, depends on
                   type === 'Past Question' &&  id !== undefined && <ViewpastQuestion id={id} />
                }
                {
-                  type === "Resources" && id !== undefined && <EditResources/>
+                  type === "Resources" && id !== undefined && <ViewResources resourceId={id}/>
                }
 
             </main>

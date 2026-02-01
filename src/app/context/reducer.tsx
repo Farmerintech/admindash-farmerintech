@@ -8,6 +8,7 @@ export interface User {
   token: any;
   role: string;
   isLoggedIn: boolean;
+  profileImage:string
 }
 
 export type Action =
@@ -22,6 +23,7 @@ export const initialState: User = {
   token: null,
   role: '',
   isLoggedIn: false,
+  profileImage:"",
 };
  
 export const UserContext = createContext<{
