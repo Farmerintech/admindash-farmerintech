@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/reducer";
+import DeleteModal from "./deleteModal";
+import { FaTrash } from "react-icons/fa";
 
 interface UploadItem {
   id: number;
@@ -139,12 +141,28 @@ export function ApprovalTable() {
       setError("Error connecting to server");
     }
   };
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedItem, setSelectedItem] = useState(null);
+
+const openDeleteModal = (item:any) => {
+  setSelectedItem(item);
+  setShowDeleteModal(true);
+};
 
   return (
     <section className="bg-white p-[16px] rounded-[8px]">
       {message && <p className="text-green-600 font-semibold">{message}</p>}
       {error && <p className="text-red-600 font-semibold">{error}</p>}
-
+      {
+        showDeleteModal && <DeleteModal
+  isOpen={showDeleteModal}
+  item={selectedItem}
+  onClose={() => setShowDeleteModal(false)}
+  onDeleted={(item) => {
+    setSelectedItem(null);
+  }}
+/>
+}
       <p className="font-[600] pb-4">Recent Uploads</p>
 
       <section className="rounded-md overflow-x-auto w-full px-1 mt-5">
@@ -193,6 +211,15 @@ export function ApprovalTable() {
                         Reject
                       </button>
                     </div>
+                          <button
+        
+        onClick={() => openDeleteModal(item)}
+        className={`$text-xs flex items-center gap-1`}
+      >
+        <FaTrash/>
+        Delete
+      </button>
+
                   </td>
                 </tr>
               ))}

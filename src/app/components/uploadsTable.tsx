@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useUser } from "../context/reducer";
 import { useSearchParams, useRouter } from "next/navigation";
+import DeleteModal from "./deleteModal";
 
 const actions = [
   { name: "View", icon: <FaEye size={15} />, color: "text-blue-400" },
@@ -72,12 +73,31 @@ export function UploadsTable() {
   const goToOffset = (newOffset: number) => {
     router.push(`?offset=${newOffset}`);
   };
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedItem, setSelectedItem] = useState(null);
+
+const openDeleteModal = (item:any) => {
+  setSelectedItem(item);
+  setShowDeleteModal(true);
+};
 
   const canGoNext = offset + pagination.limit < pagination.totalCount;
   const canGoPrevious = offset > 0;
 
   return (
     <section className="bg-white p-4 rounded-md">
+      {
+        
+        showDeleteModal && <DeleteModal
+  isOpen={showDeleteModal}
+  item={selectedItem}
+  onClose={() => setShowDeleteModal(false)}
+  onDeleted={(item) => {
+    setSelectedItem(null);
+  }}
+/>
+
+      }
       <div className="py-2 flex justify-between items-center flex-col md:flex-row gap-2">
         <p className="font-semibold text-lg">Recent Uploads</p>
         <button className="bg-orange-500 px-4 py-2 text-white rounded-md">View all</button>
@@ -103,23 +123,40 @@ export function UploadsTable() {
                   <td className="px-4 py-2">{item.uploadedBy}</td>
                   <td className="px-4 py-2">{new Date(item.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-2">
-                    <div className="flex items-center gap-2">
-                      {actions.map((action, idx) => (
-                        <Link
-                          key={idx}
-                          href={
-                            action.name === "View"
-                              ? `/manage_content/view?type=${item.uploadType}&id=${item.ResourceId}`
-                              : action.name === "Edit"
-                              ? `/manage_content/edit?type=${item.uploadType}&id=${item.ResourceId}`
-                              : "/"
-                          }
-                          className={`${action.color} text-xs flex items-center gap-1`}
-                        >
-                          {action.icon}
-                        </Link>
-                      ))}
-                    </div>
+                   <div className="flex items-center gap-2">
+  {actions.map((action, idx) => {
+    // VIEW & EDIT → normal navigation
+    if (action.name === "View" || action.name === "Edit") {
+      return (
+        <Link
+          key={idx}
+          href={
+            action.name === "View"
+              ? `/manage_content/view?type=${item.uploadType}&id=${item.ResourceId}`
+              : `/manage_content/edit?type=${item.uploadType}&id=${item.ResourceId}`
+          }
+          className={`${action.color} text-xs flex items-center gap-1`}
+        >
+          {action.icon}
+          {action.name}
+        </Link>
+      );
+    }
+
+    // DELETE → modal trigger
+    return (
+      <button
+        key={idx}
+        onClick={() => openDeleteModal(item)}
+        className={`${action.color} text-xs flex items-center gap-1`}
+      >
+        {action.icon}
+        Delete
+      </button>
+    );
+  })}
+</div>
+
                   </td>
                 </tr>
               ))
