@@ -30,8 +30,8 @@ export default function SidebarLayo() {
     { name: "Approval", href: "/approval", icon: <FaClipboardList /> },
     { name: "Payments", href: "/payments", icon: <FaPaypal /> },
     { name: "Settings", href: "/settings", icon: <MdSettings /> },
+        { name: "Profile", href: "/profile", icon: <FaUser /> },
     { name: "Logout", href: "/logout", icon: <MdLogout /> },
-    { name: "Profile", href: "/profile", icon: <FaUser /> },
   ];
 
   const handleLogout = () => {
@@ -202,7 +202,7 @@ export const Header = () => {
         </svg>
         </span>
       </div>
-      <div className='flex gap-[8px]'>
+      <Link href="/profile" className='flex gap-[8px]'>
         <Image src={admin}  alt=' ' className='h-[40px] w-[40px] rounded-[20px]'/>
         <div>
           <p className='text-[16px] font-[500] flex gap-[8px] items-center '>Mr. {state?.firstName} 
@@ -214,7 +214,7 @@ export const Header = () => {
           </p>
           <span className='text-[14px] font-[400]'>{state?.role}</span>
         </div>
-      </div>
+      </Link>
     </div>
   </section>
   );

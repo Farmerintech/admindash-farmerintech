@@ -7,12 +7,7 @@ import { Label } from "@/components/ui/label";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
-  const [admin, setAdmin] = useState<{
-    firstName: string;
-    lastName: string;
-    email: string;
-    profileImage: string;
-  }>({
+  const [admin, setAdmin] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -26,14 +21,26 @@ export default function ProfilePage() {
   });
 
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [updatingPassword, setUpdatingPassword] = useState(false);
 
-  // Fetch admin data on mount
+  // Fetch admin data
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const res = await fetch("/api/admin/profile", {
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://api.citadel-i.com.ng/api/v1/admin/get_admin",
+          { credentials: "include" }
+        );
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Failed to fetch profile");
 
@@ -43,6 +50,8 @@ export default function ProfilePage() {
           email: data.email,
           profileImage: data.profileImage || "",
         });
+              console.log(data)
+
       } catch (err: any) {
         setMessage(err.message);
       } finally {
@@ -54,72 +63,135 @@ export default function ProfilePage() {
 
   if (loading) return <p className="text-center mt-10">Loading profile...</p>;
 
-  // --- Handlers ---
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdmin({ ...admin, [e.target.name]: e.target.value });
+  // --- Validation ---
+  const validateProfile = () => {
+    let valid = true;
+    const newErrors = { firstName: "", lastName: "", email: "" };
+
+    if (!admin.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+      valid = false;
+    }
+    if (!admin.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+      valid = false;
+    }
+    if (!admin.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(admin.email)) {
+      newErrors.email = "Email is invalid";
+      valid = false;
+    }
+
+    setErrors({ ...errors, ...newErrors });
+    return valid;
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+  const validatePassword = () => {
+    let valid = true;
+    const newErrors = { currentPassword: "", newPassword: "", confirmPassword: "" };
+
+    if (!passwordForm.currentPassword) {
+      newErrors.currentPassword = "Current password is required";
+      valid = false;
+    }
+    if (!passwordForm.newPassword) {
+      newErrors.newPassword = "New password is required";
+      valid = false;
+    } else if (passwordForm.newPassword.length < 8) {
+      newErrors.newPassword = "Password must be at least 8 characters";
+      valid = false;
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      valid = false;
+    }
+
+    setErrors({ ...errors, ...newErrors });
+    return valid;
   };
+
+  // --- Handlers ---
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setAdmin({ ...admin, [e.target.name]: e.target.value });
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
 
   const handleProfileUpdate = async () => {
+    if (!validateProfile()) return;
+    setSavingProfile(true);
     try {
-      const res = await fetch("/api/admin/profile", {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: admin.firstName,
-          lastName: admin.lastName,
-          email: admin.email,
-        }),
-      });
+      const res = await fetch(
+        "https://api.citadel-i.com.ng/api/v1/admin/update_profile",
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: admin.firstName,
+            lastName: admin.lastName,
+            email: admin.email,
+          }),
+        }
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update profile");
       setMessage("Profile updated successfully ✅");
     } catch (err: any) {
       setMessage(err.message);
+    } finally {
+      setSavingProfile(false);
     }
   };
 
   const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
     try {
       const formData = new FormData();
       formData.append("avatar", file);
 
-      const res = await fetch("/api/admin/profile/image", {
-        method: "PUT",
-        credentials: "include",
-        body: formData,
-      });
-
+      const res = await fetch(
+        "https://api.citadel-i.com.ng/api/v1/admin/uplaod_img",
+        { method: "PUT", credentials: "include", body: formData }
+      );
       const data = await res.json();
+            console.log(data)
+
       if (!res.ok) throw new Error(data.message || "Image upload failed");
 
       setAdmin({ ...admin, profileImage: data.data.url });
       setMessage("Profile image updated ✅");
     } catch (err: any) {
       setMessage(err.message);
+    } finally {
+      setUploadingImage(false);
     }
   };
 
   const handlePasswordUpdate = async () => {
+    if (!validatePassword()) return;
+    setUpdatingPassword(true);
     try {
-      const res = await fetch("/api/admin/change-password", {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(passwordForm),
-      });
-
+      const res = await fetch(
+        "https://api.citadel-i.com.ng/api/v1/admin/change_psw",
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(passwordForm),
+        }
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to change password");
 
-      setMessage("Password updated ✅");
+      alert("Password updated ✅");
       setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err: any) {
       setMessage(err.message);
+    } finally {
+      setUpdatingPassword(false);
     }
   };
 
@@ -141,7 +213,11 @@ export default function ProfilePage() {
               name="firstName"
               value={admin.firstName}
               onChange={handleInputChange}
+              disabled={savingProfile}
             />
+            {errors.firstName && (
+              <p className="text-red-500 text-sm">{errors.firstName}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="lastName">Last Name</Label>
@@ -150,7 +226,11 @@ export default function ProfilePage() {
               name="lastName"
               value={admin.lastName}
               onChange={handleInputChange}
+              disabled={savingProfile}
             />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm">{errors.lastName}</p>
+            )}
           </div>
         </div>
 
@@ -162,10 +242,14 @@ export default function ProfilePage() {
             type="email"
             value={admin.email}
             onChange={handleInputChange}
+            disabled={savingProfile}
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
         </div>
 
-        <Button onClick={handleProfileUpdate}>Save Profile</Button>
+        <Button onClick={handleProfileUpdate} disabled={savingProfile}>
+          {savingProfile ? "Saving..." : "Save Profile"}
+        </Button>
       </section>
 
       {/* --- Profile Image --- */}
@@ -183,8 +267,12 @@ export default function ProfilePage() {
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => e.target.files && handleImageUpload(e.target.files[0])}
+          disabled={uploadingImage}
+          onChange={(e) =>
+            e.target.files && handleImageUpload(e.target.files[0])
+          }
         />
+        {uploadingImage && <p className="text-sm text-gray-500">Uploading...</p>}
       </section>
 
       {/* --- Change Password --- */}
@@ -197,34 +285,48 @@ export default function ProfilePage() {
             <Input
               id="currentPassword"
               name="currentPassword"
-              type="password"
+              type="text"
               value={passwordForm.currentPassword}
               onChange={handlePasswordChange}
+              disabled={updatingPassword}
             />
+            {errors.currentPassword && (
+              <p className="text-red-500 text-sm">{errors.currentPassword}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="newPassword">New Password</Label>
             <Input
               id="newPassword"
               name="newPassword"
-              type="password"
+              type="text"
               value={passwordForm.newPassword}
               onChange={handlePasswordChange}
+              disabled={updatingPassword}
             />
+            {errors.newPassword && (
+              <p className="text-red-500 text-sm">{errors.newPassword}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              type="text"
               value={passwordForm.confirmPassword}
               onChange={handlePasswordChange}
+              disabled={updatingPassword}
             />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+            )}
           </div>
         </div>
 
-        <Button onClick={handlePasswordUpdate}>Change Password</Button>
+        <Button onClick={handlePasswordUpdate} disabled={updatingPassword}>
+          {updatingPassword ? "Updating..." : "Change Password"}
+        </Button>
       </section>
     </div>
   );
