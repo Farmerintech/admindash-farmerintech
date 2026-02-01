@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
-import { FaUserGraduate, FaClipboardList, FaPaypal } from "react-icons/fa";
+import { FaUserGraduate, FaClipboardList, FaPaypal, FaUser } from "react-icons/fa";
 import { MdDashboard, MdLogout, MdSettings,  MdCampaign } from "react-icons/md";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { useUser } from '@/app/context/reducer';
@@ -31,6 +31,7 @@ export default function SidebarLayo() {
     { name: "Payments", href: "/payments", icon: <FaPaypal /> },
     { name: "Settings", href: "/settings", icon: <MdSettings /> },
     { name: "Logout", href: "/logout", icon: <MdLogout /> },
+    { name: "Profile", href: "/profile", icon: <FaUser /> },
   ];
 
   const handleLogout = () => {
